@@ -510,6 +510,16 @@ def apply_overrides(fname, inner_html):
             'retainer: 20 posts a month, delivered in weekly '
             'batches.',
         )
+    elif fname == "dev-log.html":
+        # Tone trim (Ben, 2026-10-18): drop the one crude punchline
+        # from the intro; the swearing warning and every entry stay
+        # exactly as written.
+        swap(
+            'The founders communicate like coworkers, not a press '
+            'release, because we ain\'t no pussy.',
+            'The founders communicate like coworkers, not a press '
+            'release.',
+        )
     elif fname == "terms.html":
         swap(
             'Payment is by e-transfer or PayPal.',
