@@ -17,6 +17,7 @@ import html as html_lib
 import os
 import re
 import shutil
+from pathlib import Path
 import sys
 from html.parser import HTMLParser
 
@@ -273,6 +274,13 @@ def _buy_block():
     )
 
 
+LIVE_BODIES = {}
+for _name in ("showcase.html", "how-it-works.html"):
+    _p = Path(__file__).parent / "live-bodies" / _name
+    if _p.exists():
+        LIVE_BODIES[_name] = _p.read_text(encoding="utf-8")
+
+
 def apply_overrides(fname, inner_html):
     """Live-only overrides. Every pattern must fire exactly once; warn loudly
     otherwise so a silent miss can never ship."""
@@ -284,6 +292,12 @@ def apply_overrides(fname, inner_html):
             print(f"WARNING override on {fname}: pattern found {n}x "
                   f"(expected 1): {old[:70]!r}", file=sys.stderr)
         inner_html = inner_html.replace(old, new)
+
+    # Fully restructured pages (Ben’s audit, 2026-10-18): the
+    # body comes from live-bodies/<page> wholesale.
+    live_body = LIVE_BODIES.get(fname)
+    if live_body is not None:
+        return live_body
 
     if fname == "index.html":
         month_box = (
@@ -395,77 +409,6 @@ def apply_overrides(fname, inner_html):
             'Founding Test Run starts with the form above, not a buy '
             'button — there are only two spots, and we reply '
             'personally.</p>',
-        )
-    elif fname == "showcase.html":
-        # Fresh staffed floor shots (Ben's screenshots, 2026-10-18, cropped
-        # to the map frame by Remmy): building exterior added as opener;
-        # main / research / front figures now show the current floors,
-        # staffed, replacing the older captures.
-        swap(
-            '        <figure class="shot hero-shot">',
-            '        <figure class="shot">\n'
-            '          <div class="shot-bar" aria-hidden="true"><span '
-            'class="dot"></span><span class="dot"></span><span '
-            'class="dot"></span><span class="bar-label">Pulse HQ — the '
-            'building, October 18</span></div>\n'
-            '          <button class="zoom" type="button" '
-            'data-caption="Pulse HQ at night — the building the whole '
-            'company lives in.">\n'
-            '            <img src="assets/office-exterior.jpg" '
-            'width="934" height="646" alt="The Pulse HQ building at '
-            'night: a brick building with a glowing neon PULSE HQ sign, '
-            'gardens and trees around it, and a small bus shelter out '
-            'front" />\n'
-            '          </button>\n'
-            '          <figcaption><b>The building.</b> Three floors '
-            'behind those windows — the office every deliverable comes '
-            'out of.</figcaption>\n'
-            '        </figure>\n'
-            '\n'
-            '        <figure class="shot hero-shot">',
-        )
-        swap('Pulse HQ — live screenshot, October 14',
-             'Pulse HQ — live screenshot, October 18')
-        swap('The live office, October 14:', 'The live office, October 18:')
-        swap(
-            'src="assets/floor-live.png" width="1440" height="900"',
-            'src="assets/floor-main-live.jpg" width="890" height="632"',
-        )
-        swap(
-            'a slim top bar with the Pulse HQ wordmark, \'12 agents\', '
-            'floor tabs for Main Office, Research Dept, and Front '
-            'Office, and Create work and music buttons; below it the '
-            'Main Office floor fills the screen',
-            'the Main Office floor, staffed and working',
-        )
-        swap(
-            'Three floors on the tabs up top, the floor filling the '
-            'screen, the crew on real work',
-            'The main floor, staffed and on real work',
-        )
-        swap(
-            'data-caption="The lab, staffed: Peter at his board, Astrid '
-            'mid-floor, and Walter and Olivia at their stations."',
-            'data-caption="The Research Department, staffed: September '
-            'and Peter at the evidence wall, Olivia at the central '
-            'machine, Walter at his reading desk."',
-        )
-        swap(
-            '<img src="assets/lab-staffed.png" width="782" height="522" '
-            'alt="The populated research lab floor with the crew in it: '
-            'Peter at his blackboard, Astrid mid-floor, and Walter and '
-            'Olivia at their stations" />',
-            '<img src="assets/floor-research-live.jpg" width="890" '
-            'height="632" alt="The Research Department floor, staffed: '
-            'September and Peter at the evidence wall with its case '
-            'boards, Olivia at the central machine, Walter at his '
-            'reading desk, Astrid at the filing boards, server racks '
-            'along the bottom wall" />',
-        )
-        swap(
-            'src="assets/front-office-floor.png" width="1439" '
-            'height="1004"',
-            'src="assets/floor-front-live.jpg" width="890" height="632"',
         )
     elif fname == "faq.html":
         swap(
