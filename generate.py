@@ -5,7 +5,7 @@ showcase artifact (the source of truth / "test dummy").
 
 Source : ~/workspace/ts-spaces/pulse-hq-ai-workspace/index.html
          (single-page app; content lives in 8 <div class="view" id="view-*">)
-Output : this folder (~/workspace/pulse-hq-pages/) — 8 static .html pages,
+Output : this folder (~/workspace/pulse-hq-pages/) — 9 static .html pages,
          styles.css, assets/, sitemap.xml, robots.txt, README.md.
 
 The artifact itself is never modified. Re-run this script whenever the
@@ -34,6 +34,7 @@ VIEWS = [
     ("how-it-works", "how-it-works.html", "How it works"),
     ("devlog", "dev-log.html", "Dev Log"),
     ("case-study", "case-study.html", "Case Study"),
+    ("start", "start.html", "Start"),
     ("faq", "faq.html", "FAQ"),
     ("terms", "terms.html", "Terms"),
     ("privacy", "privacy.html", "Privacy"),
@@ -43,6 +44,7 @@ HASH_TO_FILE = {view: fname for view, fname, _ in VIEWS}
 NAV = [
     ("index.html", "Front page"),
     ("case-study.html", "Case Study"),
+    ("start.html", "Start"),
     ("how-it-works.html", "How it works"),
     ("dev-log.html", "Dev Log"),
     ("showcase.html", "Showcase"),
@@ -194,6 +196,97 @@ def transform(inner_html):
 
 
 # --------------------------------------------------------------------------
+# Live-build overrides (generated pages only; the dummy source is untouched)
+# --------------------------------------------------------------------------
+
+STRIPE_LINKS = [
+    ("Standard Pilot", "$650", "https://buy.stripe.com/6oU5kFd8V2St1Ap8uq6kg03"),
+    ("Website design and deploy", "$450", "https://buy.stripe.com/28E8wRc4R8cN4MB11Y6kg01"),
+    ("Facebook page setup", "$200", "https://buy.stripe.com/6oUdRb8SF2Sta6VdOK6kg04"),
+    ("Logo & branding mini-kit", "$175", "https://buy.stripe.com/bJe00lecZ8cNcf3bGC6kg05"),
+    ("Batch of 14 posts", "$300", "https://buy.stripe.com/5kQ4gB1qdakVa6V9yu6kg06"),
+    ("Research Report", "$250", "https://buy.stripe.com/bJeaEZ9WJeBb2EtbGC6kg02"),
+]
+
+
+def _buy_block():
+    rows = "\n".join(
+        '            <p style="display: flex; justify-content: space-between; '
+        'align-items: center; gap: 14px; margin: 0;"><span><strong>%s</strong> '
+        '&mdash; %s, one-time</span><a class="cta-btn" href="%s" target="_blank" '
+        'rel="noopener noreferrer">Buy</a></p>' % (name, price, url)
+        for name, price, url in STRIPE_LINKS
+    )
+    return (
+        '        <div style="margin-top: 30px;">\n'
+        '          <h3>Pay for a single service</h3>\n'
+        '          <p style="max-width: 62ch;">Secure checkout by Stripe. You get '
+        'a receipt by email, and Ben replies within one business day to start '
+        'the work.</p>\n'
+        '          <div style="display: grid; gap: 10px; max-width: 640px; '
+        'margin-top: 14px;">\n'
+        + rows + '\n'
+        '          </div>\n'
+        '        </div>\n'
+    )
+
+
+def apply_overrides(fname, inner_html):
+    """Live-only overrides. Every pattern must fire exactly once; warn loudly
+    otherwise so a silent miss can never ship."""
+
+    def swap(old, new):
+        nonlocal inner_html
+        n = inner_html.count(old)
+        if n != 1:
+            print(f"WARNING override on {fname}: pattern found {n}x "
+                  f"(expected 1): {old[:70]!r}", file=sys.stderr)
+        inner_html = inner_html.replace(old, new)
+
+    if fname == "start.html":
+        swap(
+            '<p class="start-note">A preview of the intake form — the button '
+            'below opens the real one.</p>',
+            '<p class="start-note">A preview of the intake form — for now, '
+            'the button below starts your intake by email.</p>',
+        )
+        swap(
+            '<a class="cta-btn" href="start.html">Open the intake form</a>',
+            '<a class="cta-btn" href="mailto:getpulsehq@proton.me">'
+            'Email Ben to start</a>',
+        )
+        swap(
+            '<p style="margin-top: 22px; max-width: 62ch;">The Founding Test '
+            'Run starts with the form above, not a buy button — there are '
+            'only two spots, and Ben replies personally. Fixed-price singles '
+            'and the Standard Pilot will carry checkout buttons on this '
+            'page when they go live.</p>',
+            _buy_block()
+            + '        <p style="margin-top: 22px; max-width: 62ch;">The '
+            'Founding Test Run starts with the form above, not a buy '
+            'button — there are only two spots, and Ben replies '
+            'personally.</p>',
+        )
+    elif fname == "faq.html":
+        swap(
+            '<p>By e-transfer or PayPal. The Test Run, Pilot, and Setup are '
+            'paid before work begins; the Core retainer is billed monthly.</p>',
+            '<p>By card through Stripe&rsquo;s secure checkout — the '
+            'payment links are on the <a href="start.html">Start page</a> '
+            '— or by PayPal or e-transfer. The Test Run, Pilot, and Setup '
+            'are paid before work begins; the Core retainer is billed '
+            'monthly.</p>',
+        )
+    elif fname == "terms.html":
+        swap(
+            'Payment is by e-transfer or PayPal.',
+            'Payment is by card through Stripe&rsquo;s secure checkout, '
+            'or by PayPal or e-transfer.',
+        )
+    return inner_html
+
+
+# --------------------------------------------------------------------------
 # Page chrome (shared header / footer)
 # --------------------------------------------------------------------------
 
@@ -311,6 +404,7 @@ def main():
             print(f"ERROR: could not extract view '{view_id}'", file=sys.stderr)
             return 1
         inner, n_footers = transform(inner)
+        inner = apply_overrides(fname, inner)
         for ref in re.findall(r'(?:src|href)="(assets/[^"]+)"', inner):
             referenced_assets.add(ref)
         page = build_page(view_id, fname, page_name, inner)
@@ -347,15 +441,16 @@ def main():
     with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(sitemap)
 
-    # --- robots.txt (Sitemap line is added at publish time) ---
+    # --- robots.txt (base URL is the live one; Sitemap line included) ---
     with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as f:
-        f.write("User-agent: *\nAllow: /\n")
+        f.write("User-agent: *\nAllow: /\n\nSitemap: "
+                + BASE_PLACEHOLDER + "sitemap.xml\n")
 
     # --- README ---
     readme = """# Pulse HQ — static site (GitHub Pages mirror)
 
-A plain static, Google-indexable version of the Pulse HQ website: 8 pages
-(index, showcase, how-it-works, dev-log, case-study, faq, terms, privacy),
+A plain static, Google-indexable version of the Pulse HQ website: 9 pages
+(index, case-study, start, showcase, how-it-works, dev-log, faq, terms, privacy),
 one shared styles.css, images under assets/. No JavaScript view switching —
 every page is real HTML at its own URL.
 
@@ -379,7 +474,7 @@ re-run:
     with open(os.path.join(OUT, "README.md"), "w", encoding="utf-8") as f:
         f.write(readme)
 
-    print("done: 8 pages + styles.css + assets/ + sitemap.xml + robots.txt + README.md")
+    print("done: 9 pages + styles.css + assets/ + sitemap.xml + robots.txt + README.md")
     return 0
 
 

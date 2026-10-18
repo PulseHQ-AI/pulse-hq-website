@@ -510,6 +510,61 @@
         padding-top: 14px; margin-top: 4px;
       }
 
+      /* ---------- Start page ---------- */
+      .start-note { font-size: 0.92rem; color: var(--ink-faint); margin: 0 0 14px; }
+      .form-mock {
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: calc(var(--radius) + 6px);
+        padding: clamp(20px, 4vw, 32px);
+        box-shadow: var(--shadow);
+        max-width: 720px;
+      }
+      .fm-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+      @media (min-width: 640px) {
+        .fm-grid { grid-template-columns: 1fr 1fr; }
+        .fm-wide { grid-column: 1 / -1; }
+      }
+      .fm-label { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; }
+      .fm-box {
+        border: 1px solid var(--panel-edge);
+        border-radius: 9px;
+        background: var(--bg);
+        min-height: 42px;
+        padding: 9px 12px;
+        font-size: 0.94rem;
+        color: var(--ink-faint);
+      }
+      .fm-box-tall { min-height: 92px; }
+      .fm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+      .fm-chip {
+        border: 1px solid var(--panel-edge);
+        border-radius: 999px;
+        background: var(--bg-raise);
+        padding: 6px 13px;
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+      }
+      .art-box {
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: calc(var(--radius) + 6px);
+        padding: clamp(22px, 4vw, 32px);
+        max-width: 720px;
+      }
+      .art-box p { margin: 0 0 14px; color: var(--ink-soft); max-width: 62ch; }
+      .art-box p b { color: var(--ink); }
+      .art-box p:last-child { margin-bottom: 0; }
+      .pay-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 700px) { .pay-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (min-width: 1080px) { .pay-grid { grid-template-columns: repeat(4, 1fr); } }
+      .pay-item {
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius); padding: 18px;
+      }
+      .pay-item h3 { margin: 0 0 6px; font-size: 1.08rem; font-weight: 650; line-height: 1.3; }
+      .pay-item p { margin: 0; font-size: 0.92rem; color: var(--ink-soft); }
+
       /* ---------- Documents (dev log / case study) ---------- */
       .doc { max-width: 780px; margin: 0 auto; padding: 52px 0 6px; }
       .doc h1 {
@@ -552,6 +607,20 @@
       }
       .contact-strip a { font-weight: 800; }
 
+      /* ---------- Front page: hero CTA ---------- */
+      .hero-cta { margin: 30px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+      .hero-cta-btn {
+        display: inline-block; padding: 14px 26px; border-radius: 999px;
+        background: var(--accent); color: #ffffff;
+        font-weight: 800; font-size: 1.05rem; line-height: 1.3;
+        text-decoration: none;
+      }
+      @media (prefers-color-scheme: dark) { .hero-cta-btn { color: #0a1f1a; } }
+      .hero-cta-btn:hover { background: var(--accent-bright); }
+      .hero-cta-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+      .hero-cta-alt { margin: 0; color: var(--ink-soft); font-size: 0.98rem; }
+      .cta .cta-alt { color: #8fa6bd; font-size: 0.97rem; margin: 16px 0 0; }
+
       /* ---------- Front page: two-offer comparison ---------- */
       .compare-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
       @media (min-width: 860px) { .compare-grid { grid-template-columns: 1fr 1fr; } }
@@ -566,27 +635,29 @@
       .compare-tag { margin: 0; font-size: 0.97rem; color: var(--ink-soft); }
       .compare-tag b { color: var(--ink); }
       .compare-card .offer-list { margin-top: 4px; }
-      .compare-why {
-        margin: 6px 0 0; padding-top: 12px;
-        border-top: 1px dashed var(--panel-edge);
-        font-size: 0.95rem; color: var(--ink-soft);
+      .compare-rows { margin: 4px 0 0; }
+      .compare-row { padding: 9px 0; border-top: 1px dashed var(--panel-edge); display: grid; gap: 2px; }
+      .compare-row:first-child { border-top: 0; padding-top: 2px; }
+      .compare-row dt {
+        font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em;
+        text-transform: uppercase; color: var(--accent);
       }
-      .compare-why b { color: var(--ink); }
+      .compare-row dd { margin: 0; font-size: 0.96rem; color: var(--ink-soft); }
+      .compare-row dd b { color: var(--ink); }
+      .compare-after {
+        margin: 16px 0 0; padding: 14px 18px;
+        background: var(--panel); border: 1px dashed var(--panel-edge);
+        border-radius: var(--radius);
+        font-size: 0.96rem; color: var(--ink-soft);
+      }
+      .compare-after b { color: var(--ink); }
       .compare-open {
         display: inline-block; font-size: 0.76rem; font-weight: 800;
         letter-spacing: 0.1em; text-transform: uppercase;
         color: var(--accent); background: var(--accent-soft);
         border-radius: 6px; padding: 5px 10px; align-self: flex-start;
       }
-      .compare-differs {
-        margin-top: 14px; padding: 16px 18px;
-        background: var(--panel); border: 1px dashed var(--panel-edge);
-        border-radius: var(--radius);
-      }
-      .compare-differs h3 { margin: 0 0 10px; font-size: 1.05rem; font-weight: 700; }
-      .compare-differs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-      .compare-differs li { font-size: 0.95rem; color: var(--ink-soft); }
-      .compare-differs li b { color: var(--ink); }
+
 
       /* ---------- Front page: cherry-pick singles ---------- */
       .singles-list {

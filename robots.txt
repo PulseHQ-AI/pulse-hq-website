@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://pulsehq-ai.github.io/pulse-hq-website/sitemap.xml
