@@ -42,13 +42,10 @@ HOME_TITLE = "Pulse HQ — Bring your online presence to life"
 HASH_TO_FILE = {view: fname for view, fname, _ in VIEWS}
 NAV = [
     ("index.html", "Front page"),
-    ("showcase.html", "Showcase"),
+    ("case-study.html", "Case Study"),
     ("how-it-works.html", "How it works"),
     ("dev-log.html", "Dev Log"),
-    ("case-study.html", "Case Study"),
-    ("faq.html", "FAQ"),
-    ("terms.html", "Terms"),
-    ("privacy.html", "Privacy"),
+    ("showcase.html", "Showcase"),
 ]
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
 FONT_CSS = (
