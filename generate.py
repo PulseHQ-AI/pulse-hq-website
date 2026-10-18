@@ -243,7 +243,29 @@ def apply_overrides(fname, inner_html):
                   f"(expected 1): {old[:70]!r}", file=sys.stderr)
         inner_html = inner_html.replace(old, new)
 
-    if fname == "start.html":
+    if fname == "index.html":
+        month_box = (
+            '      <!-- ================= ONE MONTH (live-build addition) '
+            '================= -->\n'
+            '      <section class="section" aria-labelledby="fp-month-h">\n'
+            '        <div class="section-head">\n'
+            '          <span class="kicker">One month</span>\n'
+            '          <h2 id="fp-month-h">One month of Pulse HQ</h2>\n'
+            '          <p><b>Core — $1,450 per month.</b> The full service, '
+            'running: your website kept live, your Facebook page handled, '
+            'weekly posts researched and written — nothing public without '
+            'your say. Month-to-month; cancel with 30 days\' notice. Starts '
+            'after setup ($1,250, minus any Test Run or Pilot credit '
+            'you\'ve already paid).</p>\n'
+            '        </div>\n'
+            '      </section>\n\n'
+        )
+        swap(
+            '<!-- ================= CHERRY-PICK SINGLES ================= -->',
+            month_box
+            + '<!-- ================= CHERRY-PICK SINGLES ================= -->',
+        )
+    elif fname == "start.html":
         swap(
             '<p class="start-note">A preview of the intake form — the button '
             'below opens the real one.</p>',
