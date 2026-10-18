@@ -412,25 +412,6 @@ def apply_overrides(fname, inner_html):
             'button — there are only two spots, and we reply '
             'personally.</p>',
         )
-    elif fname == "dev-log.html":
-        # Ben's ruling (2026-10-18, clarified): the founder's-mother
-        # naming lives in the personal log only — not on any public
-        # page, the Dev Log included. Scrub the relationship mentions;
-        # Marni's name and roles stay.
-        swap(
-            "the receptionist (named for Ben's mother, Marni) has a "
-            "Coke routine",
-            "the receptionist, Marni, has a Coke routine")
-        swap(
-            "Ben's mom Marni's “OLD HIPPIES",
-            "Marni's “OLD HIPPIES")
-        swap(
-            "at reception (support presence, named for Ben's mom) and "
-            "Maria running",
-            "at reception and Maria running")
-        swap(
-            "The society's chef is Marni. Yes, <em>that</em> Marni.",
-            "The society's chef is Marni.")
     elif fname == "faq.html":
         swap(
             '<p>By e-transfer or PayPal. The Test Run, Pilot, and Setup are '
