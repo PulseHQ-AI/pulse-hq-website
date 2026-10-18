@@ -61,8 +61,8 @@ LIVE_CSS = """
 .buy-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 0; border-bottom: 1px solid var(--panel-edge); }
 .buy-info strong { display: block; font-size: 1.02rem; }
 .buy-info span { color: var(--muted); font-size: 0.92rem; }
-.buy-btn { flex: none; background: #635bff; color: #fff !important; font-weight: 700; padding: 11px 22px; border-radius: 999px; text-decoration: none !important; }
-.buy-btn:hover { background: #5147e5; }
+.buy-btn { flex: none; background: var(--accent); color: #fff !important; font-weight: 700; padding: 11px 22px; border-radius: 999px; text-decoration: none !important; }
+.buy-btn:hover { background: var(--accent-bright); }
 .buy-trust { color: var(--muted); font-size: 0.9rem; margin: 14px 0; }
 @media (max-width: 560px) { .buy-row { flex-direction: column; align-items: flex-start; } }
 .hero-top { display: flex; flex-direction: column; gap: 26px; }
