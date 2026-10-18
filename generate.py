@@ -58,9 +58,9 @@ LIVE_CSS = """
 .hero-media { max-width: 400px; width: 100%; margin-inline: auto; }
 .hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
 .buy-card { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 18px; padding: 6px 22px; margin-top: 16px; max-width: 680px; }
-.buy-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 0; border-bottom: 1px solid var(--panel-edge); }
-.buy-info strong { display: block; font-size: 1.02rem; }
-.buy-info span { color: var(--muted); font-size: 0.92rem; }
+.buy-row { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 13px 0; border-bottom: 1px solid var(--panel-edge); }
+.buy-info strong { display: block; font-size: 1.02rem; margin-bottom: 2px; }
+.buy-info span { color: var(--muted); font-size: 0.92rem; line-height: 1.45; display: block; max-width: 42ch; }
 .buy-btn { flex: none; background: var(--accent); color: #fff !important; font-weight: 700; padding: 11px 22px; border-radius: 999px; text-decoration: none !important; }
 .buy-btn:hover { background: var(--accent-bright); }
 .buy-trust { color: var(--muted); font-size: 0.9rem; margin: 14px 0; }
@@ -223,23 +223,29 @@ def transform(inner_html):
 # --------------------------------------------------------------------------
 
 STRIPE_LINKS = [
-    ("Standard Pilot", "$650", "https://buy.stripe.com/6oU5kFd8V2St1Ap8uq6kg03"),
-    ("Website design and deploy", "$450", "https://buy.stripe.com/28E8wRc4R8cN4MB11Y6kg01"),
-    ("Facebook page setup", "$200", "https://buy.stripe.com/6oUdRb8SF2Sta6VdOK6kg04"),
-    ("Logo & branding mini-kit", "$175", "https://buy.stripe.com/bJe00lecZ8cNcf3bGC6kg05"),
-    ("Batch of 14 posts", "$300", "https://buy.stripe.com/5kQ4gB1qdakVa6V9yu6kg06"),
-    ("Research Report", "$250", "https://buy.stripe.com/bJeaEZ9WJeBb2EtbGC6kg02"),
+    ("Standard Pilot", "$650", "https://buy.stripe.com/6oU5kFd8V2St1Ap8uq6kg03",
+     "The full service for 14 days — credited toward setup if you continue."),
+    ("Website design and deploy", "$450", "https://buy.stripe.com/28E8wRc4R8cN4MB11Y6kg01",
+     "A one-page website for your business — written, built, and put live."),
+    ("Facebook page setup", "$200", "https://buy.stripe.com/6oUdRb8SF2Sta6VdOK6kg04",
+     "Your page created or cleaned up, branded, and ready for customers."),
+    ("Logo & branding mini-kit", "$175", "https://buy.stripe.com/bJe00lecZ8cNcf3bGC6kg05",
+     "A logo, colors, and fonts — delivered as files that are yours to keep."),
+    ("Batch of 14 posts", "$300", "https://buy.stripe.com/5kQ4gB1qdakVa6V9yu6kg06",
+     "Fourteen finished posts with images, in your voice, ready to approve."),
+    ("Research Report", "$250", "https://buy.stripe.com/bJeaEZ9WJeBb2EtbGC6kg02",
+     "One question about your market, researched and answered plainly."),
 ]
 
 
 def _buy_block():
     rows = "\n".join(
         '            <div class="buy-row"><div class="buy-info">'
-        '<strong>%s</strong><span>%s &mdash; one-time</span></div>'
+        '<strong>%s</strong><span>%s</span></div>'
         '<a class="buy-btn" href="%s" target="_blank" '
         'rel="noopener noreferrer">Buy &mdash; %s</a></div>'
-        % (name, price, url, price)
-        for name, price, url in STRIPE_LINKS
+        % (name, desc, url, price)
+        for name, price, url, desc in STRIPE_LINKS
     )
     return (
         '        <div style="margin-top: 30px;">\n'
