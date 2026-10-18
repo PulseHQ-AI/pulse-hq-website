@@ -257,8 +257,8 @@ def apply_overrides(fname, inner_html):
             'done:</p>\n'
             '            <ul class="offer-list">\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
-            '<span><b>Your website kept live</b> and your Facebook page '
-            'handled.</span></li>\n'
+            '<span><b>Your website kept live</b> — and your Facebook page '
+            'and Instagram, handled.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
             '<span><b>Weekly posts researched and written</b> in your '
             'business\'s own voice.</span></li>\n'
@@ -276,6 +276,8 @@ def apply_overrides(fname, inner_html):
             '            <p><b>Per month</b>, billed monthly.</p>\n'
             '            <p><b>Starts after setup</b> — $1,250 one time, '
             'minus any Test Run or Pilot credit you\'ve already paid.</p>\n'
+            '            <p>Full-service agencies typically charge more '
+            'than this for social media alone.</p>\n'
             '          </div>\n'
             '        </div>\n'
             '      </section>\n\n'
@@ -318,6 +320,44 @@ def apply_overrides(fname, inner_html):
             '— or by PayPal or e-transfer. The Test Run, Pilot, and Setup '
             'are paid before work begins; the Core retainer is billed '
             'monthly.</p>',
+        )
+        new_entry = (
+            '<details open>\n'
+            '                <summary>How do you cost less than an '
+            'agency?</summary>\n'
+            '                <p>Structure. An agency&rsquo;s price carries '
+            'account managers, a sales team, and an office lease between '
+            'you and the people doing the work. Pulse HQ has none of that '
+            'layer — you pay for finished, researched work and one '
+            'accountable approval step, not overhead. Don&rsquo;t take '
+            'our word for it: search social media management and compare '
+            'the first fifteen results on Google with what&rsquo;s '
+            'included here.</p>\n'
+            '              </details>\n'
+            '              '
+        )
+        swap(
+            '<details open>\n'
+            '                <summary>How much does done-for-you social '
+            'media cost?</summary>',
+            new_entry
+            + '<details open>\n'
+            '                <summary>How much does done-for-you social '
+            'media cost?</summary>',
+        )
+        swap(
+            'Our packages are built for Facebook pages — ask us about '
+            'other platforms.',
+            'Our Core service covers Facebook and Instagram — every post '
+            'is written once and adapted for both. Ask us about other '
+            'platforms.',
+        )
+        swap(
+            'Our packages are built for Facebook pages. Ask us about '
+            'other platforms.',
+            'Facebook and Instagram, on the Core retainer — every post '
+            'is written once and adapted for both. Ask us about other '
+            'platforms.',
         )
     elif fname == "terms.html":
         swap(
