@@ -55,9 +55,11 @@ NAV = [
 LIVE_CSS = """
 /* ---- Live-build additions: nav separator + hero media ---- */
 .nav-sep { width: 1px; height: 22px; background: var(--panel-edge); margin: 0 9px; flex: none; }
+.hero-media { max-width: 400px; width: 100%; margin-inline: auto; }
 .hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
-@media (min-width: 900px) {
+@media (min-width: 760px) {
   .hero-grid { grid-template-columns: 1.08fr 0.92fr; align-items: center; }
+  .hero-media { margin-inline: 0; justify-self: end; }
 }
 """
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
