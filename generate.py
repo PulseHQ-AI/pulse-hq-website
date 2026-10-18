@@ -417,22 +417,18 @@ def apply_overrides(fname, inner_html):
         # naming lives in the personal log only — not on any public
         # page, the Dev Log included. Scrub the relationship mentions;
         # Marni's name and roles stay.
-        inner_html = swap(
-            inner_html,
+        swap(
             "the receptionist (named for Ben's mother, Marni) has a "
             "Coke routine",
             "the receptionist, Marni, has a Coke routine")
-        inner_html = swap(
-            inner_html,
+        swap(
             "Ben's mom Marni's “OLD HIPPIES",
             "Marni's “OLD HIPPIES")
-        inner_html = swap(
-            inner_html,
+        swap(
             "at reception (support presence, named for Ben's mom) and "
             "Maria running",
             "at reception and Maria running")
-        inner_html = swap(
-            inner_html,
+        swap(
             "The society's chef is Marni. Yes, <em>that</em> Marni.",
             "The society's chef is Marni.")
     elif fname == "faq.html":
