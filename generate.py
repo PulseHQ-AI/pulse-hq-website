@@ -57,6 +57,14 @@ LIVE_CSS = """
 .nav-sep { width: 1px; height: 22px; background: var(--panel-edge); margin: 0 9px; flex: none; }
 .hero-media { max-width: 400px; width: 100%; margin-inline: auto; }
 .hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
+.buy-card { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 18px; padding: 6px 22px; margin-top: 16px; max-width: 680px; }
+.buy-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 0; border-bottom: 1px solid var(--panel-edge); }
+.buy-info strong { display: block; font-size: 1.02rem; }
+.buy-info span { color: var(--muted); font-size: 0.92rem; }
+.buy-btn { flex: none; background: #635bff; color: #fff !important; font-weight: 700; padding: 11px 22px; border-radius: 999px; text-decoration: none !important; }
+.buy-btn:hover { background: #5147e5; }
+.buy-trust { color: var(--muted); font-size: 0.9rem; margin: 14px 0; }
+@media (max-width: 560px) { .buy-row { flex-direction: column; align-items: flex-start; } }
 .hero-top { display: flex; flex-direction: column; gap: 26px; }
 @media (min-width: 760px) {
   .hero-top { flex-direction: row; align-items: center; gap: 36px; }
@@ -226,21 +234,22 @@ STRIPE_LINKS = [
 
 def _buy_block():
     rows = "\n".join(
-        '            <p style="display: flex; justify-content: space-between; '
-        'align-items: center; gap: 14px; margin: 0;"><span><strong>%s</strong> '
-        '&mdash; %s, one-time</span><a class="cta-btn" href="%s" target="_blank" '
-        'rel="noopener noreferrer">Buy</a></p>' % (name, price, url)
+        '            <div class="buy-row"><div class="buy-info">'
+        '<strong>%s</strong><span>%s &mdash; one-time</span></div>'
+        '<a class="buy-btn" href="%s" target="_blank" '
+        'rel="noopener noreferrer">Buy &mdash; %s</a></div>'
+        % (name, price, url, price)
         for name, price, url in STRIPE_LINKS
     )
     return (
         '        <div style="margin-top: 30px;">\n'
         '          <h3>Pay for a single service</h3>\n'
-        '          <p style="max-width: 62ch;">Secure checkout by Stripe. You get '
-        'a receipt by email, and we reply within one business day to start '
-        'the work.</p>\n'
-        '          <div style="display: grid; gap: 10px; max-width: 640px; '
-        'margin-top: 14px;">\n'
+        '          <div class="buy-card">\n'
         + rows + '\n'
+        '            <p class="buy-trust">&#128274; Secure checkout by '
+        '<strong>Stripe</strong> &mdash; card details never touch this '
+        'site. You get a receipt by email, and we reply within one '
+        'business day to start the work.</p>\n'
         '          </div>\n'
         '        </div>\n'
     )
