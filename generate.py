@@ -57,9 +57,11 @@ LIVE_CSS = """
 .nav-sep { width: 1px; height: 22px; background: var(--panel-edge); margin: 0 9px; flex: none; }
 .hero-media { max-width: 400px; width: 100%; margin-inline: auto; }
 .hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
+.hero-top { display: flex; flex-direction: column; gap: 26px; }
 @media (min-width: 760px) {
-  .hero-grid { grid-template-columns: 1.08fr 0.92fr; align-items: center; }
-  .hero-media { margin-inline: 0; justify-self: end; }
+  .hero-top { flex-direction: row; align-items: center; gap: 36px; }
+  .hero-head { flex: 1.08 1 0; }
+  .hero-media { flex: 0.92 1 0; margin-inline: 0; }
 }
 """
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
@@ -300,17 +302,28 @@ def apply_overrides(fname, inner_html):
             month_box
             + '<!-- ================= CHERRY-PICK SINGLES ================= -->',
         )
+        # Hero restructure (Ben, 2026-10-18): headline + logo share ONE
+        # div (.hero-top, flex, centered); paragraphs run below full width.
         swap(
-            'posts published without approval</li>\n'
-            '            </ul>\n'
+            '<div class="hero-grid">\n'
+            '          <div>\n'
+            '            <h1 style="max-width: 21ch;">',
+            '<div class="hero-grid">\n'
+            '          <div class="hero-top">\n'
+            '            <div class="hero-head">\n'
+            '            <h1 style="max-width: 21ch;">',
+        )
+        swap(
+            '</svg>\n'
+            '            <p class="lede">',
+            '</svg>\n'
+            '            </div>\n'
+            '            <div class="hero-media"><img '
+            'src="assets/pulse-logo.jpg" alt="Pulse HQ logo — a neon pulse '
+            'line on deep blue" /></div>\n'
             '          </div>\n'
-            '        </div>',
-            'posts published without approval</li>\n'
-            '            </ul>\n'
-            '          </div>\n'
-            '          <div class="hero-media"><img src="assets/pulse-logo.jpg" '
-            'alt="Pulse HQ logo — a neon pulse line on deep blue" /></div>\n'
-            '        </div>',
+            '          <div class="hero-body">\n'
+            '            <p class="lede">',
         )
     elif fname == "start.html":
         swap(
