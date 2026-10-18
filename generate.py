@@ -57,6 +57,18 @@ LIVE_CSS = """
 .nav-sep { width: 1px; height: 22px; background: var(--panel-edge); margin: 0 9px; flex: none; }
 .hero-media { max-width: 400px; width: 100%; margin-inline: auto; }
 .hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
+@media (prefers-color-scheme: dark) {
+  :root { --accent: #4bd3ae; --accent-bright: #79e2c3; }
+}
+.pulse-line path { animation: pulsebeat 4.2s ease-in-out infinite; }
+@keyframes pulsebeat {
+  0% { stroke-dashoffset: 640; opacity: 1; }
+  52% { stroke-dashoffset: 0; opacity: 1; }
+  78% { stroke-dashoffset: 0; opacity: 1; }
+  88% { stroke-dashoffset: 0; opacity: 0.12; }
+  89% { stroke-dashoffset: 640; opacity: 0.12; }
+  100% { stroke-dashoffset: 640; opacity: 1; }
+}
 .buy-card { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 18px; padding: 6px 22px; margin-top: 16px; max-width: 680px; }
 .buy-row { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 13px 0; border-bottom: 1px solid var(--panel-edge); }
 .buy-info strong { display: block; font-size: 1.02rem; margin-bottom: 2px; }
