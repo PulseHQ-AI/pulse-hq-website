@@ -332,9 +332,11 @@ def build_page(view_id, fname, page_name, inner_html):
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{esc_title}" />
     <meta property="og:description" content="{esc_desc}" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="{BASE_PLACEHOLDER}assets/home-preview.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{esc_title}" />
     <meta name="twitter:description" content="{esc_desc}" />
+    <meta name="twitter:image" content="{BASE_PLACEHOLDER}assets/home-preview.png" />
     <link rel="icon" href="data:," />
     <title>{html_lib.escape(title)}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -395,7 +397,8 @@ def main():
         f.write(css.strip() + "\n")
 
     # --- pages ---
-    referenced_assets = set()  # share thumbnail removed by Ben's order 2026-10-18
+    # og:image: a screenshot of the front page itself, kept in site-assets/
+    referenced_assets = {"assets/home-preview.png"}
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
@@ -416,6 +419,10 @@ def main():
     missing = []
     for ref in sorted(referenced_assets):
         src_path = os.path.join(os.path.dirname(SRC), ref)
+        if not os.path.exists(src_path):
+            alt = os.path.join(HERE, "site-assets", os.path.basename(ref))
+            if os.path.exists(alt):
+                src_path = alt
         dst_path = os.path.join(OUT, ref)
         if os.path.exists(src_path):
             shutil.copy2(src_path, dst_path)
