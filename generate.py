@@ -239,7 +239,8 @@ def transform(inner_html):
 
 STRIPE_LINKS = [
     ("Standard Pilot", "$650", "https://buy.stripe.com/6oU5kFd8V2St1Ap8uq6kg03",
-     "The full service for 14 days — credited toward setup if you continue."),
+     "The full service for 14 days — 10 finished posts with images, "
+     "credited toward setup if you continue."),
     ("Website design and deploy", "$450", "https://buy.stripe.com/28E8wRc4R8cN4MB11Y6kg01",
      "A one-page website for your business — written, built, and put live."),
     ("Facebook page setup", "$200", "https://buy.stripe.com/6oUdRb8SF2Sta6VdOK6kg04",
@@ -318,8 +319,9 @@ def apply_overrides(fname, inner_html):
             '<span><b>Your website kept live</b> — and your Facebook page '
             'and Instagram, handled.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
-            '<span><b>Weekly posts researched and written</b> in your '
-            'business\'s own voice.</span></li>\n'
+            '<span><b>16-20 posts a month</b> across Facebook and '
+            'Instagram — researched and written in your business\'s own '
+            'voice, delivered in weekly batches.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
             '<span><b>Nothing publishes without your approval</b> — the '
             'same rule as everything else at Pulse HQ.</span></li>\n'
@@ -344,6 +346,25 @@ def apply_overrides(fname, inner_html):
             '<!-- ================= CHERRY-PICK SINGLES ================= -->',
             month_box
             + '<!-- ================= CHERRY-PICK SINGLES ================= -->',
+        )
+        # Clarity pass (Ben, 2026-10-18, from the outside-review audit):
+        # pin the Pilot's post count (10 finished posts per the pilot
+        # kit) and spell out exactly what Setup includes (the five
+        # singles, itemized).
+        swap(
+            '<div class="compare-row"><dt>You receive</dt><dd><b>Two '
+            'weeks of real deliverables</b> in your voice, built around '
+            'a <b>voice-calibration first batch</b>',
+            '<div class="compare-row"><dt>You receive</dt><dd><b>10 '
+            'finished posts with images</b> over the 14 days, in your '
+            'voice, built around a <b>voice-calibration first batch</b>',
+        )
+        swap(
+            'covers everything at once and stays the better deal.</p>',
+            'covers everything at once and stays the better deal. '
+            'Setup includes all five: website design and deploy, '
+            'Facebook page setup, the logo &amp; branding mini-kit, '
+            'one batch of 14 posts, and one research report.</p>',
         )
         # Hero restructure (Ben, 2026-10-18): headline + logo share ONE
         # div (.hero-top, flex, centered); paragraphs run below full width.
@@ -459,6 +480,35 @@ def apply_overrides(fname, inner_html):
             'Facebook and Instagram, on the Core retainer — every post '
             'is written once and adapted for both. Ask us about other '
             'platforms.',
+        )
+        # Clarity pass (Ben, 2026-10-18): pin the Pilot and Core
+        # quantities in both "how many posts" answers — counts from
+        # Ben's pilot kit (Pilot: 10 finished posts / 14 days; Core:
+        # roughly 16-20 posts a month in weekly batches).
+        swap(
+            'On the Pilot: a voice-calibration batch first, then two '
+            'weeks of deliverables. On the Core retainer: a weekly '
+            'batch, sized in your agreement. Across the industry plans '
+            'our research checked, 10 to 30 posts per month is the '
+            'documented range — confirm the exact count for the '
+            'package you buy.',
+            'On the Pilot: 10 finished posts over the 14 days, '
+            'starting with a voice-calibration batch. On the Core '
+            'retainer: 16 to 20 posts a month, delivered in weekly '
+            'batches. Across the industry plans our research checked, '
+            '10 to 30 posts per month is the documented range — Core '
+            'sits inside it.',
+        )
+        swap(
+            'On the standard Pilot: a calibration batch first, so we '
+            'lock onto your voice before anything else is written. On '
+            'the Core retainer: a weekly batch, sized in your '
+            'agreement.',
+            'On the standard Pilot: 10 finished posts over the 14 '
+            'days, starting with a calibration batch so we lock onto '
+            'your voice before anything else is written. On the Core '
+            'retainer: 16 to 20 posts a month, delivered in weekly '
+            'batches.',
         )
     elif fname == "terms.html":
         swap(
