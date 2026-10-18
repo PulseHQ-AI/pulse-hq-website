@@ -332,11 +332,9 @@ def build_page(view_id, fname, page_name, inner_html):
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{esc_title}" />
     <meta property="og:description" content="{esc_desc}" />
-    <meta property="og:image" content="assets/job-done.png" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{esc_title}" />
     <meta name="twitter:description" content="{esc_desc}" />
-    <meta name="twitter:image" content="assets/job-done.png" />
     <link rel="icon" href="data:," />
     <title>{html_lib.escape(title)}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -397,7 +395,7 @@ def main():
         f.write(css.strip() + "\n")
 
     # --- pages ---
-    referenced_assets = {"assets/job-done.png"}  # og:image on every page
+    referenced_assets = set()  # share thumbnail removed by Ben's order 2026-10-18
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
