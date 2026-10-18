@@ -352,6 +352,26 @@ def apply_overrides(fname, inner_html):
             '<a class="cta-btn" href="mailto:getpulsehq@proton.me">'
             'Email us to start</a>',
         )
+        # Step 2 honesty fix (Ben, 2026-10-18): the art section invited
+        # files "along with the form", but the intake has no upload —
+        # name the email, obviously, and offer a mailto button for art.
+        swap(
+            'Send them along with the form — we would much rather build '
+            'with the real thing than invent a stand-in.',
+            'Email them to us — we would much rather build with the real '
+            'thing than invent a stand-in.',
+        )
+        swap(
+            'ones you have permission to use.</p>\n'
+            '        </div>\n'
+            '      </section>',
+            'ones you have permission to use.</p>\n'
+            '        </div>\n'
+            '        <p style="margin-top: 20px;"><a class="cta-btn" '
+            'href="mailto:getpulsehq@proton.me?subject=My%20art%20for%20'
+            'Pulse%20HQ">Email your art — getpulsehq@proton.me</a></p>\n'
+            '      </section>',
+        )
         swap(
             '<p style="margin-top: 22px; max-width: 62ch;">The Founding Test '
             'Run starts with the form above, not a buy button — there are '
