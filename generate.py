@@ -70,6 +70,8 @@ LIVE_CSS = """
   89% { stroke-dashoffset: 640; opacity: 0.12; }
   100% { stroke-dashoffset: 640; opacity: 1; }
 }
+.crew-initial { overflow: hidden; padding: 0; }
+.crew-initial img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
 .buy-card { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 18px; padding: 6px 22px; margin-top: 16px; max-width: 680px; }
 .buy-row { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 13px 0; border-bottom: 1px solid var(--panel-edge); }
 .buy-info strong { display: block; font-size: 1.02rem; margin-bottom: 2px; }
@@ -592,6 +594,10 @@ def main():
                          "assets/floor-main-live.jpg",
                          "assets/floor-research-live.jpg",
                          "assets/floor-front-live.jpg"}
+    referenced_assets |= {f"assets/faces/{n}.png" for n in
+                          ("remmy", "tom", "nik", "johnny", "sven", "maria",
+                           "walter", "peter", "astrid", "olivia", "marni",
+                           "ben")}
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
@@ -616,8 +622,13 @@ def main():
             alt = os.path.join(HERE, "site-assets", os.path.basename(ref))
             if os.path.exists(alt):
                 src_path = alt
+            else:
+                alt2 = os.path.join(HERE, "site-assets", ref[len("assets/"):])
+                if os.path.exists(alt2):
+                    src_path = alt2
         dst_path = os.path.join(OUT, ref)
         if os.path.exists(src_path):
+            os.makedirs(os.path.dirname(dst_path), exist_ok=True)
             shutil.copy2(src_path, dst_path)
         else:
             missing.append(ref)
