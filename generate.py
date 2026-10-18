@@ -319,7 +319,7 @@ def apply_overrides(fname, inner_html):
             '</svg>\n'
             '            </div>\n'
             '            <div class="hero-media"><img '
-            'src="assets/pulse-logo.jpg" alt="Pulse HQ logo — a neon pulse '
+            'src="assets/pulse-logo.png" alt="Pulse HQ logo — a neon pulse '
             'line on deep blue" /></div>\n'
             '          </div>\n'
             '          <div class="hero-body">\n'
@@ -526,7 +526,7 @@ def main():
 
     # --- pages ---
     # og:image: a screenshot of the front page itself, kept in site-assets/
-    referenced_assets = {"assets/home-preview.png", "assets/pulse-logo.jpg"}
+    referenced_assets = {"assets/home-preview.png", "assets/pulse-logo.png"}
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
