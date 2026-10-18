@@ -221,7 +221,7 @@ def _buy_block():
         '        <div style="margin-top: 30px;">\n'
         '          <h3>Pay for a single service</h3>\n'
         '          <p style="max-width: 62ch;">Secure checkout by Stripe. You get '
-        'a receipt by email, and Ben replies within one business day to start '
+        'a receipt by email, and we reply within one business day to start '
         'the work.</p>\n'
         '          <div style="display: grid; gap: 10px; max-width: 640px; '
         'margin-top: 14px;">\n'
@@ -295,7 +295,7 @@ def apply_overrides(fname, inner_html):
         swap(
             '<a class="cta-btn" href="start.html">Open the intake form</a>',
             '<a class="cta-btn" href="mailto:getpulsehq@proton.me">'
-            'Email Ben to start</a>',
+            'Email us to start</a>',
         )
         swap(
             '<p style="margin-top: 22px; max-width: 62ch;">The Founding Test '
@@ -306,7 +306,7 @@ def apply_overrides(fname, inner_html):
             _buy_block()
             + '        <p style="margin-top: 22px; max-width: 62ch;">The '
             'Founding Test Run starts with the form above, not a buy '
-            'button — there are only two spots, and Ben replies '
+            'button — there are only two spots, and we reply '
             'personally.</p>',
         )
     elif fname == "faq.html":
@@ -325,6 +325,11 @@ def apply_overrides(fname, inner_html):
             'Payment is by card through Stripe&rsquo;s secure checkout, '
             'or by PayPal or e-transfer.',
         )
+        swap('Contact: Ben from Pulse HQ', 'Contact: Pulse HQ')
+    elif fname == "privacy.html":
+        swap('Contact: Ben from Pulse HQ', 'Contact: Pulse HQ')
+    elif fname == "case-study.html":
+        swap("Ben's own page", "Pulse HQ's own page")
     return inner_html
 
 
@@ -353,7 +358,7 @@ def build_footer():
         <span>Pulse HQ. Content, research &amp; design: drafted by AI, approved by a human.</span>
         <div class="footer-links">
           <span><a href="faq.html">FAQ</a> · <a href="how-it-works.html">How it works</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></span>
-          <span>Ben from Pulse HQ · <a href="mailto:getpulsehq@proton.me">getpulsehq@proton.me</a> · We reply within one business day</span>
+          <span>Pulse HQ · <a href="mailto:getpulsehq@proton.me">getpulsehq@proton.me</a> · We reply within one business day</span>
         </div>
       </div>
     </footer>"""
