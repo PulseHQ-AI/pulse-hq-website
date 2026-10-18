@@ -597,7 +597,7 @@ def main():
     referenced_assets |= {f"assets/faces/{n}.png" for n in
                           ("remmy", "tom", "nik", "johnny", "sven", "maria",
                            "walter", "peter", "astrid", "olivia", "marni",
-                           "ben")}
+                           "ben", "kim", "chunk")}
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
