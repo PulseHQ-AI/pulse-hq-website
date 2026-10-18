@@ -43,12 +43,23 @@ HOME_TITLE = "Pulse HQ — Bring your online presence to life"
 HASH_TO_FILE = {view: fname for view, fname, _ in VIEWS}
 NAV = [
     ("index.html", "Front page"),
-    ("case-study.html", "Case Study"),
-    ("start.html", "Start"),
-    ("how-it-works.html", "How it works"),
-    ("dev-log.html", "Dev Log"),
     ("showcase.html", "Showcase"),
+    ("how-it-works.html", "How it works"),
+    ("start.html", "Start"),
+    ("__sep__", ""),
+    ("dev-log.html", "Dev Log"),
+    ("case-study.html", "Case Study"),
 ]
+# Live-build CSS additions (appended to styles.css at generation time):
+# nav separator + two-column hero with the Pulse HQ logo (Ben, 2026-10-18).
+LIVE_CSS = """
+/* ---- Live-build additions: nav separator + hero media ---- */
+.nav-sep { width: 1px; height: 22px; background: var(--panel-edge); margin: 0 9px; flex: none; }
+.hero-media img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--panel-edge); }
+@media (min-width: 900px) {
+  .hero-grid { grid-template-columns: 1.08fr 0.92fr; align-items: center; }
+}
+"""
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
 FONT_CSS = (
     "https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;"
@@ -287,6 +298,18 @@ def apply_overrides(fname, inner_html):
             month_box
             + '<!-- ================= CHERRY-PICK SINGLES ================= -->',
         )
+        swap(
+            'posts published without approval</li>\n'
+            '            </ul>\n'
+            '          </div>\n'
+            '        </div>',
+            'posts published without approval</li>\n'
+            '            </ul>\n'
+            '          </div>\n'
+            '          <div class="hero-media"><img src="assets/pulse-logo.jpg" '
+            'alt="Pulse HQ logo — a neon pulse line on deep blue" /></div>\n'
+            '        </div>',
+        )
     elif fname == "start.html":
         swap(
             '<p class="start-note">A preview of the intake form — the button '
@@ -380,6 +403,9 @@ def apply_overrides(fname, inner_html):
 def build_header(current_file):
     links = []
     for fname, label in NAV:
+        if fname == "__sep__":
+            links.append('        <span class="nav-sep" aria-hidden="true"></span>')
+            continue
         current = ' aria-current="page"' if fname == current_file else ""
         links.append(f'        <a class="nav-link" href="{fname}"{current}>{label}</a>')
     nav_links = "\n".join(links)
@@ -481,11 +507,11 @@ def main():
     )
     print(f"styles.css: neutralized .view[hidden] rule ({n} replacement)")
     with open(os.path.join(OUT, "styles.css"), "w", encoding="utf-8") as f:
-        f.write(css.strip() + "\n")
+        f.write(css.strip() + "\n" + LIVE_CSS)
 
     # --- pages ---
     # og:image: a screenshot of the front page itself, kept in site-assets/
-    referenced_assets = {"assets/home-preview.png"}
+    referenced_assets = {"assets/home-preview.png", "assets/pulse-logo.jpg"}
     for view_id, fname, page_name in VIEWS:
         inner, method = extract_view(source, view_id)
         if inner is None:
