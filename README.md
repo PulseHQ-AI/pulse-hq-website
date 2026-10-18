@@ -1,8 +1,9 @@
 # Pulse HQ — static site (GitHub Pages mirror)
 
-A plain static, Google-indexable version of the Pulse HQ website: 9 pages
-(index, case-study, start, showcase, how-it-works, dev-log, faq, terms, privacy),
-one shared styles.css, images under assets/. No JavaScript view switching —
+A plain static, Google-indexable version of the Pulse HQ website: 9 linked pages
+(index, case-study, start, showcase, how-it-works, dev-log, faq, terms, privacy)
+plus the founders' personal dev log at dev-log-personal.html (public but
+unlinked and noindex by the founder's ruling), one shared styles.css, images under assets/. No JavaScript view switching —
 every page is real HTML at its own URL.
 
 ## Regenerate

@@ -278,7 +278,7 @@ def _buy_block():
 
 
 LIVE_BODIES = {}
-for _name in ("showcase.html", "how-it-works.html"):
+for _name in ("showcase.html", "how-it-works.html", "dev-log.html"):
     _p = Path(__file__).parent / "live-bodies" / _name
     if _p.exists():
         LIVE_BODIES[_name] = _p.read_text(encoding="utf-8")
@@ -568,7 +568,7 @@ def build_footer():
     </footer>"""
 
 
-def build_page(view_id, fname, page_name, inner_html):
+def build_page(view_id, fname, page_name, inner_html, extra_head=""):
     title = HOME_TITLE if page_name is None else f"Pulse HQ — {page_name}"
     desc = make_description(inner_html)
     esc_title = html_lib.escape(title, quote=True)
@@ -579,7 +579,7 @@ def build_page(view_id, fname, page_name, inner_html):
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="{esc_desc}" />
+{extra_head}    <meta name="description" content="{esc_desc}" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{esc_title}" />
     <meta property="og:description" content="{esc_desc}" />
@@ -623,7 +623,8 @@ def main():
         p = os.path.join(OUT, fname)
         if os.path.exists(p):
             os.remove(p)
-    for extra in ("styles.css", "sitemap.xml", "robots.txt", "README.md"):
+    for extra in ("styles.css", "sitemap.xml", "robots.txt", "README.md",
+                  "dev-log-personal.html"):
         p = os.path.join(OUT, extra)
         if os.path.exists(p):
             os.remove(p)
@@ -673,6 +674,32 @@ def main():
         print(f"{fname}: extracted via {method}, stripped {n_footers} footer(s), "
               f"{len(page)} bytes")
 
+    # --- the personal dev log (Ben's ruling, 2026-10-18): the original
+    # diary stays public but UNLINKED — served at its own URL, kept out of
+    # the nav, the footer, and the sitemap (which is built from VIEWS
+    # below), and marked noindex. Its body is the frozen snapshot in
+    # live-bodies/dev-log-personal.html; a short banner is prepended at
+    # build time so the snapshot itself stays word-for-word. ---
+    _personal_path = Path(HERE) / "live-bodies" / "dev-log-personal.html"
+    if _personal_path.exists():
+        personal_inner = _personal_path.read_text(encoding="utf-8")
+        _banner = ('<p><em>This is the founders&rsquo; personal dev log '
+                   '&mdash; the unedited diary of the build, kept public '
+                   'for the record but not linked from the site. The '
+                   'professional <a href="dev-log.html">Dev Log</a> is '
+                   'the public version.</em></p>\n            ')
+        personal_inner = personal_inner.replace(
+            '<article class="doc">', '<article class="doc">\n            ' + _banner, 1)
+        personal_page = build_page(
+            "devlog", "dev-log-personal.html", "Dev Log — Personal",
+            personal_inner,
+            extra_head='    <meta name="robots" content="noindex" />\n')
+        with open(os.path.join(OUT, "dev-log-personal.html"), "w",
+                  encoding="utf-8") as f:
+            f.write(personal_page)
+        print(f"dev-log-personal.html: from frozen snapshot, "
+              f"{len(personal_page)} bytes (unlinked, noindex)")
+
     # --- copy referenced assets ---
     os.makedirs(os.path.join(OUT, "assets"), exist_ok=True)
     missing = []
@@ -718,9 +745,10 @@ def main():
     # --- README ---
     readme = """# Pulse HQ — static site (GitHub Pages mirror)
 
-A plain static, Google-indexable version of the Pulse HQ website: 9 pages
-(index, case-study, start, showcase, how-it-works, dev-log, faq, terms, privacy),
-one shared styles.css, images under assets/. No JavaScript view switching —
+A plain static, Google-indexable version of the Pulse HQ website: 9 linked pages
+(index, case-study, start, showcase, how-it-works, dev-log, faq, terms, privacy)
+plus the founders' personal dev log at dev-log-personal.html (public but
+unlinked and noindex by the founder's ruling), one shared styles.css, images under assets/. No JavaScript view switching —
 every page is real HTML at its own URL.
 
 ## Regenerate
@@ -743,7 +771,7 @@ re-run:
     with open(os.path.join(OUT, "README.md"), "w", encoding="utf-8") as f:
         f.write(readme)
 
-    print("done: 9 pages + styles.css + assets/ + sitemap.xml + robots.txt + README.md")
+    print("done: 10 pages (9 linked + personal log) + styles.css + assets/ + sitemap.xml + robots.txt + README.md")
     return 0
 
 
