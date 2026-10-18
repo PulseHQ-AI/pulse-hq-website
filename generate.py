@@ -319,7 +319,7 @@ def apply_overrides(fname, inner_html):
             '<span><b>Your website kept live</b> — and your Facebook page '
             'and Instagram, handled.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
-            '<span><b>16-20 posts a month</b> across Facebook and '
+            '<span><b>20 posts a month</b> across Facebook and '
             'Instagram — researched and written in your business\'s own '
             'voice, delivered in weekly batches.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
@@ -494,7 +494,7 @@ def apply_overrides(fname, inner_html):
             'package you buy.',
             'On the Pilot: 10 finished posts over the 14 days, '
             'starting with a voice-calibration batch. On the Core '
-            'retainer: 16 to 20 posts a month, delivered in weekly '
+            'retainer: 20 posts a month, delivered in weekly '
             'batches. Across the industry plans our research checked, '
             '10 to 30 posts per month is the documented range — Core '
             'sits inside it.',
@@ -507,7 +507,7 @@ def apply_overrides(fname, inner_html):
             'On the standard Pilot: 10 finished posts over the 14 '
             'days, starting with a calibration batch so we lock onto '
             'your voice before anything else is written. On the Core '
-            'retainer: 16 to 20 posts a month, delivered in weekly '
+            'retainer: 20 posts a month, delivered in weekly '
             'batches.',
         )
     elif fname == "terms.html":
