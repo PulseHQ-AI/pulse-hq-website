@@ -1,3 +1,9 @@
+> **⚠ 2026-10-19 — DO NOT RUN generate.py.** The site was rebuilt on Ben's
+> approved front-page draft (his order, 2026-10-19). The HTML/CSS files in
+> this repo ARE the site now; the staging source lives in
+> `~/workspace/pulse-hq-site-v2/`. generate.py would overwrite the rebuild
+> with the old generated site. It is kept for history only.
+
 # Pulse HQ — static site (GitHub Pages mirror)
 
 A plain static, Google-indexable version of the Pulse HQ website: 9 linked pages
