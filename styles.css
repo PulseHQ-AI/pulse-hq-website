@@ -831,3 +831,44 @@ a:hover { color: var(--accent-bright); }
   box-shadow: 0 0 34px rgba(34, 211, 238, 0.16), 0 18px 44px rgba(0, 0, 0, 0.5);
 }
 .site-nav { border-bottom: 1px solid rgba(34, 211, 238, 0.16); }
+/* Slim header (Ben's tap, 2026-10-19): one row on every screen — brand
+   left; Menu dropdown + Start button on the far right, sharing the
+   title's bar. The dropdown is a <details> element: no JavaScript. */
+.nav-in { flex-wrap: nowrap; gap: 4px 10px; }
+.nav-brand .brand-name { font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+.nav-menu { position: relative; margin-left: auto; }
+.nav-menu-btn {
+  list-style: none; cursor: pointer; white-space: nowrap;
+  padding: 8px 14px; font-weight: 700; font-size: 0.95rem; color: var(--ink-soft);
+  border: 1px solid rgba(34, 211, 238, 0.35); border-radius: 2px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  background: rgba(34, 211, 238, 0.08);
+}
+.nav-menu-btn::-webkit-details-marker { display: none; }
+.nav-menu-btn::after { content: " ▾"; color: var(--accent); }
+.nav-menu-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.nav-menu[open] .nav-menu-btn { color: var(--accent); }
+.nav-menu-list {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 50;
+  min-width: 210px; padding: 8px;
+  background: #0d1526; border: 1px solid rgba(34, 211, 238, 0.3); border-radius: 4px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.nav-menu-list .nav-link { display: block; padding: 9px 12px; border-radius: 2px; }
+.nav-menu-list .nav-link:hover { background: rgba(34, 211, 238, 0.1); color: var(--ink); }
+.nav-menu-fb { color: var(--accent); border-top: 1px solid rgba(34, 211, 238, 0.18); margin-top: 4px; }
+.nav-start {
+  flex: none; white-space: nowrap; text-decoration: none;
+  font-weight: 800; font-size: 0.95rem; padding: 9px 20px;
+  background: linear-gradient(90deg, #22d3ee, #4bd3ae); color: #06202b;
+  border-radius: 2px;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.nav-start:hover { background: linear-gradient(90deg, #4bd3ae, #22d3ee); color: #06202b; }
+@media (max-width: 560px) {
+  .nav-tagline { display: none; }
+  .nav-in { padding-top: 6px; padding-bottom: 6px; }
+  .nav-menu-btn { padding: 7px 11px; }
+  .nav-start { padding: 8px 15px; }
+}

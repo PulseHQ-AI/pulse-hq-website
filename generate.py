@@ -148,6 +148,47 @@ a:hover { color: var(--accent-bright); }
   box-shadow: 0 0 34px rgba(34, 211, 238, 0.16), 0 18px 44px rgba(0, 0, 0, 0.5);
 }
 .site-nav { border-bottom: 1px solid rgba(34, 211, 238, 0.16); }
+/* Slim header (Ben's tap, 2026-10-19): one row on every screen — brand
+   left; Menu dropdown + Start button on the far right, sharing the
+   title's bar. The dropdown is a <details> element: no JavaScript. */
+.nav-in { flex-wrap: nowrap; gap: 4px 10px; }
+.nav-brand .brand-name { font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+.nav-menu { position: relative; margin-left: auto; }
+.nav-menu-btn {
+  list-style: none; cursor: pointer; white-space: nowrap;
+  padding: 8px 14px; font-weight: 700; font-size: 0.95rem; color: var(--ink-soft);
+  border: 1px solid rgba(34, 211, 238, 0.35); border-radius: 2px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  background: rgba(34, 211, 238, 0.08);
+}
+.nav-menu-btn::-webkit-details-marker { display: none; }
+.nav-menu-btn::after { content: " \u25be"; color: var(--accent); }
+.nav-menu-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.nav-menu[open] .nav-menu-btn { color: var(--accent); }
+.nav-menu-list {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 50;
+  min-width: 210px; padding: 8px;
+  background: #0d1526; border: 1px solid rgba(34, 211, 238, 0.3); border-radius: 4px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.nav-menu-list .nav-link { display: block; padding: 9px 12px; border-radius: 2px; }
+.nav-menu-list .nav-link:hover { background: rgba(34, 211, 238, 0.1); color: var(--ink); }
+.nav-menu-fb { color: var(--accent); border-top: 1px solid rgba(34, 211, 238, 0.18); margin-top: 4px; }
+.nav-start {
+  flex: none; white-space: nowrap; text-decoration: none;
+  font-weight: 800; font-size: 0.95rem; padding: 9px 20px;
+  background: linear-gradient(90deg, #22d3ee, #4bd3ae); color: #06202b;
+  border-radius: 2px;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.nav-start:hover { background: linear-gradient(90deg, #4bd3ae, #22d3ee); color: #06202b; }
+@media (max-width: 560px) {
+  .nav-tagline { display: none; }
+  .nav-in { padding-top: 6px; padding-bottom: 6px; }
+  .nav-menu-btn { padding: 7px 11px; }
+  .nav-start { padding: 8px 15px; }
+}
 """
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
 FONT_CSS = (
@@ -385,7 +426,7 @@ def apply_overrides(fname, inner_html):
             'Instagram — researched and written in your business\'s own '
             'voice, delivered in weekly batches.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
-            '<span><b>Nothing publishes without your approval</b> — the '
+            '<span><b>Nothing is delivered without your approval</b> — the '
             'same rule as everything else at Pulse HQ.</span></li>\n'
             '              <li><span class="tick" aria-hidden="true">✓</span>'
             '<span><b>Month-to-month</b> — cancel with 30 days\' notice, '
@@ -451,6 +492,58 @@ def apply_overrides(fname, inner_html):
             '          <div class="hero-body">\n'
             '            <p class="lede">',
         )
+        # Delivery-model pass (Ben's ruling, 2026-10-19): Pulse HQ never
+        # publishes for clients — it delivers finished work (the look, the
+        # voice, the art) and the client posts it. Approval copy says so.
+        swap(
+            '<b>Nothing publishes without your approval.</b> You see '
+            'the real posts first and make the final call on every one.',
+            '<b>Nothing is delivered without your approval.</b> You see '
+            'the real posts first and make the final call on every one.',
+        )
+        swap(
+            'You see the real posts first. Nothing publishes without '
+            'your say-so \u2014 approve it, or send it back for its rework '
+            'round.',
+            'You see the real posts first. Nothing is delivered without '
+            'your say-so \u2014 approve it, or send it back for its rework '
+            'round.',
+        )
+        swap(
+            '<b>Nothing publishes without your approval.</b> Every '
+            'batch arrives finished',
+            '<b>Nothing is delivered without your approval.</b> Every '
+            'batch arrives finished',
+        )
+        swap(
+            'You see every post first and make the final call \u2014 '
+            '<b>nothing publishes without it.</b>',
+            'You see everything first and make the final call \u2014 '
+            '<b>nothing is delivered without it.</b>',
+        )
+        swap(
+            '<b>You receive:</b> complete creative packages, ready to '
+            'approve and publish.',
+            '<b>You receive:</b> complete creative packages \u2014 the '
+            'writing, the art, the look of your brand \u2014 ready to '
+            'approve and post.',
+        )
+        swap(
+            'Approved work arrives together as one tidy package, ready '
+            'to publish \u2014 the posts, the images, and a short record of '
+            'what was delivered.',
+            'Approved work arrives together as one tidy package, ready '
+            'for you to post \u2014 the posts, the images, the look, and a '
+            'short record of what was delivered.',
+        )
+        inner_html, _n_pub = re.subn(
+            r"Nothing publishes without your\s+approval:",
+            "Nothing is delivered without your approval:",
+            inner_html,
+        )
+        if _n_pub != 1:
+            print(f"WARNING override on index.html: lede approval line "
+                  f"matched {_n_pub}x (expected 1)", file=sys.stderr)
     elif fname == "start.html":
         swap(
             '<p class="start-note">A preview of the intake form — the button '
@@ -572,6 +665,48 @@ def apply_overrides(fname, inner_html):
             'retainer: 20 posts a month, delivered in weekly '
             'batches.',
         )
+        # Delivery-model pass (Ben's ruling, 2026-10-19) — see index.
+        swap(
+            'scheduling of the posts you approve, delivery as one '
+            'finished package, and reporting on what shipped',
+            'delivery as one finished package, ready for you to post, '
+            'and reporting on what was delivered',
+        )
+        swap(
+            'Our standard packages cover creating, scheduling, and '
+            'publishing your approved posts \u2014 replies to comments and '
+            'messages stay with you unless your written agreement says '
+            'otherwise.',
+            'Our standard packages cover creating your posts \u2014 the '
+            'writing, the images, the look \u2014 and delivering them '
+            'finished for you to post. Posting them, and replies to '
+            'comments and messages, stay with you.',
+        )
+        swap(
+            'Yes \u2014 you approve everything before it goes out, and '
+            'nothing publishes without that approval. Your time is two '
+            'touchpoints: drop the brief, then make one approval call '
+            'per piece. And never share passwords: access is delegated '
+            'through official tools like Meta Business Suite partner '
+            'access. The providers our research checked work the same '
+            'way \u2014 approval first, partner access instead of passwords.',
+            'Yes \u2014 you approve everything before it\'s delivered, and '
+            'nothing is delivered without that approval. Your time is '
+            'two touchpoints: drop the brief, then make one approval '
+            'call per piece. And you never share passwords with us \u2014 '
+            'you don\'t need to: we hand you finished work, and posting '
+            'it happens from your own account, by you.',
+        )
+        swap(
+            'Yes \u2014 everything. Nothing is ever published without your '
+            'approval. If we don\'t hear back inside the approval '
+            'window, the work simply waits. It never goes out on its '
+            'own.',
+            'Yes \u2014 everything. Nothing is ever delivered without your '
+            'approval. If we don\'t hear back inside the approval '
+            'window, the work simply waits. It never leaves here on '
+            'its own.',
+        )
     elif fname == "dev-log.html":
         # Tone trim (Ben, 2026-10-18): drop the one crude punchline
         # from the intro; the swearing warning and every entry stay
@@ -589,6 +724,18 @@ def apply_overrides(fname, inner_html):
             'or by PayPal or e-transfer.',
         )
         swap('Contact: Ben from Pulse HQ', 'Contact: Pulse HQ')
+        # Delivery-model pass (Ben's ruling, 2026-10-19) — see index.
+        swap(
+            '<strong>2. Approval before publishing.</strong> Nothing '
+            'is published on your behalf without your approval. Work '
+            'that isn\'t approved within the agreed window waits \u2014 it '
+            'is never published automatically.',
+            '<strong>2. Approval before delivery.</strong> Pulse HQ '
+            'delivers finished work and never publishes on your behalf '
+            '\u2014 posting is done by you, from your own accounts. Work '
+            'that isn\'t approved within the agreed window waits \u2014 it '
+            'is never delivered automatically.',
+        )
     elif fname == "privacy.html":
         swap('Contact: Ben from Pulse HQ', 'Contact: Pulse HQ')
     elif fname == "case-study.html":
@@ -601,19 +748,27 @@ def apply_overrides(fname, inner_html):
 # --------------------------------------------------------------------------
 
 def build_header(current_file):
-    links = []
+    menu = []
     for fname, label in NAV:
-        if fname == "__sep__":
-            links.append('        <span class="nav-sep" aria-hidden="true"></span>')
+        if fname in ("__sep__", "start.html"):
             continue
         current = ' aria-current="page"' if fname == current_file else ""
-        links.append(f'        <a class="nav-link" href="{fname}"{current}>{label}</a>')
-    nav_links = "\n".join(links)
+        menu.append(f'          <a class="nav-link" href="{fname}"{current}>{label}</a>')
+    menu.append(
+        f'          <a class="nav-link nav-menu-fb" href="{FB_URL}" '
+        'target="_blank" rel="noopener noreferrer">Facebook</a>')
+    menu_links = "\n".join(menu)
+    start_current = ' aria-current="page"' if current_file == "start.html" else ""
     return f"""    <header class="site-nav">
       <nav class="wrap nav-in" aria-label="Site">
         <a class="nav-brand" href="index.html"><span class="brand-name">Pulse <span class="hq">HQ</span></span><span class="nav-tagline">Bring your online presence to life</span></a>
-{nav_links}
-        <a class="nav-fb" href="{FB_URL}" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <details class="nav-menu">
+          <summary class="nav-menu-btn">Menu</summary>
+          <div class="nav-menu-list">
+{menu_links}
+          </div>
+        </details>
+        <a class="nav-start" href="start.html"{start_current}>Start</a>
       </nav>
     </header>"""
 
