@@ -903,6 +903,3 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .hero h1 span.solid-word { background: none; -webkit-background-clip: initial; background-clip: initial; -webkit-text-fill-color: #0788ea; color: #0788ea; filter: none; }
 
 /* Message Us floater (Ben's order, 2026-10-19) */
-.msg-floater { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; background: #0788ea; color: #fff; font-weight: 700; text-decoration: none; box-shadow: 0 8px 28px rgba(7, 136, 234, .45), 0 2px 8px rgba(0, 0, 0, .35); transition: transform .15s ease, box-shadow .15s ease; }
-.msg-floater:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(7, 136, 234, .55), 0 4px 10px rgba(0, 0, 0, .35); }
-@media (max-width: 700px) { .msg-floater { right: 14px; bottom: 14px; padding: 11px 16px; } }
