@@ -872,3 +872,97 @@ a:hover { color: var(--accent-bright); }
   .nav-menu-btn { padding: 7px 11px; }
   .nav-start { padding: 8px 15px; }
 }
+
+/* ---- Logo-blue NeonBlade theme, site-wide (Ben's order, 2026-10-19):
+   the front-page draft's theme applied to every page. The accent is the
+   brand P's own electric blue, sampled from the logo (#0788ea), with its
+   white-hot core (#aef9fe) for highlights and the theme's magenta kept
+   for the headline gradient. The Menu dropdown + Start header stays. ---- */
+:root {
+  --bg: #050812;
+  --bg-raise: #0a1020;
+  --panel: linear-gradient(145deg, rgba(16, 26, 46, 0.94), rgba(7, 12, 25, 0.96));
+  --panel-edge: rgba(7, 136, 234, 0.32);
+  --ink: #edfaff;
+  --ink-soft: #9aafc5;
+  --ink-faint: #7e93ab;
+  --accent: #0788ea;
+  --accent-bright: #aef9fe;
+  --accent-soft: rgba(7, 136, 234, 0.14);
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+body {
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(7, 136, 234, 0.09), transparent 36rem),
+    radial-gradient(ellipse at 90% 35%, rgba(255, 43, 214, 0.05), transparent 32rem),
+    #050812;
+  background-attachment: fixed;
+}
+::selection { background: rgba(7, 136, 234, 0.4); }
+.site-nav {
+  background: rgba(5, 8, 18, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(7, 136, 234, 0.25);
+}
+.nav-brand { flex-direction: row; align-items: center; gap: 11px; }
+.brand-text { display: flex; flex-direction: column; gap: 1px; }
+.brand-p {
+  width: 42px; height: 42px; flex: none; object-fit: cover;
+  border-radius: 9px; border: 1px solid rgba(7, 136, 234, 0.45);
+  box-shadow: 0 0 14px rgba(7, 136, 234, 0.3);
+}
+@media (max-width: 560px) { .brand-p { width: 36px; height: 36px; } }
+/* Buttons wear the theme: solid logo blue, soft glow, rounded. */
+.buy-btn, .cta-btn, .hero-cta-btn, .nav-fb, .nav-start {
+  background: #0788ea;
+  border: 1px solid rgba(174, 249, 254, 0.45);
+  color: #ffffff !important;
+  border-radius: 8px;
+  clip-path: none;
+  box-shadow: 0 0 12px rgba(7, 136, 234, 0.36), 0 0 30px rgba(7, 136, 234, 0.12);
+}
+.buy-btn:hover, .cta-btn:hover, .hero-cta-btn:hover, .nav-fb:hover, .nav-start:hover {
+  background: #2ea3f2;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(7, 136, 234, 0.5), 0 0 24px rgba(7, 136, 234, 0.22);
+}
+.nav-menu-btn {
+  border-color: rgba(7, 136, 234, 0.4);
+  background: rgba(7, 136, 234, 0.08);
+  border-radius: 8px;
+  clip-path: none;
+}
+.nav-menu-btn::after { color: #0788ea; }
+.nav-menu[open] .nav-menu-btn { color: #aef9fe; }
+.nav-menu-list {
+  background: #0a1020;
+  border-color: rgba(7, 136, 234, 0.32);
+  border-radius: 10px;
+}
+.nav-menu-list .nav-link:hover { background: rgba(7, 136, 234, 0.12); }
+.nav-menu-fb { border-top-color: rgba(7, 136, 234, 0.2); }
+.nav-link[aria-current="page"] { box-shadow: inset 0 0 0 1px rgba(7, 136, 234, 0.4); }
+.offer-box, .buy-card, .product-card, .how-step, .shot {
+  border: 1px solid rgba(7, 136, 234, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025), 0 12px 36px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+.product-card, .how-step { transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease; }
+.product-card:hover, .how-step:hover {
+  transform: translateY(-3px);
+  border-color: rgba(7, 136, 234, 0.6);
+  box-shadow: 0 0 24px rgba(7, 136, 234, 0.1), 0 16px 38px rgba(0, 0, 0, 0.35);
+}
+.hero h1 .pulse-word {
+  background: linear-gradient(100deg, #0788ea 0%, #e3f7ff 48%, #ff2bd6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.hero-media img {
+  border-color: rgba(7, 136, 234, 0.4);
+  box-shadow: 0 0 34px rgba(7, 136, 234, 0.18), 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+.hero-facts li { border-color: rgba(7, 136, 234, 0.25); }
+footer { background: rgba(3, 6, 14, 0.75); border-top: 1px solid rgba(7, 136, 234, 0.22); }
