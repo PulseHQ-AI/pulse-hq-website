@@ -86,6 +86,68 @@ LIVE_CSS = """
   .hero-head { flex: 1.08 1 0; }
   .hero-media { flex: 0.92 1 0; margin-inline: 0; }
 }
+
+/* ---- NeonBlade reskin (Ben's tap, 2026-10-19): CSS ONLY. The public site
+   wears the app/postbox design language — deep blue-black ground, cyan
+   glow, violet-bloom accents, glass panels, corner-cut buttons, sans
+   headings. No HTML, copy, or structure changes: every rule below works
+   through the site's own variables and existing classes. This block is
+   appended last in styles.css, so it wins over the base palette in both
+   colour schemes — the site now presents in the dark brand scheme for
+   every visitor, matching the app. ---- */
+:root {
+  color-scheme: dark;
+  --bg: #0a1120;
+  --bg-raise: #0d1526;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-edge: rgba(34, 211, 238, 0.28);
+  --ink: #e8f1f8;
+  --ink-soft: #b3c2d4;
+  --ink-faint: #7e93ab;
+  --accent: #22d3ee;
+  --accent-bright: #4bd3ae;
+  --accent-soft: rgba(34, 211, 238, 0.14);
+  --amber: #ffc531;
+  --amber-bg: rgba(255, 197, 49, 0.12);
+  --brick: #e08a63;
+  --shot-bg: #0a1220;
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+  --radius: 6px;
+}
+body {
+  background: linear-gradient(160deg, #0a1120, #0d1526 55%, #0a1120);
+  background-attachment: fixed;
+}
+h1, h2, h3, .serif { font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+a:hover { color: var(--accent-bright); }
+::selection { background: rgba(34, 211, 238, 0.35); }
+/* Corner-cut geometry on every button-like control (pills die by CSS). */
+.buy-btn, .cta-btn, .hero-cta-btn, .nav-fb {
+  background: linear-gradient(90deg, #22d3ee, #4bd3ae);
+  color: #06202b !important;
+  border-radius: 2px;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.buy-btn:hover, .cta-btn:hover, .hero-cta-btn:hover, .nav-fb:hover {
+  background: linear-gradient(90deg, #4bd3ae, #22d3ee);
+}
+.nav-link { border-radius: 2px; }
+.nav-link[aria-current="page"] {
+  background: var(--accent-soft); color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.35);
+}
+.hero-facts li { border-radius: 2px; }
+/* Glass + glow on the major panels. */
+.offer-box, .buy-card, .product-card, .how-step, .shot {
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.05), 0 18px 44px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+.hero-media img {
+  border-radius: 6px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 34px rgba(34, 211, 238, 0.16), 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+.site-nav { border-bottom: 1px solid rgba(34, 211, 238, 0.16); }
 """
 FB_URL = "https://www.facebook.com/profile.php?id=61595370269409"
 FONT_CSS = (
