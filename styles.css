@@ -889,7 +889,7 @@ footer a:hover {
 html, body { overflow-x: hidden; overflow-x: clip; }
 @media (max-width: 700px) {
   .nav { gap: 10px; min-height: 64px; }
-  .brand { gap: 9px; min-width: 0; }
+  .brand { gap: 9px; min-width: 0; flex-shrink: 1; }
   .brand > span { min-width: 0; }
   .brand-mark-img { width: 36px; height: 36px; }
   .brand-name { font-size: 1rem; white-space: nowrap; }
