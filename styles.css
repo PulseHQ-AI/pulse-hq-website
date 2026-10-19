@@ -903,3 +903,16 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .hero h1 span.solid-word { background: none; -webkit-background-clip: initial; background-clip: initial; -webkit-text-fill-color: #0788ea; color: #0788ea; filter: none; }
 
 /* Message Us floater (Ben's order, 2026-10-19) */
+
+/* Service package cards (template layout, 2026-10-19) */
+.pkg-card { display: flex; flex-direction: column; }
+.pkg-name { font-size: 1.15rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pkg-spots { font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--nb-cyan); border: 1px solid rgba(34, 211, 238, .5); border-radius: 999px; padding: 2px 8px; }
+.pkg-rec { font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #06222e; background: var(--nb-cyan); border-radius: 999px; padding: 2px 8px; }
+.pkg-price { font-size: 2.4rem; font-weight: 800; color: var(--nb-cyan); margin: 6px 0 12px; line-height: 1; }
+.pkg-price small { font-size: .95rem; color: var(--nb-muted); font-weight: 600; }
+.pkg-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 9px; }
+.pkg-list li { position: relative; padding-left: 24px; color: var(--muted); font-size: .93rem; }
+.pkg-list li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: var(--nb-cyan); font-weight: 800; }
+.pkg-btn { width: 100%; text-align: center; margin-top: auto; }
+.pkg-card-rec { border-color: rgba(34, 211, 238, .75) !important; box-shadow: 0 0 24px rgba(34, 211, 238, .28), 0 0 60px rgba(34, 211, 238, .10); }
