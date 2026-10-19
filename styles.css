@@ -898,3 +898,6 @@ html, body { overflow-x: hidden; overflow-x: clip; }
   .menu-btn { padding: 8px 11px; font-size: .88rem; }
   .nav-links .nav-cta { padding: 9px 12px; font-size: .88rem; }
 }
+
+/* ---- Front page: "handled." in solid logo blue, no gradient (Ben, 2026-10-19) ---- */
+.hero h1 span.solid-word { background: none; -webkit-background-clip: initial; background-clip: initial; -webkit-text-fill-color: #0788ea; color: #0788ea; filter: none; }
