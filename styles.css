@@ -916,3 +916,20 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .pkg-list li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: var(--nb-cyan); font-weight: 800; }
 .pkg-btn { width: 100%; text-align: center; margin-top: auto; }
 .pkg-card-rec { border-color: rgba(34, 211, 238, .75) !important; box-shadow: 0 0 24px rgba(34, 211, 238, .28), 0 0 60px rgba(34, 211, 238, .10); }
+
+/* A la carte strip (Ben's mock, 2026-10-19) */
+.alacarte-panel { margin-top: 18px; border: 1px solid rgba(120, 170, 220, .28); background: linear-gradient(180deg, rgba(17, 28, 48, .85), rgba(10, 17, 32, .92)); border-radius: 14px; padding: 20px; clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%); }
+.alacarte-title { margin: 0 0 14px; font-size: 1.25rem; color: #fff; }
+.alacarte-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+@media (max-width: 900px) { .alacarte-grid { grid-template-columns: repeat(2, 1fr); } }
+.alacarte-item { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 10px; background: rgba(23, 37, 63, .85); border: 1px solid rgba(120, 170, 220, .18); text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
+.alacarte-item:hover { transform: translateY(-2px); border-color: rgba(34, 211, 238, .6); }
+.alacarte-head { display: flex; align-items: center; gap: 8px; }
+.alacarte-icon { flex: none; width: 30px; height: 30px; border-radius: 50%; background: #0788ea; color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+.alacarte-icon svg { width: 16px; height: 16px; }
+.alacarte-name { color: #dbe7f5; font-weight: 600; font-size: .88rem; line-height: 1.25; }
+.alacarte-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; }
+.alacarte-price { color: #fff; font-weight: 800; }
+.alacarte-add { color: var(--nb-cyan); font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.alacarte-note { text-align: center; color: var(--nb-muted); margin: 14px 0 0; font-size: .85rem; }
+.glow-link { color: var(--nb-cyan); text-decoration: none; font-weight: 600; text-shadow: 0 0 8px rgba(34, 211, 238, .8), 0 0 18px rgba(34, 211, 238, .45); }
