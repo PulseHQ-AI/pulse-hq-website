@@ -55,6 +55,14 @@
    "icon": "\u25c8",
    "id": 11,
    "title": "Liaison add"
+  },
+  {
+   "clientId": 9,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-BD064028 (batch).",
+   "icon": "\u25c8",
+   "id": 12,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -216,6 +224,24 @@
    "priority": "Medium",
    "status": "Lead",
    "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-BD064028 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 9,
+   "name": "Larry",
+   "notes": "ii met a fellow named larry. he needs me to change the breaks on his hummer on hallowed. he offered to pay me in beer, candy and beer.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
   }
  ],
  "commitments": [
@@ -296,6 +322,17 @@
    "originalDueDate": "2026-10-23",
    "owner": "Dana Whitaker",
    "title": "Tile his floor \u2014 be there at 3 pm"
+  },
+  {
+   "clientId": 9,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-31",
+   "evidence": "",
+   "id": 8,
+   "originalDueDate": "2026-10-31",
+   "owner": "Dana Whitaker",
+   "title": "Change the brakes on his Hummer"
   }
  ],
  "workspace": {

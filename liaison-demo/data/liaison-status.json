@@ -2,8 +2,37 @@
  "packages": [
   {
    "packageId": "PKG-BD064028",
-   "status": "interpreting",
-   "updatedAt": "2026-10-20T03:39:07"
+   "status": "live",
+   "updatedAt": "2026-10-20T03:58:19",
+   "summary": {
+    "created": 1,
+    "matched": 0,
+    "replayed": 0,
+    "commitments": 1,
+    "duplicateFlagsOpened": 0,
+    "duplicateFlagsOpen": 0
+   },
+   "dbCounts": {
+    "relationships": 9,
+    "opportunities": 4,
+    "commitments": 8,
+    "activities": 12,
+    "duplicate_flags": 0,
+    "audit_log": 37
+   },
+   "reply": "Saved to your database: Larry. 1 commitment(s) added \u2014 it's live in your records now.",
+   "interpretation": {
+    "name": "Larry",
+    "status": "Lead",
+    "commitment": "Change the brakes on his Hummer",
+    "due_date": "2026-10-31"
+   },
+   "provenance": {
+    "stated": "needs the brakes changed on his Hummer; offered to pay in beer, candy and beer (no money value recorded)",
+    "transformation": "'on hallowed' read as Halloween, 2026-10-31 \u2014 an identified interpretation, not a stated fact; the customer's verbatim words are preserved in the record notes",
+    "source": "Ben's live doorman test, 2026-10-20 03:39"
+   },
+   "interpreter": "Remmy (HQ concierge)"
   },
   {
    "packageId": "PKG-C004EC85",
@@ -65,11 +94,11 @@
   }
  ],
  "dbCounts": {
-  "relationships": 8,
+  "relationships": 9,
   "opportunities": 4,
-  "commitments": 7,
-  "activities": 11,
+  "commitments": 8,
+  "activities": 12,
   "duplicate_flags": 0,
-  "audit_log": 33
+  "audit_log": 37
  }
 }
