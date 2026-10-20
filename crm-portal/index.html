@@ -1268,6 +1268,7 @@ function setView(view) {
   document.querySelector(".content-grid").hidden = !overview && !clientsView;
   document.querySelector(".bottom-grid").hidden = !overview;
   $("alternateView").hidden = overview || clientsView;
+  $("newClient").hidden = !overview && !clientsView;
 
   if (view === "pipeline") {
     $("statusFilter").value = "all";
