@@ -644,25 +644,25 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
       <article class="stat-card">
         <div class="stat-top"><span>TOTAL RELATIONSHIPS</span><span class="stat-icon">◈</span></div>
         <div class="stat-value" id="totalCount">07</div>
-        <div class="stat-foot"><span class="mini-dot blue"></span> Clients and active prospects</div>
+        <div class="stat-foot"><span class="mini-dot blue"></span> Every relationship on file</div>
         <div class="stat-bar"><i style="width:82%"></i></div>
       </article>
       <article class="stat-card">
         <div class="stat-top"><span>ACTIVE OPPORTUNITIES</span><span class="stat-icon">⌁</span></div>
         <div class="stat-value" id="opportunityCount">04</div>
-        <div class="stat-foot"><span class="mini-dot purple"></span> <span id="pipelineValue">$8,400</span> potential value</div>
+        <div class="stat-foot"><span class="mini-dot purple"></span> <span id="pipelineValue">$8,400</span> open pipeline · clients excluded</div>
         <div class="stat-bar purple-bar"><i style="width:64%"></i></div>
       </article>
       <article class="stat-card">
         <div class="stat-top"><span>OPEN COMMITMENTS</span><span class="stat-icon">◷</span></div>
         <div class="stat-value" id="commitmentCount">05</div>
-        <div class="stat-foot"><span class="mini-dot amber"></span> Actions still outstanding</div>
+        <div class="stat-foot"><span class="mini-dot amber"></span> Promises not yet completed</div>
         <div class="stat-bar amber-bar"><i style="width:43%"></i></div>
       </article>
       <article class="stat-card">
         <div class="stat-top"><span>FOLLOW-UPS DUE</span><span class="stat-icon">↗</span></div>
         <div class="stat-value" id="followupCount">03</div>
-        <div class="stat-foot"><span class="mini-dot red"></span> <span id="overdueLabel">1 needs attention</span></div>
+        <div class="stat-foot"><span class="mini-dot red"></span> <span id="overdueLabel">0 overdue</span> · relationships with a next step due</div>
         <div class="stat-bar red-bar"><i style="width:35%"></i></div>
       </article>
     </section>
@@ -789,7 +789,8 @@ const $ = (id) => document.getElementById(id);
 const day = (offset) => {
   const d = new Date();
   d.setDate(d.getDate() + offset);
-  return d.toISOString().slice(0, 10);
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 };
 const money = (n) => new Intl.NumberFormat("en-CA", {
   style: "currency", currency: "CAD", maximumFractionDigits: 0
