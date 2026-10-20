@@ -1112,7 +1112,7 @@ function renderAlternateView(view) {
               <div class="eyebrow">ACTION REGISTER</div>
               <h2>All commitments</h2>
             </div>
-            <button class="primary-button" data-add-commitment="1">＋ Add commitment</button>
+            <span><button class="text-button" data-export-commitments="1">Export CSV ↓</button> <button class="primary-button" data-add-commitment="1">＋ Add commitment</button></span>
           </div>
           <div>
             ${all.map(c => {
@@ -1176,6 +1176,7 @@ function renderAlternateView(view) {
               <div class="eyebrow">RECENT FIRST</div>
               <h2>Recorded activity</h2>
             </div>
+            <button class="text-button" data-export-activity="1">Export CSV ↓</button>
           </div>
           ${filtered.map(a => {
             const person = clientById(a.clientId);
@@ -1200,6 +1201,13 @@ function renderAlternateView(view) {
       selectClient(id);
       setView("clients");
     });
+  });
+
+  target.querySelectorAll("[data-export-commitments]").forEach(button => {
+    button.addEventListener("click", () => exportCommitmentsCSV());
+  });
+  target.querySelectorAll("[data-export-activity]").forEach(button => {
+    button.addEventListener("click", () => exportActivityCSV());
   });
 
   target.querySelectorAll("[data-move-stage]").forEach(sel => {
@@ -1389,16 +1397,31 @@ function closeCommitmentModal() { $("commitmentBackdrop").hidden = true; }
 function csvEscape(value) {
   return '"'+String(value??"").replace(/"/g,'""')+'"';
 }
-function exportCSV() {
-  const columns=["id","name","company","status","priority","nextAction","dueDate","value","email","phone","notes"];
-  const rows=clients.map(c=>{ const nx=derivedNext(c); return {...c,nextAction:nx?nx.title:"",dueDate:nx?nx.dueDate:""}; });
-  const lines=[columns.join(","),...rows.map(c=>columns.map(k=>csvEscape(c[k])).join(","))];
+function downloadCSV(filename, columns, rows) {
+  const lines=[columns.join(","),...rows.map(r=>columns.map(k=>csvEscape(r[k])).join(","))];
   const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
-  a.href=url; a.download="pulse-hq-relationships.csv"; a.click();
+  a.href=url; a.download=filename; a.click();
   URL.revokeObjectURL(url);
+}
+function exportCSV() {
+  const columns=["id","name","company","status","priority","nextAction","dueDate","value","email","phone","notes"];
+  const rows=clients.map(c=>{ const nx=derivedNext(c); return {...c,nextAction:nx?nx.title:"",dueDate:nx?nx.dueDate:""}; });
+  downloadCSV("pulse-hq-relationships.csv", columns, rows);
   showToast("Relationship CSV exported.");
+}
+function exportCommitmentsCSV() {
+  const columns=["id","clientId","relationship","company","title","detail","owner","dueDate","originalDueDate","status","evidence","completedAt"];
+  const rows=commitments.map(c=>{ const p=clientById(c.clientId); return { id:c.id, clientId:c.clientId, relationship:p?.name||"", company:p?.company||"", title:c.title, detail:c.detail||"", owner:c.owner||"", dueDate:c.dueDate||"", originalDueDate:c.originalDueDate||"", status:c.done?"Completed":"Open", evidence:c.evidence||"", completedAt:c.completedAt||"" }; });
+  downloadCSV("pulse-hq-commitments.csv", columns, rows);
+  showToast("Commitments CSV exported.");
+}
+function exportActivityCSV() {
+  const columns=["id","clientId","relationship","company","title","detail","date"];
+  const rows=activities.map(a=>{ const p=clientById(a.clientId); return { id:a.id, clientId:a.clientId, relationship:p?.name||"", company:p?.company||"", title:a.title, detail:a.detail||"", date:a.date }; });
+  downloadCSV("pulse-hq-activity.csv", columns, rows);
+  showToast("Activity CSV exported.");
 }
 
 $("clientRows").addEventListener("click",e=>{
