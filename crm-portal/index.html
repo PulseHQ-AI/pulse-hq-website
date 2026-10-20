@@ -843,7 +843,7 @@ function nextCommitmentFor(clientId) {
 }
 function derivedNext(client) {
   const n = nextCommitmentFor(client.id);
-  return n ? { title: n.title, dueDate: n.dueDate } : null;
+  return n ? { title: n.title, dueDate: n.dueDate, owner: n.owner || "" } : null;
 }
 
 function renderStats() {
@@ -918,7 +918,7 @@ function renderDetail() {
           <div class="action-mark">↗</div>
           <div class="action-copy">
             <strong>${escapeHTML(nx.title)}</strong>
-            <small>${escapeHTML(dateLabel(nx.dueDate))}</small>
+            <small>${escapeHTML(dateLabel(nx.dueDate))}${nx.owner ? ` · Owner: ${escapeHTML(nx.owner)}` : ""}</small>
           </div>
         </div>
       </div>` : `
@@ -1121,6 +1121,9 @@ function renderAlternateView(view) {
                     ${c.detail ? `<small>${escapeHTML(c.detail)}</small>` : ""}
                     <small>${escapeHTML(person?.company || person?.name || "Unknown relationship")}</small>
                     <small>${escapeHTML(dateLabel(c.dueDate))} · Owner: ${escapeHTML(c.owner || "Unassigned")}</small>
+                    ${c.originalDueDate && c.originalDueDate !== c.dueDate ? `<small>Originally due ${escapeHTML(dateLabel(c.originalDueDate))}</small>` : ""}
+                    ${c.isDone ? `<small>Evidence: ${escapeHTML(c.evidence || "No evidence recorded")}</small>` : ""}
+                    ${!c.isDone ? `<button class="text-button" data-reschedule-commitment="${c.id}">Reschedule</button>` : ""}
                     ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
                   </div>
                   <span class="priority ${c.dueDate && c.dueDate < day(0) && !c.isDone ? "high" : "low"}">
@@ -1196,6 +1199,13 @@ function renderAlternateView(view) {
     button.addEventListener("click", () => openCommitmentModal());
   });
 
+  target.querySelectorAll("[data-reschedule-commitment]").forEach(button => {
+    button.addEventListener("click", () => {
+      const c = commitments.find(item => item.id === Number(button.dataset.rescheduleCommitment));
+      if (c && !c.done) rescheduleCommitment(c);
+    });
+  });
+
   target.querySelectorAll("[data-complete-commitment]").forEach(input => {
     input.addEventListener("change", () => {
       const c = commitments.find(
@@ -1203,16 +1213,11 @@ function renderAlternateView(view) {
       );
       if (!c || c.done) return;
 
-      const person = clientById(c.clientId);
-      if (!window.confirm(
-        `Mark "${c.title}" complete for ${person?.name || "this relationship"}?`
-      )) {
+      if (!completeCommitment(c)) {
         input.checked = false;
         return;
       }
 
-      c.done = true;
-      addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
       renderAll();
       setView("commitments");
       showToast("Commitment marked complete.");
@@ -1314,6 +1319,29 @@ function addActivityRecord(clientId,title,detail,icon="≋") {
   activities.unshift(item);
   const c=clientById(clientId);
   if(c) c.activities.unshift({title,date,detail});
+}
+function completeCommitment(c) {
+  const person = clientById(c.clientId);
+  if (!window.confirm(`Mark "${c.title}" complete for ${person?.name || "this relationship"}?`)) return false;
+  const evidence = window.prompt("Completion evidence (optional — what proves this is done?):") || "";
+  c.done = true;
+  c.evidence = evidence.trim();
+  c.completedAt = day(0);
+  addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
+  return true;
+}
+function rescheduleCommitment(c) {
+  const input = window.prompt(`Reschedule "${c.title}" — new due date (YYYY-MM-DD):`, c.dueDate || "");
+  if (input === null) return;
+  const value = input.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) { showToast("Date not changed — use YYYY-MM-DD."); return; }
+  if (!c.originalDueDate) c.originalDueDate = c.dueDate || "";
+  const old = c.dueDate;
+  c.dueDate = value;
+  addActivityRecord(c.clientId, "Commitment rescheduled", `${c.title}: ${old || "no date"} → ${value}`, "↗");
+  renderAll();
+  if (activeView === "commitments") setView("commitments");
+  showToast("Commitment rescheduled — still open.");
 }
 function logActivity(clientId) {
   const c=clientById(clientId);
@@ -1424,6 +1452,7 @@ $("commitmentForm").addEventListener("submit",e=>{
     detail: $("cmDetail").value.trim(),
     owner: $("cmOwner").value.trim(),
     dueDate: $("cmDueDate").value || "",
+    originalDueDate: $("cmDueDate").value || "",
     done: false,
     evidence: ""
   });
@@ -1444,10 +1473,7 @@ $("nextActions").addEventListener("click",e=>{
   if(!row) return;
   const c=commitments.find(x=>x.id===Number(row.dataset.commitment));
   if(!c || c.done) return;
-  const person=clientById(c.clientId);
-  if(!window.confirm(`Mark "${c.title}" complete for ${person?.name||"this relationship"}?`)) return;
-  c.done=true;
-  addActivityRecord(c.clientId,"Commitment completed",c.title,"✓");
+  if(!completeCommitment(c)) return;
   renderAll(); showToast("Commitment marked complete.");
 });
 $("nextActions").addEventListener("keydown",e=>{
