@@ -1651,15 +1651,315 @@ $("clock").textContent="READY";
    it to this workspace's database on file, verifies the save, and only
    then does the updated view land here. This panel never edits records
    itself. */
-const LIAISON_STAGES = {
+/* LIAISON-RENDER-BEGIN — pure rendering of the published status file.
+   Every function in this block is a pure function of the status entry
+   (plus the clock): nothing is remembered between renders, so elapsed
+   time and history survive a page restart because they are recomputed
+   from the published receivedAt / transitions every time.
+   Honesty rules (Alex's rendering brief, 2026-10-20):
+   - No generic "Working…": every state renders specifically.
+   - Queue time is never presented as active processing time.
+   - History shows only transitions that were actually recorded; a
+     package without a recorded history says so, plainly.
+   - A local save attestation ("live" in HQ's records) is never
+     labelled public publication. Only an entry carrying
+     publicationVerifiedAt (stamped by the publisher after it re-reads
+     the public page) may say "Live on this page".
+   - Unresolved evidence (auditAmbiguous, ledgerPending) stays visibly
+     unresolved — never dressed as success or as a clean failure — and
+     governs the WHOLE card: it suppresses every publication claim on
+     the card, not just the headline (Alex's revision, 2026-10-20).
+   - Timestamps are validated before any duration is calculated, and
+     malformed history entries render as visibly unknown, never as
+     raw internals or "undefined" (Alex's revision, 2026-10-20).
+   - A failure never claims "nothing was saved" here; that claim can
+     only come from the recorded error text, which HQ writes only
+     after the database confirms it. */
+const LIAISON_EVENT_LABELS = {
   received: "Received at Pulse HQ",
   formatting: "Formatting",
   checked: "Checked",
-  clarification: "Needs a detail — waiting on you",
-  interpreting: "Being interpreted — Remmy at Pulse HQ is reading it",
-  live: "Saved to your database · Live",
-  failed: "Failed — nothing was saved"
+  interpretation_queued: "Queued for interpretation",
+  interpretation_claimed: "Claimed for interpretation",
+  interpretation_released: "Released back to the queue",
+  clarification_requested: "Question sent to you",
+  clarification_answered: "Your answer received",
+  legacy_commit_reconciled: "Earlier save verified against the database record",
+  saved: "Saved to the database",
+  live: "Live in HQ's records",
+  failed: "Failed"
 };
+const LIAISON_TERMINAL = { live: true, failed: true };
+
+function liaisonParseTime(iso) {
+  if (!iso || typeof iso !== "string") return null;
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? null : t;
+}
+function liaisonHasOffset(iso) {
+  return /([zZ]|[+-]\d{2}:?\d{2})$/.test(String(iso || "").trim());
+}
+function liaisonFmtDur(ms) {
+  if (ms == null || ms < 0) return null;
+  const s = Math.round(ms / 1000);
+  if (s < 60) return s + "s";
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + " min";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + " h " + (m % 60) + " min";
+  return Math.floor(h / 24) + " d " + (h % 24) + " h";
+}
+function liaisonFmtClock(iso) {
+  const t = liaisonParseTime(iso);
+  if (t == null) return String(iso);
+  if (!liaisonHasOffset(iso)) return String(iso) + " (as recorded)";
+  try {
+    return new Date(t).toLocaleString("en-CA", {
+      timeZone: "America/Vancouver", month: "short", day: "numeric",
+      hour: "numeric", minute: "2-digit"
+    });
+  } catch (e) {
+    return new Date(t).toLocaleString("en-CA");
+  }
+}
+
+/* Headline state. Extras are read BEFORE the status: an ambiguous or
+   ledger-pending entry also carries status "saved", and must not be
+   presented as an ordinary save. */
+function liaisonStateLabel(p) {
+  if (p.auditAmbiguous) return "Needs review — the save could not be verified";
+  if (p.ledgerPending) return "Saved to your database — status record update pending";
+  switch (p.status) {
+    case "received": return "Received at Pulse HQ";
+    case "formatting": return "Being formatted at Pulse HQ";
+    case "checked": return "Checked — waiting for interpretation";
+    case "interpreting_queued": return "Waiting in the interpretation queue";
+    case "interpreting":
+      return p.claimedBy
+        ? "Being interpreted — " + p.claimedBy + " is reading it"
+        : "Being interpreted at Pulse HQ";
+    case "clarification": return "Needs a detail — waiting on you";
+    case "saved": return "Saved to your database — not yet published to this page";
+    case "live":
+      return p.publicationVerifiedAt
+        ? "Saved to your database · Live on this page"
+        : "Saved to your database";
+    case "failed": return "Failed";
+    default: return "Status not recorded";
+  }
+}
+
+function liaisonSummaryText(p) {
+  if (p.auditAmbiguous)
+    return "Recovery required — HQ found conflicting database evidence for this package, so it is not being called saved or live. Nothing will be re-submitted automatically." +
+      (p.error ? " Recorded detail: " + escapeHTML(p.error) : "");
+  if (p.ledgerPending)
+    return "The save is verified in the database; the status record itself is still catching up and will be reconciled. Not live yet." +
+      (p.error ? " Recorded detail: " + escapeHTML(p.error) : "");
+  if (p.status === "failed")
+    return p.error
+      ? escapeHTML(p.error)
+      : "This package failed. The failure reason was not recorded.";
+  if (p.status === "clarification")
+    return "Held — nothing saved yet. A question is waiting in the chat above.";
+  if ((p.status === "live" || p.status === "saved") && p.summary) {
+    const s = p.summary;
+    return "+" + s.created + " new · " + s.matched + " matched an existing record · " +
+      s.commitments + " commitments added · " + s.duplicateFlagsOpened +
+      " possible duplicate flagged for review";
+  }
+  switch (p.status) {
+    case "received": return "Received — nothing saved yet.";
+    case "formatting": return "Being formatted — nothing saved yet.";
+    case "checked": return "Checked — nothing saved yet.";
+    case "interpreting_queued":
+      return "In the queue for a human interpreter — nothing saved yet. Time here is waiting time, not work time.";
+    case "interpreting":
+      return "Being read by " + (p.claimedBy || "the interpreter") + " — nothing saved yet.";
+    case "saved":
+      return "Saved to your database. Publication to this page is still pending.";
+    case "live":
+      return "Saved to your database and live in HQ's records.";
+    default: return "No summary was recorded for this package.";
+  }
+}
+
+/* Elapsed / waiting line, derived only from published timestamps.
+   Every timestamp is validated BEFORE any duration is calculated:
+   - missing receipt            -> stated as not recorded;
+   - recorded but unparseable   -> stated as unreadable, shown as recorded;
+   - recorded without a timezone -> shown as recorded; NO elapsed maths is
+     done on it (a duration against an unknown timezone would be invented);
+   - stamped in the future      -> beyond a 60-second clock-skew tolerance
+     the record is called inconsistent and no duration is shown;
+   - a completion or state stamp earlier than the stamp it is measured
+     from, or in the future -> the specific duration is withheld and the
+     inconsistency is stated instead. Terminal completion stamps get
+     the same future check as every other stamp: a live/failed package
+     whose completion is stamped in the future shows no duration
+     (Alex's second revision, 2026-10-20).
+   No code path in this function can render the word "null". */
+const LIAISON_SKEW_MS = 60 * 1000;
+function liaisonTimingLine(p, nowMs) {
+  const now = nowMs == null ? Date.now() : nowMs;
+  if (!p.receivedAt || typeof p.receivedAt !== "string")
+    return "Receipt time not recorded for this package.";
+  const received = liaisonParseTime(p.receivedAt);
+  if (received == null)
+    return "Receipt time was recorded but could not be read: " +
+      p.receivedAt + " (as recorded).";
+  if (!liaisonHasOffset(p.receivedAt))
+    return "Received " + p.receivedAt + " (as recorded — no timezone was " +
+      "recorded with it, so elapsed time is not calculated).";
+  if (received - now > LIAISON_SKEW_MS)
+    return "Receipt is stamped " + liaisonFmtClock(p.receivedAt) + " — that " +
+      "is in the future, so the recorded times are inconsistent and " +
+      "elapsed time is not calculated.";
+  const agoMs = Math.max(0, now - received);
+  const parts = ["Received " + liaisonFmtClock(p.receivedAt) +
+    " (" + liaisonFmtDur(agoMs) + " ago)"];
+  const transitions = Array.isArray(p.transitions) ? p.transitions : [];
+  const last = transitions.length ? transitions[transitions.length - 1] : null;
+  const lastRaw = last ? last.at : p.updatedAt;
+  const lastAt = liaisonParseTime(lastRaw);
+  if (LIAISON_TERMINAL[p.status]) {
+    const end = liaisonParseTime(p.updatedAt);
+    if (end != null && liaisonHasOffset(p.updatedAt)) {
+      if (end - now > LIAISON_SKEW_MS)
+        parts.push("the completion stamp is in the future — the " +
+          "recorded times are inconsistent, so no duration is shown");
+      else if (end >= received)
+        parts.push("receipt to " + (p.status === "live" ? "live" : "failed") +
+          " took " + liaisonFmtDur(end - received));
+      else
+        parts.push("the completion stamp is earlier than the receipt " +
+          "stamp — the recorded times are inconsistent, so no duration " +
+          "is shown");
+    }
+    return parts.join(" · ");
+  }
+  if (lastAt != null && liaisonHasOffset(lastRaw)) {
+    if (lastAt - now > LIAISON_SKEW_MS) {
+      parts.push("the latest recorded step is stamped in the future — " +
+        "the recorded times are inconsistent, so current-state timing " +
+        "is not calculated");
+    } else if (lastAt < received) {
+      parts.push("the latest recorded step is stamped before the receipt " +
+        "— the recorded times are inconsistent, so current-state timing " +
+        "is not calculated");
+    } else {
+      const inState = liaisonFmtDur(Math.max(0, now - lastAt));
+      if (p.status === "interpreting_queued")
+        parts.push("in the queue for " + inState + " — waiting, not being worked on");
+      else if (p.status === "interpreting")
+        parts.push("with the interpreter for " + inState);
+      else if (p.status === "clarification")
+        parts.push("waiting on you for " + inState);
+      else if (p.status === "saved")
+        parts.push("saved " + inState + " ago — publication to this page still pending");
+      else
+        parts.push("in this state for " + inState);
+      if (now - lastAt > 30 * 60 * 1000)
+        parts.push("no update recorded for " + liaisonFmtDur(now - lastAt));
+    }
+  }
+  if (p.waitingOn) parts.push("waiting on: " + p.waitingOn);
+  return parts.join(" · ");
+}
+
+/* Recorded history only. An entry with no transitions array predates
+   the ledger; the page says so instead of inventing a story. Individual
+   malformed entries stay visibly malformed: an unrecognised step type is
+   labelled as unrecognised (never rendered as its raw internal name) and
+   a missing or unreadable timestamp is labelled, never rendered as
+   "undefined" or a guessed time. */
+function liaisonHistoryHTML(p) {
+  const transitions = Array.isArray(p.transitions) ? p.transitions : null;
+  if (!transitions || !transitions.length)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:12.5px;margin-top:4px">Step history was not recorded for this package (it predates the history ledger).</div>';
+  const rows = transitions.map(t => {
+    const label = (t && LIAISON_EVENT_LABELS[t.event]) || "Step type not recognised";
+    const who = t && t.actor ? " — " + escapeHTML(t.actor) : "";
+    let when;
+    if (!t || !t.at) when = "time not recorded";
+    else if (liaisonParseTime(t.at) == null) when = "time recorded but unreadable";
+    else when = liaisonFmtClock(t.at);
+    return '<div style="font-size:12.5px;color:var(--muted,#8fa1b8)">' +
+      escapeHTML(label) + who + " · " + escapeHTML(when) + "</div>";
+  }).join("");
+  return '<div style="margin-top:4px">' + rows + "</div>";
+}
+
+function liaisonPackageHTML(p, nowMs) {
+  const unresolved = p.auditAmbiguous || p.ledgerPending;
+  const border = unresolved ? "border-left:3px solid #d8a13c;padding-left:10px" : "";
+  /* An unresolved entry makes NO publication claim anywhere on its card:
+     the publication line is suppressed entirely, even if the entry also
+     carries status "live" and a publicationVerifiedAt stamp — unresolved
+     evidence governs the whole card, not just the headline. */
+  const pubLine = unresolved ? ""
+    : p.status === "live"
+    ? (p.publicationVerifiedAt
+        ? '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">Published to this page — verified ' +
+          escapeHTML(liaisonFmtClock(p.publicationVerifiedAt)) + ".</div>"
+        : '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">Live in HQ\'s records — publication to this page has not been verified yet.</div>')
+    : "";
+  return '<div class="activity-entry" style="padding:10px 0;border-bottom:1px solid #1b2942;' + border + '">' +
+    '<div class="activity-icon">🕶</div>' +
+    "<div><strong>" + escapeHTML(p.packageId) + "</strong>" +
+    '<span style="margin-left:8px">' + escapeHTML(liaisonStateLabel(p)) + "</span>" +
+    '<div style="color:var(--muted,#8fa1b8);font-size:13px">' + liaisonSummaryText(p) + "</div>" +
+    '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">' +
+      escapeHTML(liaisonTimingLine(p, nowMs)) + "</div>" +
+    pubLine +
+    liaisonHistoryHTML(p) +
+    "</div></div>";
+}
+
+function liaisonTurnaroundHTML(data) {
+  const t = data && data.turnaround;
+  if (!t)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:13px">Turnaround figures are not published in this copy yet.</div>';
+  if (!t.ready || !t.wallClock)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:13px"><strong style="color:#e8eef7">Building our baseline</strong> — ' +
+      "turnaround is measured on completed packages only; " +
+      ((t.wallClock && t.wallClock.sample) || 0) + " measured so far. Figures appear once there is a meaningful sample.</div>";
+  const fmt = s => liaisonFmtDur(s * 1000);
+  let out = '<div style="color:var(--muted,#8fa1b8);font-size:13px"><strong style="color:#e8eef7">' +
+    escapeHTML(t.label || "Recent turnaround") + "</strong> — typical (median) " +
+    fmt(t.wallClock.medianSeconds) + " · average " + fmt(t.wallClock.meanSeconds) +
+    " · based on " + t.wallClock.sample + " completed packages (wall clock, waits included).";
+  /* Wording follows the metrics producer exactly (lifecycle.py):
+     the adjusted figure subtracts ONLY recorded, closed clarification
+     waits; adjustedExcluded counts completed packages left out of the
+     adjusted figure because a clarification question on them was still
+     unanswered at completion (wait never closed on the record);
+     adjustedAvailable is false exactly when inconsistentPackages > 0.
+     The exclusion sentence is only shown alongside a figure it actually
+     describes — never next to the "unavailable" notice. */
+  if (t.internal && t.adjustedAvailable) {
+    out += " Excluding recorded, closed waits for answers: median " +
+      fmt(t.internal.medianSeconds) + " (based on " + t.internal.sample +
+      " packages).";
+    if (t.adjustedExcluded)
+      out += " " + t.adjustedExcluded + " completed package(s) are counted " +
+        "in the wall-clock figures above but not in the adjusted figure — " +
+        "a clarification question on them was still unanswered when they " +
+        "completed, so that wait was never closed on the record and " +
+        "nothing was subtracted for them.";
+  } else if (!t.adjustedAvailable) {
+    out += " The wait-adjusted figure is unavailable — " + (t.inconsistentPackages || 0) +
+      " package(s) had inconsistent records and were left unadjusted rather than repaired.";
+  } else {
+    out += " No wait-adjusted figure yet — no completed package has a " +
+      "recorded, closed clarification wait to subtract.";
+    if (t.adjustedExcluded)
+      out += " " + t.adjustedExcluded + " completed package(s) still have " +
+        "an unanswered clarification question on their record.";
+  }
+  return out + "</div>";
+}
+/* LIAISON-RENDER-END */
 window.__liaisonReloaded = window.__liaisonReloaded || {};
 
 function liaisonHTML() {
@@ -1705,6 +2005,7 @@ function liaisonHTML() {
     </section>
     <section class="panel" style="padding:22px">
       <h3 style="margin:0 0 12px">Packages</h3>
+      <div id="liaisonTurnaround" style="margin-bottom:14px"></div>
       <div id="liaisonPackages"><div class="workspace-empty">No packages yet this session.</div></div>
     </section>
   </div>`;
@@ -1840,32 +2141,17 @@ async function sendChatTurn() {
   clearInputs();
 }
 
-function liaisonSummaryText(p) {
-  if (p.status === "failed") return escapeHTML(p.error || "Package failed.");
-  if (p.status === "clarification") return "Held — nothing saved yet. He asked a question in the chat above.";
-  if (p.status !== "live" || !p.summary) return "Working…";
-  const s = p.summary;
-  return `+${s.created} new · ${s.matched} matched an existing record · ` +
-    `${s.commitments} commitments added · ${s.duplicateFlagsOpened} possible duplicate flagged for review`;
-}
-
 async function pollLiaisonStatus() {
   try {
     const res = await fetch("data/liaison-status.json", { cache: "no-store" });
     if (!res.ok) return;
     const data = await res.json();
     const pkgs = data.packages || [];
+    const tbox = $("liaisonTurnaround");
+    if (tbox) tbox.innerHTML = liaisonTurnaroundHTML(data);
     const box = $("liaisonPackages");
     if (box) {
-      box.innerHTML = pkgs.length ? pkgs.map(p => `
-        <div class="activity-entry" style="padding:10px 0;border-bottom:1px solid #1b2942">
-          <div class="activity-icon">🕶</div>
-          <div>
-            <strong>${escapeHTML(p.packageId)}</strong>
-            <span style="margin-left:8px">${escapeHTML(LIAISON_STAGES[p.status] || p.status)}</span>
-            <div style="color:var(--muted,#8fa1b8);font-size:13px">${liaisonSummaryText(p)}</div>
-          </div>
-        </div>`).join("") : `<div class="workspace-empty">No packages yet this session.</div>`;
+      box.innerHTML = pkgs.length ? pkgs.map(p => liaisonPackageHTML(p)).join("") : `<div class="workspace-empty">No packages yet this session.</div>`;
     }
     // Fold the Liaison's replies — including clarification questions — into
     // the chat thread, once each, keyed by package. Track the open question
