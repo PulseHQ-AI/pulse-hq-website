@@ -572,6 +572,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .key-note { display: block; margin-top: 16px; color: #5c6980; font: 8px var(--mono); letter-spacing: .8px; line-height: 1.7; }
 .stage-move { display: block; margin-top: 9px; color: var(--muted); font-size: 10px; }
 .stage-move select { margin-left: 6px; padding: 5px 7px; background: #0a101a; color: var(--text); border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
+.head-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 
 </style>
 </head>
@@ -635,7 +636,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
         <h1 id="pageTitle">Your business, <span>in motion.</span></h1>
         <p id="pageSubtitle">Every relationship has a status. Every opportunity has a next step.</p>
       </div>
-      <button class="primary-button" id="newClient"><span>＋</span> New relationship</button>
+      <div class="head-actions"><span id="viewActions"></span><button class="primary-button" id="newClient"><span>＋</span> New relationship</button></div>
     </section>
 
     <section id="alternateView" hidden></section>
@@ -1113,7 +1114,6 @@ function renderAlternateView(view) {
               <div class="eyebrow">ACTION REGISTER</div>
               <h2>All commitments</h2>
             </div>
-            <span><button class="text-button" data-export-commitments="1">Export CSV ↓</button> <button class="primary-button" data-add-commitment="1">＋ Add commitment</button></span>
           </div>
           <div>
             ${all.map(c => {
@@ -1177,7 +1177,6 @@ function renderAlternateView(view) {
               <div class="eyebrow">RECENT FIRST</div>
               <h2>Recorded activity</h2>
             </div>
-            <button class="text-button" data-export-activity="1">Export CSV ↓</button>
           </div>
           ${filtered.map(a => {
             const person = clientById(a.clientId);
@@ -1204,13 +1203,6 @@ function renderAlternateView(view) {
     });
   });
 
-  target.querySelectorAll("[data-export-commitments]").forEach(button => {
-    button.addEventListener("click", () => exportCommitmentsCSV());
-  });
-  target.querySelectorAll("[data-export-activity]").forEach(button => {
-    button.addEventListener("click", () => exportActivityCSV());
-  });
-
   target.querySelectorAll("[data-move-stage]").forEach(sel => {
     sel.addEventListener("change", () => {
       const c = clients.find(item => item.id === Number(sel.dataset.moveStage));
@@ -1222,10 +1214,6 @@ function renderAlternateView(view) {
       setView("pipeline");
       showToast(`Moved to ${sel.value}.`);
     });
-  });
-
-  target.querySelectorAll("[data-add-commitment]").forEach(button => {
-    button.addEventListener("click", () => openCommitmentModal());
   });
 
   target.querySelectorAll("[data-reschedule-commitment]").forEach(button => {
@@ -1303,6 +1291,9 @@ function setView(view) {
   document.querySelector(".bottom-grid").hidden = !overview;
   $("alternateView").hidden = overview || clientsView;
   $("newClient").hidden = !overview && !clientsView;
+  $("viewActions").innerHTML =
+    activeView === "commitments" ? `<button class="subtle-button" id="headExportCommitments">↓ Export CSV</button><button class="primary-button" id="headAddCommitment">＋ Add commitment</button>` :
+    activeView === "activity" ? `<button class="subtle-button" id="headExportActivity">↓ Export CSV</button>` : "";
 
   if (view === "pipeline") {
     $("statusFilter").value = "all";
@@ -1442,6 +1433,11 @@ $("searchInput").addEventListener("input", () => {
   }
 });
 $("statusFilter").addEventListener("change",renderRows);
+$("viewActions").addEventListener("click",e=>{
+  if(e.target.id==="headAddCommitment") openCommitmentModal(null);
+  else if(e.target.id==="headExportCommitments") exportCommitmentsCSV();
+  else if(e.target.id==="headExportActivity") exportActivityCSV();
+});
 $("newClient").addEventListener("click",()=>openModal());
 $("cancelModal").addEventListener("click",closeModal);
 $("cancelModalBottom").addEventListener("click",closeModal);
