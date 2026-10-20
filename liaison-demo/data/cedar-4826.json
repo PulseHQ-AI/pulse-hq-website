@@ -39,6 +39,14 @@
    "icon": "\u2713",
    "id": 5,
    "title": "Patio cleanup completed"
+  },
+  {
+   "clientId": 7,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
+   "icon": "\u25c8",
+   "id": 10,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -164,6 +172,24 @@
    "priority": "Medium",
    "status": "Client",
    "value": 1500
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 7,
+   "name": "Frank",
+   "notes": "Client's own words (chat note, 2026-10-20): \"i met this dude named frank, he wants me to tile his floor next friday. i told him id be there at 3 pm\" \u2014 date confirmed by Ben: Friday Oct 23. Interpreted by Remmy (concierge formatting step). Surname/company not given.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
   }
  ],
  "commitments": [
@@ -233,6 +259,17 @@
    "originalDueDate": "2026-10-17",
    "owner": "Dana Whitaker",
    "title": "Complete lakeside patio cleanup"
+  },
+  {
+   "clientId": 7,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-23",
+   "evidence": "",
+   "id": 7,
+   "originalDueDate": "2026-10-23",
+   "owner": "Dana Whitaker",
+   "title": "Tile his floor \u2014 be there at 3 pm"
   }
  ],
  "workspace": {
