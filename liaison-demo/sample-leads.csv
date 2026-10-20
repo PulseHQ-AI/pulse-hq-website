@@ -1,0 +1,6 @@
+name,company,email,phone,status,value,commitment,due_date,notes,priority
+Sofia Marino,Marino Vineyards,sofia@marinovineyards.example,,Qualified,6800,Send crush-pad service estimate,2026-10-27,Referred by Reyes Vacation Rentals,High
+Avery Collins,Collins Lake House,avery.collins@collinslake.example,,Client,2100,,,Second contact card for Avery — possibly the same person as the existing Collins Lake House record,
+Tom Becker,Becker Cabins,tom@beckercabins.example,250-555-0143,Lead,1200,Call to introduce fall services,2026-10-24,,Medium
+Priya Nair,Nair Wellness Retreat,priya@nairwellness.example,,Contacted,3400,,,,Low
+June Park,Park Family Residence,june@parkfamily.example,,Proposal,7400,,,"Same email as the existing June Park record — should match, not duplicate",
