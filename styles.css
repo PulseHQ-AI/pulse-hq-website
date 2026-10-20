@@ -933,3 +933,5 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .alacarte-add { color: var(--nb-cyan); font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .alacarte-note { text-align: center; color: var(--nb-muted); margin: 14px 0 0; font-size: .85rem; }
 .glow-link { color: var(--nb-cyan); text-decoration: none; font-weight: 600; text-shadow: 0 0 8px rgba(34, 211, 238, .8), 0 0 18px rgba(34, 211, 238, .45); }
+
+.pkg-purpose { color: var(--nb-muted); font-size: .86rem; margin: 0 0 10px; }
