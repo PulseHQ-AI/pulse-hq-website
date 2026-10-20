@@ -32,7 +32,8 @@
     "transformation": "'on hallowed' read as Halloween, 2026-10-31 \u2014 an identified interpretation, not a stated fact; the customer's verbatim words are preserved in the record notes",
     "source": "Ben's live doorman test, 2026-10-20 03:39"
    },
-   "interpreter": "Remmy (HQ concierge)"
+   "interpreter": "Remmy (HQ concierge)",
+   "publicationVerifiedAt": "2026-10-20T20:11:36.115312+00:00"
   },
   {
    "packageId": "PKG-C004EC85",
@@ -68,7 +69,8 @@
     "unresolved": "carpet visit time never confirmed \u2014 interaction recorded, no commitment created",
     "source": "Ben's live doorman test, 2026-10-20 03:20"
    },
-   "interpreter": "Remmy (HQ concierge)"
+   "interpreter": "Remmy (HQ concierge)",
+   "publicationVerifiedAt": "2026-10-20T20:11:36.115312+00:00"
   },
   {
    "packageId": "PKG-EE168CC4",
@@ -90,7 +92,8 @@
     "duplicate_flags": 0,
     "audit_log": 30
    },
-   "reply": "Saved to your database: Frank. 1 commitment(s) added \u2014 it's live in your records now."
+   "reply": "Saved to your database: Frank. 1 commitment(s) added \u2014 it's live in your records now.",
+   "publicationVerifiedAt": "2026-10-20T20:11:36.115312+00:00"
   }
  ],
  "dbCounts": {
