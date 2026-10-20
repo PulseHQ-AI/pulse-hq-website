@@ -570,6 +570,8 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .key-card .primary-button { width: 100%; padding: 13px 15px; font-size: 12px; }
 .key-error { border: 1px solid #6e3542; background: #2a1218; color: #ffb3c0; border-radius: 6px; padding: 10px 12px; font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
 .key-note { display: block; margin-top: 16px; color: #5c6980; font: 8px var(--mono); letter-spacing: .8px; line-height: 1.7; }
+.stage-move { display: block; margin-top: 9px; color: var(--muted); font-size: 10px; }
+.stage-move select { margin-left: 6px; padding: 5px 7px; background: #0a101a; color: var(--text); border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
 
 </style>
 </head>
@@ -1028,6 +1030,11 @@ function renderAlternateView(view) {
                 <button class="text-button" data-open-client="${c.id}">
                   Open relationship ↗
                 </button>
+                <label class="stage-move">Stage
+                  <select data-move-stage="${c.id}">
+                    ${["Lead", "Contacted", "Qualified", "Proposal", "Client"].map(s => `<option ${s === c.status ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                </label>
               </div>
               <div class="opportunity-value">${money(c.value || 0)}</div>
             </div>
@@ -1192,6 +1199,19 @@ function renderAlternateView(view) {
       const id = Number(button.dataset.openClient);
       selectClient(id);
       setView("clients");
+    });
+  });
+
+  target.querySelectorAll("[data-move-stage]").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const c = clients.find(item => item.id === Number(sel.dataset.moveStage));
+      if (!c || c.status === sel.value) return;
+      const from = c.status;
+      c.status = sel.value;
+      addActivityRecord(c.id, "Stage changed", `${from} → ${sel.value}`, "↗");
+      renderAll();
+      setView("pipeline");
+      showToast(`Moved to ${sel.value}.`);
     });
   });
 
