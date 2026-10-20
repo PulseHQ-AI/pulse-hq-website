@@ -590,7 +590,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
   </form>
 </div>
 
-<div class="app-shell">
+<div class="app-shell" id="appShell" style="visibility:hidden">
   <aside class="sidebar">
     <a class="brand" href="#">
       <span class="brand-mark">P<span>+</span></span>
@@ -778,32 +778,13 @@ const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[c]));
 
-let clients = [
-  {id:1,name:"Morgan Ellis",company:"Northstar Landscaping",status:"Proposal",priority:"High",nextAction:"Follow up on proposal",dueDate:day(-1),value:6500,email:"morgan@northstar.example",phone:"Not added",notes:"Interested in improving online presence and managing social media. Proposal sent; awaiting feedback.",activities:[{title:"Proposal sent",date:"Today",detail:"Service proposal delivered for review."},{title:"Discovery call",date:"3 days ago",detail:"Discussed current marketing workflow."}]},
-  {id:2,name:"Sarah Mitchell",company:"Shuswap Wellness",status:"Client",priority:"High",nextAction:"Prepare monthly content plan",dueDate:day(0),value:1250,email:"sarah@wellness.example",phone:"Not added",notes:"Active client. Keep the tone warm, professional, and community focused.",activities:[{title:"Monthly check-in",date:"Today",detail:"Reviewed priorities for the upcoming month."}]},
-  {id:3,name:"James Carter",company:"Carter Irrigation",status:"Qualified",priority:"High",nextAction:"Book discovery meeting",dueDate:day(1),value:2400,email:"james@carter.example",phone:"Not added",notes:"Growing landscaping and irrigation business. Interested in improving lead follow-up.",activities:[{title:"Lead qualified",date:"Yesterday",detail:"Confirmed business needs and interest."}]},
-  {id:4,name:"Linda Brooks",company:"Senior Society",status:"Contacted",priority:"Medium",nextAction:"Send website concept",dueDate:day(2),value:1800,email:"linda@society.example",phone:"Not added",notes:"Discussed a website refresh and making key information easier to find.",activities:[{title:"Initial contact",date:"2 days ago",detail:"Discussed website needs."}]},
-  {id:5,name:"Daniel Foster",company:"Foster Auto Care",status:"Lead",priority:"Low",nextAction:"Send introduction email",dueDate:day(4),value:900,email:"daniel@foster.example",phone:"Not added",notes:"Potential prospect. Research their current online presence before reaching out.",activities:[{title:"Prospect added",date:"4 days ago",detail:"Added to the outreach list."}]},
-  {id:6,name:"Priya Shah",company:"Shah Accounting",status:"Proposal",priority:"Medium",nextAction:"Confirm decision date",dueDate:day(3),value:3200,email:"priya@shah.example",phone:"Not added",notes:"Interested in a simple website and regular social content.",activities:[{title:"Proposal revised",date:"Yesterday",detail:"Updated scope following feedback."}]},
-  {id:7,name:"Robert Hayes",company:"Hayes Home Services",status:"Client",priority:"Medium",nextAction:"Request monthly feedback",dueDate:day(5),value:1250,email:"robert@hayes.example",phone:"Not added",notes:"Ongoing client relationship. Check satisfaction and upcoming needs.",activities:[{title:"Work delivered",date:"Last week",detail:"Latest content batch delivered for review."}]}
-];
+let clients = [];
 
-let activities = [
-  {id:1,clientId:1,title:"Proposal sent",detail:"Service proposal delivered for review.",date:"Today",icon:"↗"},
-  {id:2,clientId:2,title:"Client check-in",detail:"Monthly content priorities reviewed.",date:"Today",icon:"◈"},
-  {id:3,clientId:3,title:"Lead qualified",detail:"Confirmed business needs and interest.",date:"Yesterday",icon:"✓"},
-  {id:4,clientId:6,title:"Proposal revised",detail:"Updated scope following feedback.",date:"Yesterday",icon:"≋"}
-];
+let activities = [];
 
-let commitments = [
-  {id:1,clientId:1,title:"Receive proposal feedback",dueDate:day(-1),done:false},
-  {id:2,clientId:2,title:"Prepare content plan",dueDate:day(0),done:false},
-  {id:3,clientId:3,title:"Schedule discovery meeting",dueDate:day(1),done:false},
-  {id:4,clientId:4,title:"Send website concept",dueDate:day(2),done:false},
-  {id:5,clientId:6,title:"Confirm decision date",dueDate:day(3),done:false}
-];
+let commitments = [];
 
-let selectedId = 1;
+let selectedId = null;
 let activeView = "overview";
 let editingId = null;
 let nextClientId = 8;
@@ -1422,6 +1403,7 @@ async function loadWorkspace(rawKey) {
     $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
     $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
     $("keyGate").hidden = true;
+    $("appShell").style.visibility = "visible";
     activeView = "overview";
     renderAll();
     setView("overview");
