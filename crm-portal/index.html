@@ -756,10 +756,28 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
         <select name="priority"><option>Medium</option><option>High</option><option>Low</option></select>
       </label>
     </div>
-    <label>Next action<input name="nextAction" placeholder="e.g. Send introduction email" /></label>
-    <label>Follow-up date<input name="dueDate" type="date" /></label>
     <label>Notes<textarea name="notes" rows="3" placeholder="Context worth keeping..."></textarea></label>
     <div class="modal-actions"><button type="button" class="subtle-button" id="cancelModalBottom">Cancel</button><button type="submit" class="primary-button">Save relationship ↗</button></div>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="commitmentBackdrop" hidden>
+  <form class="modal" id="commitmentForm">
+    <div class="modal-heading">
+      <div><div class="eyebrow">MAKE A PROMISE</div><h2>New commitment</h2></div>
+      <button type="button" class="icon-button" id="cancelCommitment">×</button>
+    </div>
+    <label>Relationship
+      <select id="cmRelationship"></select>
+    </label>
+    <label>The promise<input id="cmTitle" placeholder="e.g. Send the revised quote" /></label>
+    <label>Details<textarea id="cmDetail" rows="2" placeholder="Anything worth recording about this promise..."></textarea></label>
+    <div class="form-row">
+      <label>Owner<input id="cmOwner" placeholder="Who is responsible?" /></label>
+      <label>Due date<input id="cmDueDate" type="date" /></label>
+    </div>
+    <div class="key-error" id="cmError" hidden></div>
+    <div class="modal-actions"><button type="button" class="subtle-button" id="cancelCommitmentBottom">Cancel</button><button type="submit" class="primary-button">Add commitment ↗</button></div>
   </form>
 </div>
 
@@ -789,6 +807,7 @@ let activeView = "overview";
 let editingId = null;
 let nextClientId = 8;
 let nextActivityId = 5;
+let nextCommitmentId = 1;
 let toastTimer;
 
 function initials(name) {
@@ -817,11 +836,20 @@ function showToast(message) {
   toastTimer = setTimeout(()=>$("toast").classList.remove("show"),2600);
 }
 function clientById(id) { return clients.find(c=>c.id===id); }
+function nextCommitmentFor(clientId) {
+  const open = commitments.filter(c => c.clientId === clientId && !c.done)
+    .sort((a, b) => dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate)) || a.id - b.id);
+  return open.length ? open[0] : null;
+}
+function derivedNext(client) {
+  const n = nextCommitmentFor(client.id);
+  return n ? { title: n.title, dueDate: n.dueDate } : null;
+}
 
 function renderStats() {
   const activeOpps = clients.filter(c=>!["Client"].includes(c.status));
-  const due = clients.filter(c=>c.dueDate && c.dueDate <= day(0));
-  const overdue = clients.filter(c=>c.dueDate && c.dueDate < day(0));
+  const due = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate <= day(0); });
+  const overdue = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate < day(0); });
   $("totalCount").textContent = String(clients.length).padStart(2,"0");
   $("opportunityCount").textContent = String(activeOpps.length).padStart(2,"0");
   $("commitmentCount").textContent = String(commitments.filter(c=>!c.done).length).padStart(2,"0");
@@ -835,11 +863,13 @@ function renderRows() {
   const status = $("statusFilter").value;
   const filtered = clients.filter(c => {
     const matchesStatus = status==="all" || c.status===status;
-    const matchesQuery = [c.name,c.company,c.status,c.nextAction,c.notes]
+    const nx = derivedNext(c);
+    const matchesQuery = [c.name,c.company,c.status,nx?nx.title:"",c.notes]
       .join(" ").toLowerCase().includes(query);
     return matchesStatus && matchesQuery;
   });
 
+  const nextByClient = new Map(clients.map(cl=>[cl.id, derivedNext(cl)]));
   $("clientRows").innerHTML = filtered.map(c=>`
     <tr data-id="${c.id}" class="${c.id===selectedId?"selected":""}" tabindex="0" aria-label="Open ${escapeHTML(c.name)}">
       <td><div class="person-cell">
@@ -847,7 +877,7 @@ function renderRows() {
         <div><strong>${escapeHTML(c.name)}</strong><small>${escapeHTML(c.company||"No company added")}</small></div>
       </div></td>
       <td><span class="status ${statusClass(c.status)}">${escapeHTML(c.status)}</span></td>
-      <td><div class="next-cell"><strong>${escapeHTML(c.nextAction||"No next action")}</strong><small>${escapeHTML(dateLabel(c.dueDate))}</small></div></td>
+      <td><div class="next-cell"><strong>${escapeHTML(nextByClient.get(c.id)?nextByClient.get(c.id).title:"No open commitments")}</strong><small>${nextByClient.get(c.id)?escapeHTML(dateLabel(nextByClient.get(c.id).dueDate)):"Nothing promised"}</small></div></td>
       <td><span class="priority ${c.priority.toLowerCase()}">${escapeHTML(c.priority)}</span></td>
     </tr>`).join("");
 
@@ -863,6 +893,7 @@ function renderDetail() {
     return;
   }
 
+  const nx = derivedNext(c);
   $("clientDetail").innerHTML = `
     <div class="profile-hero">
       <div class="profile-main">
@@ -881,15 +912,26 @@ function renderDetail() {
 
     <div class="detail-section">
       <div class="section-title">NEXT COMMITMENT</div>
+      ${nx ? `
       <div class="next-action-card">
         <div class="action-row">
           <div class="action-mark">↗</div>
           <div class="action-copy">
-            <strong>${escapeHTML(c.nextAction||"Define the next action")}</strong>
-            <small>${escapeHTML(dateLabel(c.dueDate))}</small>
+            <strong>${escapeHTML(nx.title)}</strong>
+            <small>${escapeHTML(dateLabel(nx.dueDate))}</small>
           </div>
         </div>
-      </div>
+      </div>` : `
+      <div class="next-action-card">
+        <div class="action-row">
+          <div class="action-mark">○</div>
+          <div class="action-copy">
+            <strong>No open commitments</strong>
+            <small>Nothing is currently promised to this relationship.</small>
+          </div>
+        </div>
+      </div>`}
+      <button class="subtle-button" id="addCommitment" style="margin-top:10px">＋ Add commitment</button>
     </div>
 
     <div class="detail-section">
@@ -918,6 +960,7 @@ function renderDetail() {
     </div>`;
   $("editClient").addEventListener("click",()=>openModal(c.id));
   $("logClientActivity").addEventListener("click",()=>logActivity(c.id));
+  $("addCommitment").addEventListener("click",()=>openCommitmentModal(c.id));
 }
 
 function renderNextActions() {
@@ -1062,6 +1105,7 @@ function renderAlternateView(view) {
               <div class="eyebrow">ACTION REGISTER</div>
               <h2>All commitments</h2>
             </div>
+            <button class="primary-button" data-add-commitment="1">＋ Add commitment</button>
           </div>
           <div>
             ${all.map(c => {
@@ -1074,8 +1118,9 @@ function renderAlternateView(view) {
                     ${c.isDone ? "checked disabled" : ""}>
                   <div>
                     <strong>${escapeHTML(c.title)}</strong>
+                    ${c.detail ? `<small>${escapeHTML(c.detail)}</small>` : ""}
                     <small>${escapeHTML(person?.company || person?.name || "Unknown relationship")}</small>
-                    <small>${escapeHTML(dateLabel(c.dueDate))}</small>
+                    <small>${escapeHTML(dateLabel(c.dueDate))} · Owner: ${escapeHTML(c.owner || "Unassigned")}</small>
                     ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
                   </div>
                   <span class="priority ${c.dueDate && c.dueDate < day(0) && !c.isDone ? "high" : "low"}">
@@ -1145,6 +1190,10 @@ function renderAlternateView(view) {
       selectClient(id);
       setView("clients");
     });
+  });
+
+  target.querySelectorAll("[data-add-commitment]").forEach(button => {
+    button.addEventListener("click", () => openCommitmentModal());
   });
 
   target.querySelectorAll("[data-complete-commitment]").forEach(input => {
@@ -1247,7 +1296,7 @@ function openModal(id=null) {
   if(id) {
     const c=clientById(id);
     if(!c) return;
-    for(const key of ["name","company","status","priority","nextAction","dueDate","notes"]) {
+    for(const key of ["name","company","status","priority","notes"]) {
       form.elements[key].value=c[key]||"";
     }
   }
@@ -1275,12 +1324,26 @@ function logActivity(clientId) {
   renderAll();
   showToast("Activity recorded for "+c.name+".");
 }
+function openCommitmentModal(clientId=null) {
+  const form = $("commitmentForm");
+  form.reset();
+  $("cmError").hidden = true;
+  const sel = $("cmRelationship");
+  sel.innerHTML = clients.map(c=>`<option value="${c.id}">${escapeHTML(c.company || c.name)} — ${escapeHTML(c.name)}</option>`).join("");
+  if (clientId) { sel.value = String(clientId); sel.disabled = true; }
+  else { sel.disabled = false; if (selectedId) sel.value = String(selectedId); }
+  $("cmOwner").value = workspaceInfo?.userName || "";
+  $("commitmentBackdrop").hidden = false;
+  $("cmTitle").focus();
+}
+function closeCommitmentModal() { $("commitmentBackdrop").hidden = true; }
 function csvEscape(value) {
   return '"'+String(value??"").replace(/"/g,'""')+'"';
 }
 function exportCSV() {
   const columns=["id","name","company","status","priority","nextAction","dueDate","value","email","phone","notes"];
-  const lines=[columns.join(","),...clients.map(c=>columns.map(k=>csvEscape(c[k])).join(","))];
+  const rows=clients.map(c=>{ const nx=derivedNext(c); return {...c,nextAction:nx?nx.title:"",dueDate:nx?nx.dueDate:""}; });
+  const lines=[columns.join(","),...rows.map(c=>columns.map(k=>csvEscape(c[k])).join(","))];
   const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
@@ -1333,14 +1396,46 @@ $("clientForm").addEventListener("submit",e=>{
   } else {
     const c={
       id:nextClientId++,name:data.name.trim(),company:data.company.trim(),
-      status:data.status,priority:data.priority,nextAction:data.nextAction.trim(),
-      dueDate:data.dueDate,value:0,email:"",phone:"",notes:data.notes.trim(),activities:[]
+      status:data.status,priority:data.priority,
+      value:0,email:"",phone:"",notes:data.notes.trim(),activities:[]
     };
     clients.unshift(c);
     selectedId=c.id;
     addActivityRecord(c.id,"Relationship created","New relationship added to Pulse HQ.","＋");
     closeModal(); renderAll(); showToast("New relationship created.");
   }
+});
+
+$("commitmentForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const title = $("cmTitle").value.trim();
+  const clientId = Number($("cmRelationship").value);
+  const err = $("cmError");
+  if (!title || !clientById(clientId)) {
+    err.textContent = "A commitment needs a promise and a relationship.";
+    err.hidden = false;
+    return;
+  }
+  commitments.push({
+    id: nextCommitmentId++,
+    clientId,
+    title,
+    detail: $("cmDetail").value.trim(),
+    owner: $("cmOwner").value.trim(),
+    dueDate: $("cmDueDate").value || "",
+    done: false,
+    evidence: ""
+  });
+  addActivityRecord(clientId, "Commitment created", title, "＋");
+  closeCommitmentModal();
+  renderAll();
+  if (activeView === "commitments") setView("commitments");
+  showToast("Commitment added.");
+});
+$("cancelCommitment").addEventListener("click",closeCommitmentModal);
+$("cancelCommitmentBottom").addEventListener("click",closeCommitmentModal);
+$("commitmentBackdrop").addEventListener("click",e=>{
+  if(e.target===$("commitmentBackdrop")) closeCommitmentModal();
 });
 
 $("nextActions").addEventListener("click",e=>{
@@ -1365,7 +1460,7 @@ document.querySelectorAll("[data-view]").forEach(b=>{
   b.addEventListener("click",()=>setView(b.dataset.view));
 });
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") closeModal();
+  if(e.key==="Escape") { closeModal(); closeCommitmentModal(); }
   if(e.key==="/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)){
     e.preventDefault(); $("searchInput").focus();
   }
@@ -1395,6 +1490,7 @@ async function loadWorkspace(rawKey) {
     selectedId = clients.length ? clients[0].id : null;
     nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
     nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
+    nextCommitmentId = commitments.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
     const business = workspaceInfo.business || "Client workspace";
     $("workspaceLabel").innerHTML = `<span class="pulse-dot"></span> ${escapeHTML(business.toUpperCase())}`;
     $("workspaceUserName").textContent = workspaceInfo.userName || "Workspace user";
