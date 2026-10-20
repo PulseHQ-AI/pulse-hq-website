@@ -1,21 +1,9 @@
 {
  "packages": [
   {
-   "packageId": "PKG-B50F4E5B",
-   "status": "clarification",
-   "updatedAt": "2026-10-20T03:10:48",
-   "reply": "I couldn't turn that into a record yet \u2014 nothing's saved. Can you give me the person's name, what was promised, and the date? Like: \u201cadd Sam Lee from Lee's Plumbing, call with the quote, due Friday\u201d \u2014 or just restate it with the date spelled out."
-  },
-  {
-   "packageId": "PKG-BEEF1001",
-   "status": "clarification",
-   "updatedAt": "2026-10-20T03:04:08",
-   "reply": "I couldn't turn that into a record yet \u2014 nothing's saved. Can you give me the person's name, what was promised, and the date? Like: \u201cadd Sam Lee from Lee's Plumbing, call with the quote, due Friday\u201d \u2014 or just restate it with the date spelled out."
-  },
-  {
    "packageId": "PKG-EE168CC4",
    "status": "live",
-   "updatedAt": "2026-10-20T02:21:35",
+   "updatedAt": "2026-10-20T03:14:52",
    "summary": {
     "created": 1,
     "matched": 0,

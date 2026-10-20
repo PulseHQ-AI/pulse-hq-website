@@ -1682,6 +1682,10 @@ function liaisonHTML() {
       pretends a save happened.
     </div>
     <section class="panel" style="padding:22px;margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em">CONVERSATION</span>
+        <button id="liaisonReset" style="background:none;border:1px solid #22314a;border-radius:8px;color:#8fa1b8;padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer">↺ New conversation</button>
+      </div>
       <div id="liaisonThread" style="display:flex;flex-direction:column;gap:10px;max-height:430px;overflow-y:auto;padding:4px 2px 10px"></div>
       <div style="border-top:1px solid #1b2942;padding-top:14px">
         <textarea id="liaisonInput" rows="2" placeholder="Message the Liaison — talk like you'd talk to a person"
@@ -1741,6 +1745,13 @@ function wireLiaison() {
   });
   const send = $("liaisonSend");
   if (send) send.addEventListener("click", sendChatTurn);
+  const reset = $("liaisonReset");
+  if (reset) reset.addEventListener("click", () => {
+    try { localStorage.removeItem(threadKey()); } catch (e) {}
+    window.__openClarify = null;
+    renderThread();
+    showToast("New conversation started.");
+  });
   const input = $("liaisonInput");
   if (input) input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatTurn(); }
