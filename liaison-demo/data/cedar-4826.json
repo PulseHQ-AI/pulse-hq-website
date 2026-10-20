@@ -47,6 +47,14 @@
    "icon": "\u25c8",
    "id": 10,
    "title": "Liaison add"
+  },
+  {
+   "clientId": 8,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-C004EC85 (batch).",
+   "icon": "\u25c8",
+   "id": 11,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -186,6 +194,24 @@
    "id": 7,
    "name": "Frank",
    "notes": "Client's own words (chat note, 2026-10-20): \"i met this dude named frank, he wants me to tile his floor next friday. i told him id be there at 3 pm\" \u2014 date confirmed by Ben: Friday Oct 23. Interpreted by Remmy (concierge formatting step). Surname/company not given.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-C004EC85 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 8,
+   "name": "Anne",
+   "notes": "i met this lady named anne, she was very old. not sure how old. she explained that her husband died in the basement and we need to lay carpet over top of his body. she says she enjoys the smell. i offered to come over tomorrow at 7am, but she insisted i go tonight for drinks. i accepted",
    "phone": "Not added",
    "priority": "Medium",
    "status": "Lead",
