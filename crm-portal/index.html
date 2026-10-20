@@ -617,6 +617,8 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
         <span class="more">•••</span>
       </div>
       <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
+      <div class="version" id="saveState">CHANGES ARE NOT SAVED YET</div>
+      <button class="text-button" id="resetWorkspace" hidden>Reset workspace data</button>
     </div>
   </aside>
 
@@ -632,7 +634,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 
     <section class="page-heading">
       <div>
-        <div class="eyebrow"><span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE</div>
+        <div class="eyebrow" id="pageEyebrow"><span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE</div>
         <h1 id="pageTitle">Your business, <span>in motion.</span></h1>
         <p id="pageSubtitle">Every relationship has a status. Every opportunity has a next step.</p>
       </div>
@@ -991,6 +993,7 @@ function renderActivity() {
 
 function renderAll() {
   renderStats(); renderRows(); renderDetail(); renderNextActions(); renderActivity();
+  persistLocalState();
 }
 
 function selectClient(id) {
@@ -1277,6 +1280,10 @@ function setView(view) {
   $("pageTitle").innerHTML =
     escapeHTML(first) + `<span>${escapeHTML(accent)}</span>`;
   $("pageSubtitle").textContent = subtitle;
+  const bizName = workspaceInfo?.business;
+  $("pageEyebrow").innerHTML = activeView === "overview" && bizName
+    ? `<span class="eyebrow-line"></span> ${escapeHTML(bizName.toUpperCase())}`
+    : `<span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE`;
 
   document.querySelectorAll(".nav-item").forEach(button => {
     button.classList.toggle("active", button.dataset.view === view);
@@ -1433,6 +1440,12 @@ $("searchInput").addEventListener("input", () => {
   }
 });
 $("statusFilter").addEventListener("change",renderRows);
+$("resetWorkspace").addEventListener("click", () => {
+  if (!currentKey) return;
+  if (!window.confirm("Remove the changes saved in this browser and reload the original workspace data?")) return;
+  try { localStorage.removeItem(localStoreKey(currentKey)); } catch (e) {}
+  location.reload();
+});
 $("viewActions").addEventListener("click",e=>{
   if(e.target.id==="headAddCommitment") openCommitmentModal(null);
   else if(e.target.id==="headExportCommitments") exportCommitmentsCSV();
@@ -1534,6 +1547,27 @@ document.addEventListener("keydown",e=>{
 });
 
 let workspaceInfo = null;
+let currentKey = "";
+function localStoreKey(key) { return `pulsehq-crm-local:${key}`; }
+function readLocalState(key) {
+  try {
+    const raw = localStorage.getItem(localStoreKey(key));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.clients) || !Array.isArray(parsed.commitments) || !Array.isArray(parsed.activities)) return null;
+    return parsed;
+  } catch (e) { return null; }
+}
+function persistLocalState() {
+  if (!currentKey) return;
+  const el = $("saveState");
+  try {
+    localStorage.setItem(localStoreKey(currentKey), JSON.stringify({ clients, commitments, activities, nextClientId, nextCommitmentId, nextActivityId, savedAt: new Date().toISOString() }));
+    if (el) el.textContent = "SAVED IN THIS BROWSER ONLY";
+  } catch (e) {
+    if (el) el.textContent = "SAVING UNAVAILABLE IN THIS BROWSER";
+  }
+}
 async function loadWorkspace(rawKey) {
   const key = String(rawKey || "").trim().toLowerCase();
   const err = $("keyError");
@@ -1558,6 +1592,19 @@ async function loadWorkspace(rawKey) {
     nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
     nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
     nextCommitmentId = commitments.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    currentKey = key;
+    const saved = readLocalState(key);
+    let loadedSaved = false;
+    if (saved) {
+      clients = saved.clients;
+      commitments = saved.commitments;
+      activities = saved.activities;
+      nextClientId = saved.nextClientId || nextClientId;
+      nextActivityId = saved.nextActivityId || nextActivityId;
+      nextCommitmentId = saved.nextCommitmentId || nextCommitmentId;
+      selectedId = clients.length ? clients[0].id : null;
+      loadedSaved = true;
+    }
     const business = workspaceInfo.business || "Client workspace";
     $("workspaceLabel").innerHTML = `<span class="pulse-dot"></span> ${escapeHTML(business.toUpperCase())}`;
     $("workspaceUserName").textContent = workspaceInfo.userName || "Workspace user";
@@ -1565,12 +1612,13 @@ async function loadWorkspace(rawKey) {
     document.querySelectorAll(".avatar-ben").forEach(a => { a.textContent = workspaceInfo.userInitial || "W"; });
     $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
     $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
+    $("resetWorkspace").hidden = false;
     $("keyGate").hidden = true;
     $("appShell").style.visibility = "visible";
     activeView = "overview";
     renderAll();
     setView("overview");
-    showToast(`Workspace loaded: ${business}.`);
+    showToast(loadedSaved ? `Workspace loaded: ${business} — with your saved changes (this browser).` : `Workspace loaded: ${business}.`);
   } catch (e) {
     err.textContent = "That key didn't retrieve a workspace. Check the key and try again. (The page must be opened from its web address, not as a downloaded file.)";
     err.hidden = false;
