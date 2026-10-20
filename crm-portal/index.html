@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse HQ CRM — Portal Key Test</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #080b12;
+  --panel: #0e131e;
+  --panel2: #111827;
+  --line: #202b3d;
+  --text: #e9f0fb;
+  --muted: #8491a8;
+  --blue: #48a9ff;
+  --cyan: #69e4f4;
+  --purple: #a48bff;
+  --green: #58e0ae;
+  --amber: #ffc875;
+  --red: #ff7d91;
+  --mono: 'DM Mono', monospace;
+  --display: 'Space Grotesk', sans-serif;
+  --body: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 72% -20%, #142442 0, transparent 44%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 13px;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+.app-shell { min-height: 100vh; display: flex; }
+
+.sidebar {
+  width: 240px;
+  flex: 0 0 240px;
+  min-height: 100vh;
+  background: #0b0f18;
+  border-right: 1px solid var(--line);
+  padding: 27px 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  color: var(--text);
+  padding: 0 8px 35px;
+}
+
+.brand-mark {
+  width: 40px; height: 40px;
+  border: 1px solid #398bde;
+  border-radius: 11px;
+  display: grid; place-items: center;
+  color: white;
+  font: 700 24px var(--display);
+  background: linear-gradient(145deg, #173a66, #101c32);
+  box-shadow: 0 0 22px #278df52a;
+}
+.brand-mark span { color: var(--cyan); }
+.brand-name { font: 700 19px var(--display); letter-spacing: 1.3px; }
+.brand-name > span { color: var(--blue); }
+.brand-name small {
+  display: block; margin-top: 4px;
+  font: 9px var(--mono); color: var(--muted); letter-spacing: 1px;
+}
+
+.workspace-label, .eyebrow, .stat-top, th, .small-muted, .version,
+.system-status, .main-footer, .live-label {
+  font: 10px var(--mono);
+  letter-spacing: 1px;
+}
+.workspace-label { color: #65748c; padding: 0 12px 13px; }
+
+.nav { display: grid; gap: 5px; }
+.nav-item {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #8c9bb2;
+  text-align: left;
+  padding: 12px;
+  border-radius: 7px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  transition: .18s;
+}
+.nav-item > :first-child { color: #71819a; }
+.nav-item:hover { background: #131b2a; color: var(--text); }
+.nav-item.active {
+  color: #eaf5ff;
+  background: linear-gradient(90deg, #153052, #101b2c);
+  border-color: #244c76;
+  box-shadow: inset 2px 0 var(--blue);
+}
+.nav-item.active:first-letter { color: var(--cyan); }
+
+.sidebar-bottom { margin-top: auto; }
+.system-status {
+  padding: 13px 8px;
+  color: #90a0b7;
+  font-size: 9px;
+  border-bottom: 1px solid var(--line);
+}
+.pulse-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px #58e0ae88;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+.user-card { display: flex; align-items: center; gap: 10px; padding: 18px 5px; }
+.avatar {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 9px;
+  background: #1c2b43;
+  border: 1px solid #314664;
+  color: #cce6ff;
+  font: 600 13px var(--display);
+}
+.avatar-ben { background: linear-gradient(135deg,#284f79,#17243b); }
+.user-card strong { display: block; font-size: 12px; }
+.user-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+.more { margin-left: auto; color: #738198; letter-spacing: 2px; }
+.version { font-size: 8px; color: #5c6980; padding: 0 6px; }
+.version span { color: var(--blue); }
+
+.main { flex: 1; min-width: 0; padding: 0 34px; max-width: 1800px; margin: 0 auto; }
+.topbar {
+  min-height: 65px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid var(--line);
+}
+.breadcrumb { color: #74829a; font: 10px var(--mono); letter-spacing: .7px; }
+.breadcrumb span { color: #3c4d66; padding: 0 10px; }
+.breadcrumb strong { color: #c5d2e5; font-weight: 400; }
+.top-actions { display: flex; align-items: center; gap: 15px; }
+.live-label { font-size: 9px; color: #8fa1ba; }
+
+.icon-button {
+  width: 34px; height: 34px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: #111827; color: #c9d9ef; font-size: 19px;
+  transition: .2s;
+}
+.icon-button:hover { border-color: var(--blue); color: var(--cyan); }
+.icon-button.small { width: 28px; height: 28px; font-size: 17px; }
+
+.page-heading {
+  padding: 31px 0 25px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
+}
+.eyebrow { color: #7f91ab; font-size: 9px; }
+.eyebrow-line { display: inline-block; width: 17px; height: 2px; background: var(--blue); margin-right: 7px; vertical-align: middle; }
+h1, h2, p { margin: 0; }
+h1 { font: 600 clamp(25px, 3vw, 35px) var(--display); letter-spacing: -1.2px; margin-top: 11px; }
+h1 span { color: var(--blue); text-shadow: 0 0 26px #48a9ff30; }
+.page-heading p { margin-top: 9px; color: var(--muted); font-size: 12px; }
+.primary-button {
+  border: 1px solid #4aa6ff;
+  background: linear-gradient(135deg,#288ce8,#1766bb);
+  color: white; border-radius: 7px; padding: 11px 15px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+  box-shadow: 0 3px 20px #1688e522;
+  transition: .2s;
+}
+.primary-button:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.primary-button span { font-size: 15px; margin-right: 5px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.stat-card {
+  padding: 17px 17px 14px; border: 1px solid var(--line);
+  background: linear-gradient(145deg,#121a29,#0d121d);
+  border-radius: 10px; min-width: 0; position: relative; overflow: hidden;
+}
+.stat-card::after {
+  content: ""; position: absolute; top: 0; right: 15%;
+  width: 70px; height: 1px; background: #48a9ff70;
+}
+.stat-top { color: #8b9bb3; display: flex; align-items: center; justify-content: space-between; font-size: 9px; letter-spacing: .6px; }
+.stat-icon { color: var(--blue); font-size: 17px; }
+.stat-value { font: 600 31px var(--display); margin: 14px 0 7px; letter-spacing: -1px; }
+.stat-foot { display: flex; align-items: center; gap: 6px; color: #8998ae; font-size: 10px; white-space: nowrap; }
+.mini-dot { width: 6px; height: 6px; display: inline-block; border-radius: 50%; }
+.blue { background: var(--blue); } .purple { background: var(--purple); }
+.amber { background: var(--amber); } .red { background: var(--red); }
+.stat-bar { height: 2px; background: #263247; margin-top: 15px; }
+.stat-bar i { display: block; height: 100%; background: var(--blue); }
+.purple-bar i { background: var(--purple); }
+.amber-bar i { background: var(--amber); }
+.red-bar i { background: var(--red); }
+
+.content-grid { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(275px,.8fr); gap: 15px; margin-top: 17px; align-items: stretch; }
+.panel { background: linear-gradient(155deg,#0f1521,#0c111b); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 19px 19px 15px; }
+h2 { font: 600 17px var(--display); letter-spacing: -.3px; margin-top: 6px; }
+.count-pill { font: 10px var(--mono); color: var(--cyan); background: #163046; border: 1px solid #24506d; border-radius: 5px; padding: 3px 6px; vertical-align: 2px; margin-left: 4px; }
+.subtle-button {
+  border: 1px solid #2a384c; background: #111927; color: #9dacc1;
+  border-radius: 6px; padding: 8px 10px; font-size: 10px;
+}
+.subtle-button:hover { color: var(--text); border-color: #506786; }
+.toolbar { display: flex; gap: 9px; padding: 0 18px 15px; }
+.search-box {
+  display: flex; flex: 1; min-width: 0; gap: 8px; align-items: center;
+  padding: 0 10px; border: 1px solid #263449; background: #0a0f18; border-radius: 6px; color: #71829a;
+}
+.search-box input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); padding: 10px 0; font-size: 11px; }
+.search-box input::placeholder { color: #637189; }
+kbd { border: 1px solid #33435a; border-radius: 3px; padding: 1px 4px; color: #7587a1; font: 10px var(--mono); }
+select {
+  background: #101725; color: #9dacc1; border: 1px solid #29364a;
+  border-radius: 6px; padding: 9px 8px; font-size: 10px; max-width: 150px;
+}
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+thead { background: #101725; }
+th { padding: 11px 12px; font-size: 8px; color: #70819b; font-weight: 400; white-space: nowrap; }
+th:first-child, td:first-child { padding-left: 19px; }
+td { padding: 13px 12px; border-top: 1px solid #1b2637; font-size: 10px; vertical-align: middle; }
+tbody tr { cursor: pointer; transition: background .15s; }
+tbody tr:hover { background: #162237; }
+tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shadow: inset 2px 0 var(--blue); }
+.person-cell { display: flex; align-items: center; gap: 9px; min-width: 155px; }
+.person-cell .avatar { width: 31px; height: 31px; border-radius: 8px; font-size: 11px; }
+.person-cell strong { display: block; font-size: 11px; font-weight: 600; color: #dce7f6; white-space: nowrap; }
+.person-cell small { display: block; margin-top: 4px; color: #8391a8; font-size: 9px; white-space: nowrap; }
+.status {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid #304158; background: #172231; color: #a9bfd9;
+  padding: 4px 7px; border-radius: 4px; font-size: 9px; white-space: nowrap;
+}
+.status::before { content: ""; width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
+.status.client { color: var(--green); border-color: #245944; background: #11271f; }
+.status.proposal { color: var(--purple); border-color: #453a71; background: #211a35; }
+.status.qualified { color: var(--cyan); border-color: #275267; background: #112631; }
+.status.contacted { color: var(--amber); border-color: #56432a; background: #292117; }
+.status.lead { color: #9baac0; }
+.next-cell { min-width: 125px; max-width: 190px; }
+.next-cell strong { display: block; font-size: 10px; color: #c0cde0; font-weight: 500; line-height: 1.4; }
+.next-cell small { display: block; margin-top: 4px; font-size: 9px; color: #788aa3; }
+.priority { font: 9px var(--mono); white-space: nowrap; }
+.priority::before { content: "●"; margin-right: 5px; }
+.priority.high { color: var(--red); }
+.priority.medium { color: var(--amber); }
+.priority.low { color: #91a1b9; }
+.table-footer { padding: 12px 18px; display: flex; justify-content: space-between; color: #6d7e96; font-size: 9px; border-top: 1px solid var(--line); }
+.table-footer > span:last-child { font: 8px var(--mono); letter-spacing: .6px; }
+.footer-dot { color: var(--blue); margin-left: 5px; }
+.empty-state { text-align: center; padding: 30px 15px; color: var(--muted); line-height: 1.6; }
+
+.detail-panel { padding: 18px; }
+.detail-topline { display: flex; align-items: center; justify-content: space-between; }
+.profile-hero { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
+.profile-main { display: flex; align-items: center; gap: 13px; }
+.profile-avatar { width: 52px; height: 52px; font-size: 17px; border-radius: 13px; }
+.profile-main h3 { font: 600 18px var(--display); letter-spacing: -.4px; overflow-wrap: anywhere; }
+.profile-main p { color: #8291a8; font-size: 10px; margin-top: 5px; }
+.profile-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+.detail-section { padding: 17px 0; border-bottom: 1px solid var(--line); }
+.section-title { color: #8292a9; font: 9px var(--mono); letter-spacing: .8px; margin-bottom: 12px; }
+.next-action-card { border: 1px solid #2b4c6a; border-radius: 7px; background: linear-gradient(130deg,#142940,#111b2a); padding: 12px; }
+.action-row { display: flex; gap: 9px; align-items: flex-start; }
+.action-mark { width: 25px; height: 25px; border: 1px solid #315b7c; background: #173650; color: var(--cyan); display: grid; place-items: center; border-radius: 6px; flex-shrink: 0; }
+.action-copy strong { display: block; font-size: 11px; line-height: 1.5; color: #e0edfc; }
+.action-copy small { display: block; color: #93a6bf; margin-top: 5px; font-size: 10px; }
+.detail-kv { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 10px; }
+.detail-kv small { display: block; color: #7889a2; font-size: 9px; margin-bottom: 6px; }
+.detail-kv strong { font-size: 11px; color: #d6e1f0; font-weight: 500; overflow-wrap: anywhere; }
+.detail-note { color: #a2b0c4; font-size: 11px; line-height: 1.7; }
+.detail-buttons { display: flex; gap: 8px; margin-top: 15px; }
+.detail-buttons button { flex: 1; }
+.detail-history { display: grid; gap: 13px; }
+.history-item { display: flex; gap: 9px; }
+.history-mark { width: 7px; height: 7px; background: var(--blue); box-shadow: 0 0 7px #48a9ff66; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.history-item strong { font-size: 10px; color: #c7d5e8; font-weight: 500; display: block; line-height: 1.5; }
+.history-item small { font-size: 9px; color: #73849d; display: block; margin-top: 4px; }
+.text-button { border: 0; background: transparent; color: var(--blue); font-size: 10px; padding: 5px 0; }
+.text-button:hover { color: var(--cyan); }
+
+.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 16px; }
+.small-muted { color: #71819a; font-size: 8px; }
+.next-action-item { display: flex; align-items: center; gap: 11px; padding: 13px 19px; border-top: 1px solid #1c2636; cursor: pointer; }
+.next-action-item:hover { background: #131d2c; }
+.action-checkbox { width: 15px; height: 15px; border: 1px solid #41536b; border-radius: 4px; flex-shrink: 0; }
+.next-action-item strong { display: block; color: #d3deed; font-size: 11px; font-weight: 500; }
+.next-action-item small { display: block; color: #7789a2; margin-top: 4px; font-size: 9px; }
+.action-due { margin-left: auto; color: var(--amber); font: 9px var(--mono); white-space: nowrap; }
+.action-due.overdue { color: var(--red); }
+.activity-entry { display: flex; gap: 11px; padding: 13px 19px; border-top: 1px solid #1c2636; }
+.activity-icon { width: 29px; height: 29px; border-radius: 7px; border: 1px solid #2a405c; background: #152337; color: var(--blue); display: grid; place-items: center; flex-shrink: 0; }
+.activity-entry strong { display: block; font-size: 10px; font-weight: 500; line-height: 1.5; color: #d3deed; }
+.activity-entry small { display: block; color: #7587a0; font-size: 9px; margin-top: 4px; line-height: 1.5; }
+
+.main-footer { display: flex; justify-content: space-between; gap: 10px; color: #65758e; font-size: 8px; padding: 22px 0; margin-top: 4px; }
+.main-footer .pulse-dot { width: 5px; height: 5px; }
+
+.modal-backdrop { position: fixed; inset: 0; background: #03060bc9; backdrop-filter: blur(5px); z-index: 20; display: grid; place-items: center; padding: 18px; overflow-y: auto; }
+.modal-backdrop[hidden] { display: none; }
+.modal { width: min(480px,100%); background: #101725; border: 1px solid #2a3d57; border-radius: 12px; padding: 24px; box-shadow: 0 20px 80px #0009; }
+.modal-heading { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+.modal h2 { font-size: 23px; }
+.modal label { display: grid; gap: 7px; color: #9eacc1; font-size: 10px; margin-bottom: 14px; }
+.modal input, .modal select, .modal textarea { width: 100%; max-width: none; border: 1px solid #2a3a50; background: #0a101a; color: var(--text); padding: 11px; border-radius: 6px; font-size: 11px; }
+.modal textarea { resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; }
+.toast { position: fixed; bottom: 25px; right: 25px; z-index: 30; background: #15283b; border: 1px solid #35618a; border-radius: 8px; padding: 13px 18px; color: #e3f3ff; box-shadow: 0 8px 35px #0007; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; max-width: calc(100vw - 40px); font-size: 11px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+[hidden] { display: none !important; }
+
+@media (min-width: 1500px) {
+  .main { padding: 0 46px; }
+  .content-grid { grid-template-columns: minmax(0,1.8fr) minmax(310px,.75fr); }
+}
+@media (max-width: 1100px) {
+  .sidebar { width: 205px; flex-basis: 205px; }
+  .main { padding: 0 22px; }
+  .content-grid { grid-template-columns: minmax(0,1.4fr) minmax(255px,.8fr); }
+  .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  th, td { padding-right: 9px; padding-left: 9px; }
+  th:first-child, td:first-child { padding-left: 13px; }
+}
+@media (max-width: 780px) {
+  .sidebar { width: 62px; flex-basis: 62px; padding: 20px 8px 12px; }
+  .brand { padding: 0 2px 28px; }
+  .brand-mark { width: 42px; height: 42px; }
+  .brand-name, .workspace-label, .nav-item span, .system-status,
+  .user-card > div:not(.avatar), .user-card .more, .version { display: none; }
+  .nav-item { justify-content: center; padding: 13px 0; font-size: 18px; }
+  .user-card { justify-content: center; padding: 15px 0; }
+  .main { padding: 0 15px; }
+  .content-grid { grid-template-columns: 1fr; }
+  .bottom-grid { grid-template-columns: 1fr; }
+  .page-heading { align-items: flex-start; flex-direction: column; }
+  .page-heading .primary-button { align-self: flex-start; }
+}
+@media (max-width: 480px) {
+  .main { padding: 0 10px; }
+  .topbar { min-height: 54px; }
+  .live-label { display: none; }
+  .page-heading { padding-top: 24px; }
+  .stats-grid { gap: 8px; }
+  .stat-card { padding: 12px; }
+  .stat-top { font-size: 8px; }
+  .stat-value { font-size: 27px; }
+  .stat-foot { white-space: normal; line-height: 1.4; }
+  .toolbar { flex-direction: column; }
+  .toolbar select { max-width: none; }
+  .main-footer { font-size: 7px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+
+/* Dedicated workspace views */
+.workspace-view {
+  margin-top: 17px;
+  animation: view-enter .18s ease-out;
+}
+
+.workspace-intro {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, #121a29, #0d121d);
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.workspace-intro p {
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.workspace-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.workspace-toolbar input,
+.workspace-toolbar select {
+  min-width: 0;
+  padding: 11px;
+  background: #0a101a;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.workspace-toolbar input {
+  flex: 1;
+}
+
+.workspace-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.workspace-mini-card {
+  padding: 17px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 9px;
+}
+
+.workspace-mini-card small {
+  display: block;
+  color: var(--muted);
+  font: 10px var(--mono);
+  letter-spacing: .5px;
+}
+
+.workspace-mini-card strong {
+  display: block;
+  margin-top: 12px;
+  font: 600 25px var(--display);
+}
+
+.pipeline-stage {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--panel);
+  margin-bottom: 15px;
+}
+
+.pipeline-stage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 17px;
+  background: #111827;
+  border-bottom: 1px solid var(--line);
+}
+
+.pipeline-stage-heading h3 {
+  font: 600 14px var(--display);
+}
+
+.pipeline-stage-heading span {
+  color: var(--muted);
+  font: 10px var(--mono);
+}
+
+.pipeline-opportunity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 15px 17px;
+  border-bottom: 1px solid #1b2637;
+}
+
+.pipeline-opportunity:last-child {
+  border-bottom: 0;
+}
+
+.pipeline-opportunity strong,
+.commitment-record strong,
+.activity-record strong {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.pipeline-opportunity small,
+.commitment-record small,
+.activity-record small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.opportunity-value {
+  color: var(--cyan);
+  font: 500 13px var(--mono);
+  text-align: right;
+}
+
+.commitment-record,
+.activity-record {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 17px;
+  border-bottom: 1px solid #1b2637;
+}
+
+.commitment-record:last-child,
+.activity-record:last-child {
+  border-bottom: 0;
+}
+
+.commitment-record > div:nth-child(2),
+.activity-record > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.commitment-record input {
+  accent-color: var(--blue);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.commitment-record.is-done strong {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.activity-record .activity-icon {
+  flex-shrink: 0;
+}
+
+.workspace-empty {
+  padding: 35px 18px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.7;
+}
+
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 780px) {
+  .workspace-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ——— Layer 2 key test (Remmy, 2026-10-19): key gate + workspace identity ——— */
+.key-gate { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 18px; background: #03060bd9; backdrop-filter: blur(6px); overflow-y: auto; }
+.key-gate[hidden] { display: none; }
+.key-card { width: min(430px, 100%); background: linear-gradient(155deg,#101725,#0c111b); border: 1px solid #2a3d57; border-radius: 12px; padding: 28px; box-shadow: 0 20px 80px #0009; }
+.key-mark { margin-bottom: 18px; }
+.key-card h2 { font-size: 22px; margin-top: 10px; }
+.key-card p { color: var(--muted); font-size: 12px; line-height: 1.65; margin-top: 10px; }
+.key-card label { display: grid; gap: 7px; color: #9eacc1; font-size: 10px; margin: 20px 0 14px; }
+.key-card input { width: 100%; border: 1px solid #2a3a50; background: #0a101a; color: var(--text); padding: 12px; border-radius: 6px; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; }
+.key-card .primary-button { width: 100%; padding: 13px 15px; font-size: 12px; }
+.key-error { border: 1px solid #6e3542; background: #2a1218; color: #ffb3c0; border-radius: 6px; padding: 10px 12px; font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
+.key-note { display: block; margin-top: 16px; color: #5c6980; font: 8px var(--mono); letter-spacing: .8px; line-height: 1.7; }
+
+</style>
+</head>
+<body>
+
+<div class="key-gate" id="keyGate">
+  <form class="key-card" id="keyForm">
+    <div class="brand-mark key-mark">P<span>+</span></div>
+    <div class="eyebrow"><span class="eyebrow-line"></span> PULSE HQ CLIENT PORTAL</div>
+    <h2>Enter your workspace key</h2>
+    <p>Your special key retrieves your business workspace and populates this page with your records — relationships, commitments, and activity.</p>
+    <label>Special key
+      <input id="keyInput" type="text" autocomplete="off" autocapitalize="characters" placeholder="e.g. CEDAR-4826" />
+    </label>
+    <div class="key-error" id="keyError" hidden></div>
+    <button class="primary-button" type="submit">Open workspace</button>
+    <small class="key-note">TEST ENVIRONMENT · SYNTHETIC DATA ONLY · Read-only population test — changes are not saved back yet.</small>
+  </form>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#">
+      <span class="brand-mark">P<span>+</span></span>
+      <span class="brand-name">PULSE<span>HQ</span><small>RELATIONSHIP OPERATIONS</small></span>
+    </a>
+
+    <div class="workspace-label">WORKSPACE</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="overview">◈ <span>Overview</span></button>
+      <button class="nav-item" data-view="clients">▤ <span>Clients & Prospects</span></button>
+      <button class="nav-item" data-view="pipeline">⌁ <span>Opportunity Pipeline</span></button>
+      <button class="nav-item" data-view="commitments">◷ <span>Commitments</span></button>
+      <button class="nav-item" data-view="activity">≋ <span>Activity Log</span></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="system-status"><span class="pulse-dot"></span> SYSTEM OPERATIONAL</div>
+      <div class="user-card">
+        <div class="avatar avatar-ben">B</div>
+        <div><strong id="workspaceUserName">Ben</strong><small id="workspaceUserRole">Chief Executive Officer</small></div>
+        <span class="more">•••</span>
+      </div>
+      <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb">PULSE HQ <span>/</span> <strong id="crumb">Overview</strong></div>
+      <div class="top-actions">
+        <span class="live-label" id="workspaceLabel"><span class="pulse-dot"></span> AWAITING KEY</span>
+        <button class="icon-button" id="activityQuick" title="Log activity">＋</button>
+        <div class="avatar avatar-ben">B</div>
+      </div>
+    </header>
+
+    <section class="page-heading">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE</div>
+        <h1 id="pageTitle">Your business, <span>in motion.</span></h1>
+        <p id="pageSubtitle">Every relationship has a status. Every opportunity has a next step.</p>
+      </div>
+      <button class="primary-button" id="newClient"><span>＋</span> New relationship</button>
+    </section>
+
+    <section id="alternateView" hidden></section>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <div class="stat-top"><span>TOTAL RELATIONSHIPS</span><span class="stat-icon">◈</span></div>
+        <div class="stat-value" id="totalCount">07</div>
+        <div class="stat-foot"><span class="mini-dot blue"></span> Clients and active prospects</div>
+        <div class="stat-bar"><i style="width:82%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>ACTIVE OPPORTUNITIES</span><span class="stat-icon">⌁</span></div>
+        <div class="stat-value" id="opportunityCount">04</div>
+        <div class="stat-foot"><span class="mini-dot purple"></span> <span id="pipelineValue">$8,400</span> potential value</div>
+        <div class="stat-bar purple-bar"><i style="width:64%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>OPEN COMMITMENTS</span><span class="stat-icon">◷</span></div>
+        <div class="stat-value" id="commitmentCount">05</div>
+        <div class="stat-foot"><span class="mini-dot amber"></span> Actions still outstanding</div>
+        <div class="stat-bar amber-bar"><i style="width:43%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>FOLLOW-UPS DUE</span><span class="stat-icon">↗</span></div>
+        <div class="stat-value" id="followupCount">03</div>
+        <div class="stat-foot"><span class="mini-dot red"></span> <span id="overdueLabel">1 needs attention</span></div>
+        <div class="stat-bar red-bar"><i style="width:35%"></i></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <div class="panel relationships-panel">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">YOUR NETWORK</div>
+            <h2>Relationships <span class="count-pill" id="listCount">07</span></h2>
+          </div>
+          <button class="subtle-button" id="exportBtn">↓ Export</button>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Search names, companies..." />
+            <kbd>/</kbd>
+          </label>
+          <select id="statusFilter" aria-label="Filter relationships">
+            <option value="all">All statuses</option>
+            <option value="Lead">Lead</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Client">Client</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>RELATIONSHIP</th><th>STATUS</th><th>NEXT ACTION</th><th>PRIORITY</th></tr>
+            </thead>
+            <tbody id="clientRows"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state" hidden>No matching relationships. Try another search or create a new one.</div>
+        </div>
+        <div class="table-footer"><span id="showingCount">Showing 7 relationships</span><span id="dataLabel">DEMO WORKSPACE <span class="footer-dot">●</span></span></div>
+      </div>
+
+      <aside class="panel detail-panel" id="detailPanel">
+        <div class="detail-topline">
+          <span class="eyebrow">RELATIONSHIP PROFILE</span>
+          <button class="icon-button small" id="closeDetail" title="Hide profile">×</button>
+        </div>
+        <div id="clientDetail"></div>
+      </aside>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel next-actions-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">WHAT NEEDS YOU</div><h2>Next actions</h2></div>
+          <span class="small-muted">BY PRIORITY</span>
+        </div>
+        <div id="nextActions"></div>
+      </div>
+
+      <div class="panel activity-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">THE PAPER TRAIL</div><h2>Recent activity</h2></div>
+          <button class="text-button" data-view="activity">View log ↗</button>
+        </div>
+        <div id="recentActivity"></div>
+      </div>
+    </section>
+
+    <footer class="main-footer">
+      <span><span class="pulse-dot"></span> YOUR WORKSPACE. YOUR RULES.</span>
+      <span>DESIGNED FOR PULSE HQ <span class="footer-dot">◆</span> <span id="clock">READY</span></span>
+    </footer>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <form class="modal" id="clientForm">
+    <div class="modal-heading">
+      <div><div class="eyebrow">EXPAND YOUR NETWORK</div><h2 id="modalTitle">New relationship</h2></div>
+      <button type="button" class="icon-button" id="cancelModal">×</button>
+    </div>
+    <label>Contact or company name<input name="name" required placeholder="e.g. Morgan Lee" /></label>
+    <label>Company<input name="company" placeholder="Business name" /></label>
+    <div class="form-row">
+      <label>Status
+        <select name="status">
+          <option>Lead</option><option>Contacted</option><option>Qualified</option>
+          <option>Proposal</option><option>Client</option>
+        </select>
+      </label>
+      <label>Priority
+        <select name="priority"><option>Medium</option><option>High</option><option>Low</option></select>
+      </label>
+    </div>
+    <label>Next action<input name="nextAction" placeholder="e.g. Send introduction email" /></label>
+    <label>Follow-up date<input name="dueDate" type="date" /></label>
+    <label>Notes<textarea name="notes" rows="3" placeholder="Context worth keeping..."></textarea></label>
+    <div class="modal-actions"><button type="button" class="subtle-button" id="cancelModalBottom">Cancel</button><button type="submit" class="primary-button">Save relationship ↗</button></div>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const day = (offset) => {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+};
+const money = (n) => new Intl.NumberFormat("en-CA", {
+  style: "currency", currency: "CAD", maximumFractionDigits: 0
+}).format(n);
+const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[c]));
+
+let clients = [
+  {id:1,name:"Morgan Ellis",company:"Northstar Landscaping",status:"Proposal",priority:"High",nextAction:"Follow up on proposal",dueDate:day(-1),value:6500,email:"morgan@northstar.example",phone:"Not added",notes:"Interested in improving online presence and managing social media. Proposal sent; awaiting feedback.",activities:[{title:"Proposal sent",date:"Today",detail:"Service proposal delivered for review."},{title:"Discovery call",date:"3 days ago",detail:"Discussed current marketing workflow."}]},
+  {id:2,name:"Sarah Mitchell",company:"Shuswap Wellness",status:"Client",priority:"High",nextAction:"Prepare monthly content plan",dueDate:day(0),value:1250,email:"sarah@wellness.example",phone:"Not added",notes:"Active client. Keep the tone warm, professional, and community focused.",activities:[{title:"Monthly check-in",date:"Today",detail:"Reviewed priorities for the upcoming month."}]},
+  {id:3,name:"James Carter",company:"Carter Irrigation",status:"Qualified",priority:"High",nextAction:"Book discovery meeting",dueDate:day(1),value:2400,email:"james@carter.example",phone:"Not added",notes:"Growing landscaping and irrigation business. Interested in improving lead follow-up.",activities:[{title:"Lead qualified",date:"Yesterday",detail:"Confirmed business needs and interest."}]},
+  {id:4,name:"Linda Brooks",company:"Senior Society",status:"Contacted",priority:"Medium",nextAction:"Send website concept",dueDate:day(2),value:1800,email:"linda@society.example",phone:"Not added",notes:"Discussed a website refresh and making key information easier to find.",activities:[{title:"Initial contact",date:"2 days ago",detail:"Discussed website needs."}]},
+  {id:5,name:"Daniel Foster",company:"Foster Auto Care",status:"Lead",priority:"Low",nextAction:"Send introduction email",dueDate:day(4),value:900,email:"daniel@foster.example",phone:"Not added",notes:"Potential prospect. Research their current online presence before reaching out.",activities:[{title:"Prospect added",date:"4 days ago",detail:"Added to the outreach list."}]},
+  {id:6,name:"Priya Shah",company:"Shah Accounting",status:"Proposal",priority:"Medium",nextAction:"Confirm decision date",dueDate:day(3),value:3200,email:"priya@shah.example",phone:"Not added",notes:"Interested in a simple website and regular social content.",activities:[{title:"Proposal revised",date:"Yesterday",detail:"Updated scope following feedback."}]},
+  {id:7,name:"Robert Hayes",company:"Hayes Home Services",status:"Client",priority:"Medium",nextAction:"Request monthly feedback",dueDate:day(5),value:1250,email:"robert@hayes.example",phone:"Not added",notes:"Ongoing client relationship. Check satisfaction and upcoming needs.",activities:[{title:"Work delivered",date:"Last week",detail:"Latest content batch delivered for review."}]}
+];
+
+let activities = [
+  {id:1,clientId:1,title:"Proposal sent",detail:"Service proposal delivered for review.",date:"Today",icon:"↗"},
+  {id:2,clientId:2,title:"Client check-in",detail:"Monthly content priorities reviewed.",date:"Today",icon:"◈"},
+  {id:3,clientId:3,title:"Lead qualified",detail:"Confirmed business needs and interest.",date:"Yesterday",icon:"✓"},
+  {id:4,clientId:6,title:"Proposal revised",detail:"Updated scope following feedback.",date:"Yesterday",icon:"≋"}
+];
+
+let commitments = [
+  {id:1,clientId:1,title:"Receive proposal feedback",dueDate:day(-1),done:false},
+  {id:2,clientId:2,title:"Prepare content plan",dueDate:day(0),done:false},
+  {id:3,clientId:3,title:"Schedule discovery meeting",dueDate:day(1),done:false},
+  {id:4,clientId:4,title:"Send website concept",dueDate:day(2),done:false},
+  {id:5,clientId:6,title:"Confirm decision date",dueDate:day(3),done:false}
+];
+
+let selectedId = 1;
+let activeView = "overview";
+let editingId = null;
+let nextClientId = 8;
+let nextActivityId = 5;
+let toastTimer;
+
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase();
+}
+function statusClass(status) { return status.toLowerCase(); }
+function dateLabel(date) {
+  if (!date) return "No date set";
+  const today = day(0);
+  const tomorrow = day(1);
+  if (date === today) return "Today";
+  if (date === tomorrow) return "Tomorrow";
+  if (date < today) return "Overdue · " + date;
+  return new Date(date + "T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"});
+}
+function dateOrder(date) { return date || "9999-99-99"; }
+function dueClass(date) {
+  if (!date) return "";
+  if (date < day(0)) return "overdue";
+  return "";
+}
+function showToast(message) {
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>$("toast").classList.remove("show"),2600);
+}
+function clientById(id) { return clients.find(c=>c.id===id); }
+
+function renderStats() {
+  const activeOpps = clients.filter(c=>!["Client"].includes(c.status));
+  const due = clients.filter(c=>c.dueDate && c.dueDate <= day(0));
+  const overdue = clients.filter(c=>c.dueDate && c.dueDate < day(0));
+  $("totalCount").textContent = String(clients.length).padStart(2,"0");
+  $("opportunityCount").textContent = String(activeOpps.length).padStart(2,"0");
+  $("commitmentCount").textContent = String(commitments.filter(c=>!c.done).length).padStart(2,"0");
+  $("followupCount").textContent = String(due.length).padStart(2,"0");
+  $("overdueLabel").textContent = `${overdue.length} overdue`;
+  $("pipelineValue").textContent = money(activeOpps.reduce((s,c)=>s+(Number(c.value)||0),0));
+}
+
+function renderRows() {
+  const query = $("searchInput").value.toLowerCase().trim();
+  const status = $("statusFilter").value;
+  const filtered = clients.filter(c => {
+    const matchesStatus = status==="all" || c.status===status;
+    const matchesQuery = [c.name,c.company,c.status,c.nextAction,c.notes]
+      .join(" ").toLowerCase().includes(query);
+    return matchesStatus && matchesQuery;
+  });
+
+  $("clientRows").innerHTML = filtered.map(c=>`
+    <tr data-id="${c.id}" class="${c.id===selectedId?"selected":""}" tabindex="0" aria-label="Open ${escapeHTML(c.name)}">
+      <td><div class="person-cell">
+        <div class="avatar">${escapeHTML(initials(c.name))}</div>
+        <div><strong>${escapeHTML(c.name)}</strong><small>${escapeHTML(c.company||"No company added")}</small></div>
+      </div></td>
+      <td><span class="status ${statusClass(c.status)}">${escapeHTML(c.status)}</span></td>
+      <td><div class="next-cell"><strong>${escapeHTML(c.nextAction||"No next action")}</strong><small>${escapeHTML(dateLabel(c.dueDate))}</small></div></td>
+      <td><span class="priority ${c.priority.toLowerCase()}">${escapeHTML(c.priority)}</span></td>
+    </tr>`).join("");
+
+  $("emptyState").hidden = filtered.length>0;
+  $("listCount").textContent = String(filtered.length).padStart(2,"0");
+  $("showingCount").textContent = `Showing ${filtered.length} of ${clients.length} relationships`;
+}
+
+function renderDetail() {
+  const c = clientById(selectedId);
+  if (!c) {
+    $("clientDetail").innerHTML = `<div class="empty-state">Select a relationship to view its profile.</div>`;
+    return;
+  }
+
+  $("clientDetail").innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-main">
+        <div class="avatar profile-avatar">${escapeHTML(initials(c.name))}</div>
+        <div><h3>${escapeHTML(c.name)}</h3><p>${escapeHTML(c.company||"Independent contact")}</p></div>
+      </div>
+      <div class="profile-tags">
+        <span class="status ${statusClass(c.status)}">${escapeHTML(c.status)}</span>
+        <span class="priority ${c.priority.toLowerCase()}">${escapeHTML(c.priority)} priority</span>
+      </div>
+      <div class="detail-buttons">
+        <button class="subtle-button" id="editClient">Edit profile</button>
+        <button class="primary-button" id="logClientActivity">＋ Log activity</button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">NEXT COMMITMENT</div>
+      <div class="next-action-card">
+        <div class="action-row">
+          <div class="action-mark">↗</div>
+          <div class="action-copy">
+            <strong>${escapeHTML(c.nextAction||"Define the next action")}</strong>
+            <small>${escapeHTML(dateLabel(c.dueDate))}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">RELATIONSHIP DETAILS</div>
+      <div class="detail-kv">
+        <div><small>Opportunity value</small><strong>${money(c.value||0)}</strong></div>
+        <div><small>Relationship ID</small><strong>REL-${String(c.id).padStart(4,"0")}</strong></div>
+        <div><small>Email</small><strong>${escapeHTML(c.email||"Not added")}</strong></div>
+        <div><small>Phone</small><strong>${escapeHTML(c.phone||"Not added")}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">CONTEXT & NOTES</div>
+      <p class="detail-note">${escapeHTML(c.notes||"No notes recorded yet.")}</p>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">RELATIONSHIP HISTORY</div>
+      <div class="detail-history">
+        ${(c.activities||[]).map(a=>`
+          <div class="history-item"><span class="history-mark"></span><div>
+            <strong>${escapeHTML(a.title)}</strong><small>${escapeHTML(a.date)} · ${escapeHTML(a.detail||"")}</small>
+          </div></div>`).join("") || `<span class="detail-note">No activity recorded.</span>`}
+      </div>
+    </div>`;
+  $("editClient").addEventListener("click",()=>openModal(c.id));
+  $("logClientActivity").addEventListener("click",()=>logActivity(c.id));
+}
+
+function renderNextActions() {
+  const pending = commitments.filter(c=>!c.done).sort((a,b)=>dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate))).slice(0,5);
+  $("nextActions").innerHTML = pending.map(c=>{
+    const person=clientById(c.clientId);
+    return `<div class="next-action-item" data-commitment="${c.id}" tabindex="0" role="button" aria-label="Complete ${escapeHTML(c.title)}">
+      <span class="action-checkbox"></span>
+      <div><strong>${escapeHTML(c.title)}</strong><small>${escapeHTML(person?.company||"Unknown relationship")}</small></div>
+      <span class="action-due ${dueClass(c.dueDate)}">${escapeHTML(dateLabel(c.dueDate))}</span>
+    </div>`;
+  }).join("") || `<div class="empty-state">All caught up. Nothing outstanding.</div>`;
+}
+
+function renderActivity() {
+  $("recentActivity").innerHTML = activities.slice(0,5).map(a=>{
+    const person=clientById(a.clientId);
+    return `<div class="activity-entry">
+      <div class="activity-icon">${escapeHTML(a.icon||"≋")}</div>
+      <div><strong>${escapeHTML(a.title)} · ${escapeHTML(person?.name||"Workspace")}</strong><small>${escapeHTML(a.detail)} · ${escapeHTML(a.date)}</small></div>
+    </div>`;
+  }).join("") || `<div class="empty-state">No activity recorded yet.</div>`;
+}
+
+function renderAll() {
+  renderStats(); renderRows(); renderDetail(); renderNextActions(); renderActivity();
+}
+
+function selectClient(id) {
+  selectedId=Number(id);
+  renderRows(); renderDetail();
+}
+
+function renderAlternateView(view) {
+  const target = $("alternateView");
+
+  const stageOrder = ["Lead", "Contacted", "Qualified", "Proposal"];
+  const openCommitments = commitments.filter(c => !c.done);
+  const completedCommitments = commitments.filter(c => c.done);
+  const query = $("searchInput").value.toLowerCase().trim();
+
+  const matches = (text) => String(text ?? "")
+    .toLowerCase()
+    .includes(query);
+
+  if (view === "pipeline") {
+    const stages = stageOrder.map(status => {
+      const items = clients.filter(c => c.status === status);
+      const total = items.reduce(
+        (sum, c) => sum + (Number(c.value) || 0), 0
+      );
+
+      return `
+        <section class="pipeline-stage">
+          <div class="pipeline-stage-heading">
+            <h3>${escapeHTML(status)}</h3>
+            <span>${items.length} · ${money(total)}</span>
+          </div>
+          ${items.map(c => `
+            <div class="pipeline-opportunity">
+              <div>
+                <strong>${escapeHTML(c.company || c.name)}</strong>
+                <small>${escapeHTML(c.name)} · ${escapeHTML(c.priority)} priority</small>
+                <small>${escapeHTML(c.nextAction || "Next action not set")} · ${escapeHTML(dateLabel(c.dueDate))}</small>
+                <button class="text-button" data-open-client="${c.id}">
+                  Open relationship ↗
+                </button>
+              </div>
+              <div class="opportunity-value">${money(c.value || 0)}</div>
+            </div>
+          `).join("") || `
+            <div class="workspace-empty">No relationships at this stage.</div>
+          `}
+        </section>`;
+    }).join("");
+
+    const totalValue = clients
+      .filter(c => stageOrder.includes(c.status))
+      .reduce((sum, c) => sum + (Number(c.value) || 0), 0);
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">SALES WORKSPACE</div>
+          <h2>Opportunity pipeline</h2>
+          <p>Track prospects from first contact through proposal. Select a relationship to inspect its full record.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>OPEN OPPORTUNITIES</small>
+            <strong>${clients.filter(c => stageOrder.includes(c.status)).length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>PIPELINE VALUE</small>
+            <strong>${money(totalValue)}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>PROPOSALS OUT</small>
+            <strong>${clients.filter(c => c.status === "Proposal").length}</strong>
+          </div>
+        </div>
+        ${stages}
+      </div>`;
+  }
+
+  if (view === "commitments") {
+    const all = [
+      ...openCommitments.map(c => ({...c, isDone: false})),
+      ...completedCommitments.map(c => ({...c, isDone: true}))
+    ].filter(c => {
+      const person = clientById(c.clientId);
+      return matches([c.title, person?.name, person?.company].join(" "));
+    }).sort((a, b) => {
+      if (a.isDone !== b.isDone) return Number(a.isDone) - Number(b.isDone);
+      return dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate));
+    });
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">EXECUTION TRACKER</div>
+          <h2>Commitments</h2>
+          <p>Every outstanding promise in one place. Mark an item complete only when the work has actually been done.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>OUTSTANDING</small>
+            <strong>${openCommitments.length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>OVERDUE</small>
+            <strong>${openCommitments.filter(c => c.dueDate && c.dueDate < day(0)).length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>COMPLETED</small>
+            <strong>${completedCommitments.length}</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">ACTION REGISTER</div>
+              <h2>All commitments</h2>
+            </div>
+          </div>
+          <div>
+            ${all.map(c => {
+              const person = clientById(c.clientId);
+              return `
+                <div class="commitment-record ${c.isDone ? "is-done" : ""}">
+                  <input type="checkbox"
+                    data-complete-commitment="${c.id}"
+                    aria-label="${c.isDone ? "Completed" : "Complete"}: ${escapeHTML(c.title)}"
+                    ${c.isDone ? "checked disabled" : ""}>
+                  <div>
+                    <strong>${escapeHTML(c.title)}</strong>
+                    <small>${escapeHTML(person?.company || person?.name || "Unknown relationship")}</small>
+                    <small>${escapeHTML(dateLabel(c.dueDate))}</small>
+                    ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
+                  </div>
+                  <span class="priority ${c.dueDate && c.dueDate < day(0) && !c.isDone ? "high" : "low"}">
+                    ${c.isDone ? "DONE" : c.dueDate && c.dueDate < day(0) ? "OVERDUE" : "OPEN"}
+                  </span>
+                </div>`;
+            }).join("") || `<div class="workspace-empty">No commitments match your search.</div>`}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  if (view === "activity") {
+    const filtered = activities.filter(a => {
+      const person = clientById(a.clientId);
+      return matches([a.title, a.detail, person?.name, person?.company, a.date].join(" "));
+    });
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">AUDIT TRAIL · DEMO DATA</div>
+          <h2>Activity log</h2>
+          <p>Review recorded interactions and changes. This prototype's activity log exists only in browser memory and is not a durable audit system.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>RECORDED EVENTS</small>
+            <strong>${activities.length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>RELATIONSHIPS INVOLVED</small>
+            <strong>${new Set(activities.map(a => a.clientId)).size}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>SHOWING</small>
+            <strong>${filtered.length}</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">RECENT FIRST</div>
+              <h2>Recorded activity</h2>
+            </div>
+          </div>
+          ${filtered.map(a => {
+            const person = clientById(a.clientId);
+            return `
+              <div class="activity-record">
+                <div class="activity-icon">${escapeHTML(a.icon || "≋")}</div>
+                <div>
+                  <strong>${escapeHTML(a.title)}</strong>
+                  <small>${escapeHTML(a.detail || "No additional context recorded.")}</small>
+                  <small>${escapeHTML(person?.name || "Workspace")} · ${escapeHTML(person?.company || "")} · ${escapeHTML(a.date)}</small>
+                  ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
+                </div>
+              </div>`;
+          }).join("") || `<div class="workspace-empty">No matching activity records.</div>`}
+        </div>
+      </div>`;
+  }
+
+  target.querySelectorAll("[data-open-client]").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = Number(button.dataset.openClient);
+      selectClient(id);
+      setView("clients");
+    });
+  });
+
+  target.querySelectorAll("[data-complete-commitment]").forEach(input => {
+    input.addEventListener("change", () => {
+      const c = commitments.find(
+        item => item.id === Number(input.dataset.completeCommitment)
+      );
+      if (!c || c.done) return;
+
+      const person = clientById(c.clientId);
+      if (!window.confirm(
+        `Mark "${c.title}" complete for ${person?.name || "this relationship"}?`
+      )) {
+        input.checked = false;
+        return;
+      }
+
+      c.done = true;
+      addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
+      renderAll();
+      setView("commitments");
+      showToast("Commitment marked complete.");
+    });
+  });
+}
+
+function setView(view) {
+  const validViews = ["overview", "clients", "pipeline", "commitments", "activity"];
+  if (!validViews.includes(view)) view = "overview";
+
+  activeView = view;
+
+  const config = {
+    overview: [
+      "Overview", "Your business, ", "in motion.",
+      "Every relationship has a status. Every opportunity has a next step."
+    ],
+    clients: [
+      "Clients & Prospects", "Know every ", "relationship.",
+      "One record for every contact, client, and prospect."
+    ],
+    pipeline: [
+      "Opportunity Pipeline", "Turn interest ", "into action.",
+      "See the relationships most likely to become your next client."
+    ],
+    commitments: [
+      "Commitments", "Nothing falls ", "through.",
+      "Track promised actions, due dates, and completed work."
+    ],
+    activity: [
+      "Activity Log", "Every action ", "accounted for.",
+      "Review recorded interactions and changes across your relationships."
+    ]
+  };
+
+  const [crumb, first, accent, subtitle] = config[view];
+
+  $("crumb").textContent = crumb;
+  $("pageTitle").innerHTML =
+    escapeHTML(first) + `<span>${escapeHTML(accent)}</span>`;
+  $("pageSubtitle").textContent = subtitle;
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+
+  const overview = view === "overview";
+  const clientsView = view === "clients";
+
+  // Show only the sections that belong to the selected workspace.
+  document.querySelector(".stats-grid").hidden = !overview;
+  document.querySelector(".content-grid").hidden = !overview && !clientsView;
+  document.querySelector(".bottom-grid").hidden = !overview;
+  $("alternateView").hidden = overview || clientsView;
+
+  if (view === "pipeline") {
+    $("statusFilter").value = "all";
+  } else if (view === "overview" || view === "clients") {
+    $("statusFilter").value = "all";
+  }
+
+  $("searchInput").placeholder =
+    view === "activity" ? "Search events, people, details..." :
+    view === "commitments" ? "Search commitments and relationships..." :
+    view === "pipeline" ? "Search pipeline..." :
+    "Search names, companies...";
+
+  if (view === "overview" || view === "clients") {
+    renderRows();
+    renderDetail();
+  } else {
+    renderAlternateView(view);
+  }
+}
+function openModal(id=null) {
+  editingId=id;
+  const form=$("clientForm");
+  form.reset();
+  $("modalTitle").textContent=id?"Edit relationship":"New relationship";
+  if(id) {
+    const c=clientById(id);
+    if(!c) return;
+    for(const key of ["name","company","status","priority","nextAction","dueDate","notes"]) {
+      form.elements[key].value=c[key]||"";
+    }
+  }
+  $("modalBackdrop").hidden=false;
+  form.elements.name.focus();
+}
+function closeModal() {
+  $("modalBackdrop").hidden=true;
+  editingId=null;
+}
+function addActivityRecord(clientId,title,detail,icon="≋") {
+  const date="Today";
+  const item={id:nextActivityId++,clientId,title,detail,date,icon};
+  activities.unshift(item);
+  const c=clientById(clientId);
+  if(c) c.activities.unshift({title,date,detail});
+}
+function logActivity(clientId) {
+  const c=clientById(clientId);
+  if(!c) return;
+  const title=window.prompt("What happened? (e.g. Follow-up email sent)");
+  if(!title?.trim()) return;
+  const detail=window.prompt("Add context (optional):")||"Activity recorded.";
+  addActivityRecord(clientId,title.trim(),detail.trim());
+  renderAll();
+  showToast("Activity recorded for "+c.name+".");
+}
+function csvEscape(value) {
+  return '"'+String(value??"").replace(/"/g,'""')+'"';
+}
+function exportCSV() {
+  const columns=["id","name","company","status","priority","nextAction","dueDate","value","email","phone","notes"];
+  const lines=[columns.join(","),...clients.map(c=>columns.map(k=>csvEscape(c[k])).join(","))];
+  const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download="pulse-hq-relationships.csv"; a.click();
+  URL.revokeObjectURL(url);
+  showToast("Relationship CSV exported.");
+}
+
+$("clientRows").addEventListener("click",e=>{
+  const row=e.target.closest("tr[data-id]");
+  if(row) selectClient(row.dataset.id);
+});
+$("clientRows").addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("tr[data-id]")){
+    e.preventDefault(); selectClient(e.target.dataset.id);
+  }
+});
+$("searchInput").addEventListener("input", () => {
+  if (activeView === "overview" || activeView === "clients") {
+    renderRows();
+  } else {
+    renderAlternateView(activeView);
+  }
+});
+$("statusFilter").addEventListener("change",renderRows);
+$("newClient").addEventListener("click",()=>openModal());
+$("cancelModal").addEventListener("click",closeModal);
+$("cancelModalBottom").addEventListener("click",closeModal);
+$("modalBackdrop").addEventListener("click",e=>{
+  if(e.target===$("modalBackdrop")) closeModal();
+});
+$("exportBtn").addEventListener("click",exportCSV);
+$("activityQuick").addEventListener("click",()=>{
+  if(!selectedId) return showToast("Select a relationship first.");
+  logActivity(selectedId);
+});
+$("closeDetail").addEventListener("click",()=>{
+  $("clientDetail").innerHTML='<div class="empty-state">Profile hidden. Select a relationship to reopen it.</div>';
+});
+
+$("clientForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(e.currentTarget).entries());
+  if(editingId) {
+    const c=clientById(editingId);
+    Object.assign(c,data,{value:Number(c.value)||0});
+    addActivityRecord(c.id,"Relationship updated","Profile details were updated.","✓");
+    selectedId=c.id;
+    closeModal(); renderAll(); showToast("Relationship updated.");
+  } else {
+    const c={
+      id:nextClientId++,name:data.name.trim(),company:data.company.trim(),
+      status:data.status,priority:data.priority,nextAction:data.nextAction.trim(),
+      dueDate:data.dueDate,value:0,email:"",phone:"",notes:data.notes.trim(),activities:[]
+    };
+    clients.unshift(c);
+    selectedId=c.id;
+    addActivityRecord(c.id,"Relationship created","New relationship added to Pulse HQ.","＋");
+    closeModal(); renderAll(); showToast("New relationship created.");
+  }
+});
+
+$("nextActions").addEventListener("click",e=>{
+  const row=e.target.closest("[data-commitment]");
+  if(!row) return;
+  const c=commitments.find(x=>x.id===Number(row.dataset.commitment));
+  if(!c || c.done) return;
+  const person=clientById(c.clientId);
+  if(!window.confirm(`Mark "${c.title}" complete for ${person?.name||"this relationship"}?`)) return;
+  c.done=true;
+  addActivityRecord(c.clientId,"Commitment completed",c.title,"✓");
+  renderAll(); showToast("Commitment marked complete.");
+});
+$("nextActions").addEventListener("keydown",e=>{
+  if(e.key==="Enter"||e.key===" ") {
+    const row=e.target.closest("[data-commitment]");
+    if(row) { e.preventDefault(); row.click(); }
+  }
+});
+
+document.querySelectorAll("[data-view]").forEach(b=>{
+  b.addEventListener("click",()=>setView(b.dataset.view));
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closeModal();
+  if(e.key==="/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)){
+    e.preventDefault(); $("searchInput").focus();
+  }
+});
+
+let workspaceInfo = null;
+async function loadWorkspace(rawKey) {
+  const key = String(rawKey || "").trim().toLowerCase();
+  const err = $("keyError");
+  err.hidden = true;
+  if (!key) {
+    err.textContent = "Enter your workspace key to continue.";
+    err.hidden = false;
+    return;
+  }
+  try {
+    const res = await fetch(`data/${encodeURIComponent(key)}.json`, { cache: "no-store" });
+    if (!res.ok) throw new Error("workspace not found");
+    const data = await res.json();
+    if (!Array.isArray(data.clients) || !Array.isArray(data.commitments) || !Array.isArray(data.activities)) {
+      throw new Error("workspace data incomplete");
+    }
+    clients = data.clients;
+    commitments = data.commitments;
+    activities = data.activities;
+    workspaceInfo = data.workspace || {};
+    selectedId = clients.length ? clients[0].id : null;
+    nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
+    const business = workspaceInfo.business || "Client workspace";
+    $("workspaceLabel").innerHTML = `<span class="pulse-dot"></span> ${escapeHTML(business.toUpperCase())}`;
+    $("workspaceUserName").textContent = workspaceInfo.userName || "Workspace user";
+    $("workspaceUserRole").textContent = workspaceInfo.userRole || business;
+    document.querySelectorAll(".avatar-ben").forEach(a => { a.textContent = workspaceInfo.userInitial || "W"; });
+    $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
+    $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
+    $("keyGate").hidden = true;
+    activeView = "overview";
+    renderAll();
+    setView("overview");
+    showToast(`Workspace loaded: ${business}.`);
+  } catch (e) {
+    err.textContent = "That key didn't retrieve a workspace. Check the key and try again. (The page must be opened from its web address, not as a downloaded file.)";
+    err.hidden = false;
+  }
+}
+$("keyForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  loadWorkspace($("keyInput").value);
+});
+$("keyInput").focus();
+
+renderAll();
+$("clock").textContent="READY";
+
+</script>
+</body>
+</html>
