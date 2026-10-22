@@ -574,13 +574,376 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .stage-move select { margin-left: 6px; padding: 5px 7px; background: #0a101a; color: var(--text); border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
 .head-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 
+
+/* ===== LIGHT THEME (prototype, generated + hand-tuned core) =====
+   Dark remains the default: these rules apply only when the viewer's
+   toggle sets data-theme="light" on <html>. Core variables are
+   hand-tuned; the scoped rules below them are generated from the
+   dark stylesheet by lightness inversion, so every coloured element
+   has a light counterpart. */
+html[data-theme="light"] {
+  --bg: #edf1f6;
+  --panel: #ffffff;
+  --panel2: #e7edf4;
+  --line: #ccd7e4;
+  --text: #152238;
+  --muted: #596d88;
+  --blue: #1c74d6;
+  --cyan: #0b7f96;
+  --purple: #6a4fd0;
+  --green: #0d8a5f;
+  --amber: #8f6206;
+  --red: #d63a52;
+}
+html[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse at 72% -20%, #bdcdeb 0, transparent 44%),
+    var(--bg);
+}
+html[data-theme="light"] .sidebar {
+  background: #e7ebf4;
+}
+html[data-theme="light"] .brand-mark {
+  border: 1px solid #2173c6;
+  background: linear-gradient(145deg, #99bce8, #cdd9ef);
+  box-shadow: 0 0 22px #0a70d82a;
+}
+html[data-theme="light"] .workspace-label {
+  color: #73829a;
+}
+html[data-theme="light"] .nav-item {
+  color: #4d5c73;
+}
+html[data-theme="light"] .nav-item > :first-child {
+  color: #65758e;
+}
+html[data-theme="light"] .nav-item:hover {
+  background: #d5ddec;
+}
+html[data-theme="light"] .nav-item.active {
+  color: #001b33;
+  background: linear-gradient(90deg, #adc8ea, #d3deef);
+  border-color: #89b1db;
+}
+html[data-theme="light"] .system-status {
+  color: #48586f;
+}
+html[data-theme="light"] .pulse-dot {
+  box-shadow: 0 0 8px #1fa77588;
+}
+html[data-theme="light"] .avatar {
+  background: #bccbe3;
+  border: 1px solid #9bb0ce;
+  color: #001a33;
+}
+html[data-theme="light"] .avatar-ben {
+  background: linear-gradient(135deg,#86add7,#c4d1e8);
+}
+html[data-theme="light"] .more {
+  color: #67758c;
+}
+html[data-theme="light"] .version {
+  color: #7f8ca3;
+}
+html[data-theme="light"] .breadcrumb {
+  color: #65738b;
+}
+html[data-theme="light"] .breadcrumb span {
+  color: #99aac3;
+}
+html[data-theme="light"] .breadcrumb strong {
+  color: #1a273a;
+}
+html[data-theme="light"] .live-label {
+  color: #455770;
+}
+html[data-theme="light"] .icon-button {
+  background: #d8dfee;
+  color: #102036;
+}
+html[data-theme="light"] .eyebrow {
+  color: #546680;
+}
+html[data-theme="light"] h1 span {
+  text-shadow: 0 0 26px #0061b730;
+}
+html[data-theme="light"] .primary-button {
+  border: 1px solid #005cb5;
+  background: linear-gradient(135deg,#177bd7,#4493e8);
+  box-shadow: 0 3px 20px #1a8ce922;
+}
+html[data-theme="light"] .stat-card {
+  background: linear-gradient(145deg,#d6deed,#e2e7f2);
+}
+html[data-theme="light"] .stat-card::after {
+  background: #0061b770;
+}
+html[data-theme="light"] .stat-top {
+  color: #4c5c74;
+}
+html[data-theme="light"] .stat-foot {
+  color: #516076;
+}
+html[data-theme="light"] .stat-bar {
+  background: #b8c4d9;
+}
+html[data-theme="light"] .panel {
+  background: linear-gradient(155deg,#dee4f0,#e4e9f3);
+}
+html[data-theme="light"] .count-pill {
+  background: #b9d3e9;
+  border: 1px solid #92bedb;
+}
+html[data-theme="light"] .subtle-button {
+  border: 1px solid #b3c1d5;
+  background: #d8e0ee;
+  color: #3e4d62;
+}
+html[data-theme="light"] .subtle-button:hover {
+  border-color: #7990af;
+}
+html[data-theme="light"] .search-box {
+  border: 1px solid #b6c4d9;
+  background: #e7ecf5;
+  color: #65768e;
+}
+html[data-theme="light"] .search-box input::placeholder {
+  color: #76849c;
+}
+html[data-theme="light"] kbd {
+  border: 1px solid #a5b5cc;
+  color: #5e708a;
+}
+html[data-theme="light"] select {
+  background: #dae1ef;
+  color: #3e4d62;
+  border: 1px solid #b5c2d6;
+}
+html[data-theme="light"] thead {
+  background: #dae1ef;
+}
+html[data-theme="light"] th {
+  color: #64758f;
+}
+html[data-theme="light"] td {
+  border-top: 1px solid #c8d3e4;
+}
+html[data-theme="light"] tbody tr:hover {
+  background: #c8d4e9;
+}
+html[data-theme="light"] tbody tr.selected {
+  background: linear-gradient(90deg,#b6cce8,#cfdbee);
+}
+html[data-theme="light"] .person-cell strong {
+  color: #091423;
+}
+html[data-theme="light"] .person-cell small {
+  color: #57657c;
+}
+html[data-theme="light"] .status {
+  border: 1px solid #a7b8cf;
+  background: #ced9e8;
+  color: #263c56;
+}
+html[data-theme="light"] .status.client {
+  border-color: #a6dbc6;
+  background: #d8eee6;
+}
+html[data-theme="light"] .status.proposal {
+  border-color: #998ec5;
+  background: #d1cae5;
+}
+html[data-theme="light"] .status.qualified {
+  border-color: #98c3d8;
+  background: #cee3ee;
+}
+html[data-theme="light"] .status.contacted {
+  border-color: #d5c2a9;
+  background: #e8e0d6;
+}
+html[data-theme="light"] .status.lead {
+  color: #3f4e64;
+}
+html[data-theme="light"] .next-cell strong {
+  color: #1f2c3f;
+}
+html[data-theme="light"] .next-cell small {
+  color: #5c6e87;
+}
+html[data-theme="light"] .priority.low {
+  color: #46566e;
+}
+html[data-theme="light"] .table-footer {
+  color: #697a92;
+}
+html[data-theme="light"] .profile-main p {
+  color: #57667d;
+}
+html[data-theme="light"] .section-title {
+  color: #56667d;
+}
+html[data-theme="light"] .next-action-card {
+  border: 1px solid #95b6d4;
+  background: linear-gradient(130deg,#bfd4eb,#d5dfee);
+}
+html[data-theme="light"] .action-mark {
+  border: 1px solid #83adce;
+  background: #afcee8;
+}
+html[data-theme="light"] .action-copy strong {
+  color: #03101f;
+}
+html[data-theme="light"] .action-copy small {
+  color: #40536c;
+}
+html[data-theme="light"] .detail-kv small {
+  color: #5d6e87;
+}
+html[data-theme="light"] .detail-kv strong {
+  color: #0f1a29;
+}
+html[data-theme="light"] .detail-note {
+  color: #3b495d;
+}
+html[data-theme="light"] .history-mark {
+  box-shadow: 0 0 7px #0061b766;
+}
+html[data-theme="light"] .history-item strong {
+  color: #172538;
+}
+html[data-theme="light"] .history-item small {
+  color: #62738c;
+}
+html[data-theme="light"] .small-muted {
+  color: #65758e;
+}
+html[data-theme="light"] .next-action-item {
+  border-top: 1px solid #c9d3e3;
+}
+html[data-theme="light"] .next-action-item:hover {
+  background: #d3ddec;
+}
+html[data-theme="light"] .action-checkbox {
+  border: 1px solid #94a6be;
+}
+html[data-theme="light"] .next-action-item strong {
+  color: #121d2c;
+}
+html[data-theme="light"] .next-action-item small {
+  color: #5d6f88;
+}
+html[data-theme="light"] .activity-entry {
+  border-top: 1px solid #c9d3e3;
+}
+html[data-theme="light"] .activity-icon {
+  border: 1px solid #a3b9d5;
+  background: #c8d6ea;
+}
+html[data-theme="light"] .activity-entry strong {
+  color: #121d2c;
+}
+html[data-theme="light"] .activity-entry small {
+  color: #5f718a;
+}
+html[data-theme="light"] .main-footer {
+  color: #71819a;
+}
+html[data-theme="light"] .modal-backdrop {
+  background: #183058c9;
+}
+html[data-theme="light"] .modal {
+  background: #dae1ef;
+  border: 1px solid #a8bbd5;
+  box-shadow: 0 20px 80px #38383899;
+}
+html[data-theme="light"] .modal label {
+  color: #3e4c61;
+}
+html[data-theme="light"] .modal input, html[data-theme="light"] .modal select, html[data-theme="light"] .modal textarea {
+  border: 1px solid #afbfd5;
+  background: #e5ebf5;
+}
+html[data-theme="light"] .toast {
+  background: #c4d7ea;
+  border: 1px solid #75a1ca;
+  color: #00111f;
+  box-shadow: 0 8px 35px #38383877;
+}
+html[data-theme="light"] .workspace-intro {
+  background: linear-gradient(145deg, #d6deed, #e2e7f2);
+}
+html[data-theme="light"] .workspace-toolbar input, html[data-theme="light"] .workspace-toolbar select {
+  background: #e5ebf5;
+}
+html[data-theme="light"] .pipeline-stage-heading {
+  background: #d8dfee;
+}
+html[data-theme="light"] .pipeline-opportunity {
+  border-bottom: 1px solid #c8d3e4;
+}
+html[data-theme="light"] .commitment-record, html[data-theme="light"] .activity-record {
+  border-bottom: 1px solid #c8d3e4;
+}
+html[data-theme="light"] /* ——— Layer 2 key test (Remmy, html[data-theme="light"] 2026-10-19): key gate + workspace identity ——— */
+.key-gate {
+  background: #183058d9;
+}
+html[data-theme="light"] .key-card {
+  background: linear-gradient(155deg,#dae1ef,#e4e9f3);
+  border: 1px solid #a8bbd5;
+  box-shadow: 0 20px 80px #38383899;
+}
+html[data-theme="light"] .key-card label {
+  color: #3e4c61;
+}
+html[data-theme="light"] .key-card input {
+  border: 1px solid #afbfd5;
+  background: #e5ebf5;
+}
+html[data-theme="light"] .key-error {
+  border: 1px solid #ca919e;
+  background: #edd5db;
+  color: #4c000d;
+}
+html[data-theme="light"] .key-note {
+  color: #7f8ca3;
+}
+html[data-theme="light"] .stage-move select {
+  background: #e5ebf5;
+}
+
+/* theme toggle (prototype) */
+.theme-toggle { display: flex; align-items: center; gap: 8px; width: 100%;
+  background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 11px; margin-bottom: 12px;
+  font-size: 11px; letter-spacing: .4px; }
+.theme-toggle:hover { border-color: var(--blue); }
+
+/* the brand mark is the real Pulse HQ logo image (Ben, 2026-10-22,
+   superseding the CSS "P+" tile and the gradient fix): the tile is an
+   image frame in both themes; the logo's own black field is the art. */
+.brand-mark { padding: 0; overflow: hidden; background: #000; }
+.brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+html[data-theme="light"] .brand-mark {
+  border-color: #155a9e;
+  box-shadow: 0 4px 14px #1c74d633;
+}
 </style>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("liaison-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+})();
+</script>
+
 </head>
 <body>
 
 <div class="key-gate" id="keyGate">
   <form class="key-card" id="keyForm">
-    <div class="brand-mark key-mark">P<span>+</span></div>
+    <div class="brand-mark key-mark"><img src="logo.jpg" alt="Pulse HQ" /></div>
     <div class="eyebrow"><span class="eyebrow-line"></span> PULSE HQ CLIENT PORTAL</div>
     <h2>Enter your workspace key</h2>
     <p>Your special key retrieves your business workspace and populates this page with your records — relationships, commitments, and activity.</p>
@@ -596,7 +959,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 <div class="app-shell" id="appShell" style="visibility:hidden">
   <aside class="sidebar">
     <a class="brand" href="#">
-      <span class="brand-mark">P<span>+</span></span>
+      <span class="brand-mark"><img src="logo.jpg" alt="Pulse HQ" /></span>
       <span class="brand-name">PULSE<span>HQ</span><small>RELATIONSHIP OPERATIONS</small></span>
     </a>
 
@@ -611,6 +974,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
     </nav>
 
     <div class="sidebar-bottom">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Light mode</span></button>
       <div class="system-status"><span class="pulse-dot"></span> SYSTEM OPERATIONAL</div>
       <div class="user-card">
         <div class="avatar avatar-ben">B</div>
@@ -2264,6 +2628,25 @@ async function pollLiaisonStatus() {
 }
 setInterval(pollLiaisonStatus, 3000);
 
+</script>
+
+<script>
+(function () {
+  var btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  function sync() {
+    var light = document.documentElement.dataset.theme === "light";
+    btn.querySelector(".theme-toggle-icon").textContent = light ? "☾" : "☀";
+    btn.querySelector(".theme-toggle-label").textContent = light ? "Dark mode" : "Light mode";
+  }
+  btn.addEventListener("click", function () {
+    var next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("liaison-theme", next); } catch (e) {}
+    sync();
+  });
+  sync();
+})();
 </script>
 </body>
 </html>
