@@ -78,7 +78,8 @@
     }
    ],
    "waitingOn": null,
-   "claimedBy": null
+   "claimedBy": null,
+   "publicationVerifiedAt": "2026-10-22T21:55:08.993192+00:00"
   },
   {
    "packageId": "PKG-20261022",
