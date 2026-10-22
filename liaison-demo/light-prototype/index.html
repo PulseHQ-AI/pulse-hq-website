@@ -919,16 +919,15 @@ html[data-theme="light"] .stage-move select {
   font-size: 11px; letter-spacing: .4px; }
 .theme-toggle:hover { border-color: var(--blue); }
 
-/* hand-tuned fix (Ben, 2026-10-22): the generated inversion left the
-   brand mark a pale tile with a white P on it. In light mode the mark
-   mirrors the primary button instead — solid blue, white P, ice-blue +. */
+/* the brand mark is the real Pulse HQ logo image (Ben, 2026-10-22,
+   superseding the CSS "P+" tile and the gradient fix): the tile is an
+   image frame in both themes; the logo's own black field is the art. */
+.brand-mark { padding: 0; overflow: hidden; background: #000; }
+.brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
 html[data-theme="light"] .brand-mark {
-  background: linear-gradient(145deg, #1c74d6, #155a9e);
   border-color: #155a9e;
-  color: #ffffff;
   box-shadow: 0 4px 14px #1c74d633;
 }
-html[data-theme="light"] .brand-mark span { color: #bfe0ff; }
 </style>
 <script>
 (function () {
@@ -944,7 +943,7 @@ html[data-theme="light"] .brand-mark span { color: #bfe0ff; }
 
 <div class="key-gate" id="keyGate">
   <form class="key-card" id="keyForm">
-    <div class="brand-mark key-mark">P<span>+</span></div>
+    <div class="brand-mark key-mark"><img src="logo.jpg" alt="Pulse HQ" /></div>
     <div class="eyebrow"><span class="eyebrow-line"></span> PULSE HQ CLIENT PORTAL</div>
     <h2>Enter your workspace key</h2>
     <p>Your special key retrieves your business workspace and populates this page with your records — relationships, commitments, and activity.</p>
@@ -960,7 +959,7 @@ html[data-theme="light"] .brand-mark span { color: #bfe0ff; }
 <div class="app-shell" id="appShell" style="visibility:hidden">
   <aside class="sidebar">
     <a class="brand" href="#">
-      <span class="brand-mark">P<span>+</span></span>
+      <span class="brand-mark"><img src="logo.jpg" alt="Pulse HQ" /></span>
       <span class="brand-name">PULSE<span>HQ</span><small>RELATIONSHIP OPERATIONS</small></span>
     </a>
 
