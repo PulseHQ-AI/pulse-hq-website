@@ -1766,7 +1766,11 @@ function liaisonSummaryText(p) {
     const s = p.summary;
     return "+" + s.created + " new · " + s.matched + " matched an existing record · " +
       s.commitments + " commitments added · " + s.duplicateFlagsOpened +
-      " possible duplicate flagged for review";
+      " possible duplicate flagged for review" +
+      (s.carried ? " · " + s.carried + " carried from the earlier version of this list" : "") +
+      (s.vanished ? " · " + s.vanished + " no longer in the file (left untouched, nothing deleted)" : "") +
+      (s.replayed && !s.created && !s.matched && !s.commitments && !s.carried
+        ? " · this file was already imported — nothing was duplicated" : "");
   }
   switch (p.status) {
     case "received": return "Received — nothing saved yet.";
@@ -1999,7 +2003,16 @@ function liaisonHTML() {
             <input id="liaisonFile" type="file" accept=".csv,text/csv" style="display:none">
           </label>
           <span id="liaisonFileName" style="color:var(--muted,#8fa1b8);font-size:13px"></span>
+          <select id="liaisonListMode"
+            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px">
+            <option value="">CSV list: automatic</option>
+            <option value="new">New list</option>
+            <option value="update">Update of an existing list</option>
+          </select>
+          <input id="liaisonList" type="text" placeholder="List name (for New / Update)"
+            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px;width:210px">
         </div>
+        <p style="margin:6px 0 0;color:var(--muted,#8fa1b8);font-size:12.5px">Automatic fits a first upload, or re-sending a file unchanged — it files itself and duplicates nothing. A second, genuinely separate list should use New list even if it looks similar: Automatic may hold and ask which list you mean rather than guess. Updating a list? Choose Update and reuse its exact name: unchanged rows carry over, changed rows are added as new, and rows that disappear are reported — never deleted.</p>
         <p style="margin:10px 0 0;color:var(--muted,#8fa1b8);font-size:13px">CSV columns: name, company, email, phone, status, value, commitment, due_date, notes, priority. Possible duplicates are flagged for a human — never merged silently. On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
         <div style="margin-top:14px;border-top:1px dashed #22314a;padding-top:12px">
           <div style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em;margin-bottom:8px">ADD AN OPPORTUNITY</div>
@@ -2117,6 +2130,17 @@ async function sendChatTurn() {
     fileName = fileInput.files[0].name;
     csvText = await fileInput.files[0].text();
   }
+  const listEl = $("liaisonList");
+  const modeEl = $("liaisonListMode");
+  const listMode = csvText && modeEl ? modeEl.value : "";
+  // A name counts only in New / Update mode; Automatic never sends
+  // one (the processor refuses the combination outright).
+  const listName = csvText && listEl && listMode
+    ? listEl.value.trim() : "";
+  if (csvText && (listMode === "new" || listMode === "update") && !listName) {
+    showToast("Name the list — a new list needs a name, and an update needs the name it was first sent with.");
+    return;
+  }
   if (!note && !csvText) {
     showToast("Say something to the Liaison first — or attach a CSV.");
     return;
@@ -2126,6 +2150,8 @@ async function sendChatTurn() {
   const clearInputs = () => {
     if (input) input.value = "";
     if (fileInput) { fileInput.value = ""; $("liaisonFileName").textContent = ""; }
+    if (listEl) listEl.value = "";
+    if (modeEl) modeEl.value = "";
   };
   // Same-machine development: the local demo server takes a slim package and assigns the id.
   if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -2133,7 +2159,7 @@ async function sendChatTurn() {
       const res = await fetch("/api/packages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workspaceKey: (currentKey || "").toUpperCase(), chatNote: note, csvText, fileName, threadRef })
+        body: JSON.stringify({ workspaceKey: (currentKey || "").toUpperCase(), chatNote: note, csvText, fileName, listName, listMode, threadRef })
       });
       if (!res.ok) throw new Error("send failed");
       const out = await res.json();
@@ -2154,7 +2180,7 @@ async function sendChatTurn() {
     status: "received",
     chatNote: note,
     threadRef,
-    csv: { fileName, text: csvText }
+    csv: { fileName, text: csvText, list: listName, intent: listMode }
   };
   if (DOORMAN_URL && DOORMAN_URL.indexOf("__") !== 0) {
     try {
