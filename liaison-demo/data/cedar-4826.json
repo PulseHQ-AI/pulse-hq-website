@@ -87,6 +87,22 @@
    "icon": "\u25c8",
    "id": 15,
    "title": "Liaison add"
+  },
+  {
+   "clientId": 12,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-53A10003 (batch).",
+   "icon": "\u25c8",
+   "id": 16,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 13,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-57A10001 (batch).",
+   "icon": "\u25c8",
+   "id": 17,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -307,6 +323,11 @@
    "activities": [
     {
      "date": "Today",
+     "detail": "Added via Liaison package PKG-53A10003 (batch).",
+     "title": "Liaison add"
+    },
+    {
+     "date": "Today",
      "detail": "Added via Liaison package PKG-53A10001 (batch).",
      "title": "Liaison add"
     }
@@ -315,11 +336,29 @@
    "email": "four@shipcheck.example",
    "id": 12,
    "name": "Shipcheck Four",
-   "notes": "Shipcheck row two",
+   "notes": "Shipcheck row two revised",
    "phone": "Not added",
    "priority": "Medium",
    "status": "Lead",
    "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-57A10001 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Wendy Works",
+   "email": "wendy@wartcheck.example",
+   "id": 13,
+   "name": "Wartcheck Wendy",
+   "notes": "",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 4200
   }
  ],
  "commitments": [
@@ -433,6 +472,17 @@
    "originalDueDate": "2026-11-21",
    "owner": "Dana Whitaker",
    "title": "Verify the revision"
+  },
+  {
+   "clientId": 12,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-22",
+   "evidence": "",
+   "id": 11,
+   "originalDueDate": "2026-11-22",
+   "owner": "Dana Whitaker",
+   "title": "Verify the revision twice"
   }
  ],
  "workspace": {
