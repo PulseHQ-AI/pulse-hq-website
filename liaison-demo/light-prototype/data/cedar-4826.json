@@ -1,0 +1,547 @@
+{
+ "activities": [
+  {
+   "clientId": 5,
+   "date": "2 days ago",
+   "detail": "Added from a neighbour referral.",
+   "icon": "\uff0b",
+   "id": 1,
+   "title": "Prospect added"
+  },
+  {
+   "clientId": 1,
+   "date": "3 days ago",
+   "detail": "Fall cleanup visit confirmed for next week.",
+   "icon": "\u2713",
+   "id": 2,
+   "title": "Cleanup booked"
+  },
+  {
+   "clientId": 3,
+   "date": "4 days ago",
+   "detail": "Confirmed three properties and a spring start date.",
+   "icon": "\u2713",
+   "id": 3,
+   "title": "Lead qualified"
+  },
+  {
+   "clientId": 2,
+   "date": "6 days ago",
+   "detail": "Retaining wall proposal delivered for signature.",
+   "icon": "\u2197",
+   "id": 4,
+   "title": "Proposal sent"
+  },
+  {
+   "clientId": 1,
+   "date": "Last week",
+   "detail": "Lakeside patio cleanup finished and invoiced.",
+   "icon": "\u2713",
+   "id": 5,
+   "title": "Patio cleanup completed"
+  },
+  {
+   "clientId": 7,
+   "date": "2 days ago",
+   "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
+   "icon": "\u25c8",
+   "id": 10,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 8,
+   "date": "2 days ago",
+   "detail": "Added via Liaison package PKG-C004EC85 (batch).",
+   "icon": "\u25c8",
+   "id": 11,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 9,
+   "date": "2 days ago",
+   "detail": "Added via Liaison package PKG-BD064028 (batch).",
+   "icon": "\u25c8",
+   "id": 12,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 10,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-20261022 (opportunity).",
+   "icon": "\u25c8",
+   "id": 13,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 11,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-53A10001 (batch).",
+   "icon": "\u25c8",
+   "id": 14,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 12,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-53A10001 (batch).",
+   "icon": "\u25c8",
+   "id": 15,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 12,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-53A10003 (batch).",
+   "icon": "\u25c8",
+   "id": 16,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 13,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-57A10001 (batch).",
+   "icon": "\u25c8",
+   "id": 17,
+   "title": "Liaison add"
+  }
+ ],
+ "clients": [
+  {
+   "activities": [
+    {
+     "date": "3 days ago",
+     "detail": "Fall cleanup visit confirmed for next week.",
+     "title": "Cleanup booked"
+    },
+    {
+     "date": "Last week",
+     "detail": "Lakeside patio cleanup finished and invoiced.",
+     "title": "Patio cleanup completed"
+    },
+    {
+     "date": "Last week",
+     "detail": "Perennial beds installed along the shoreline path.",
+     "title": "Spring planting delivered"
+    }
+   ],
+   "company": "Collins Lake House",
+   "email": "avery@collinslake.example",
+   "id": 1,
+   "name": "Avery Collins",
+   "notes": "Lakeside property. Seasonal cleanup client since spring; wants the patio edges re-cut before winter.",
+   "phone": "Not added",
+   "priority": "High",
+   "status": "Client",
+   "value": 1800
+  },
+  {
+   "activities": [
+    {
+     "date": "6 days ago",
+     "detail": "Retaining wall proposal delivered for signature.",
+     "title": "Proposal sent"
+    },
+    {
+     "date": "Last week",
+     "detail": "Slope and drainage measured; photos filed.",
+     "title": "Site measure"
+    }
+   ],
+   "company": "Park Family Residence",
+   "email": "june@parkfamily.example",
+   "id": 2,
+   "name": "June Park",
+   "notes": "Retaining wall and stone steps proposal is out. Signature was due Oct 18 \u2014 follow up before assuming it slipped.",
+   "phone": "Not added",
+   "priority": "High",
+   "status": "Proposal",
+   "value": 7400
+  },
+  {
+   "activities": [
+    {
+     "date": "4 days ago",
+     "detail": "Confirmed three properties and a spring start date.",
+     "title": "Lead qualified"
+    }
+   ],
+   "company": "Reyes Vacation Rentals",
+   "email": "mateo@reyesrentals.example",
+   "id": 3,
+   "name": "Mateo Reyes",
+   "notes": "Three rental properties. Qualified for a maintenance contract; irrigation add-on estimate requested.",
+   "phone": "Not added",
+   "priority": "High",
+   "status": "Qualified",
+   "value": 5200
+  },
+  {
+   "activities": [
+    {
+     "date": "5 days ago",
+     "detail": "Walked the orchard rows and discussed windbreak options.",
+     "title": "Initial contact"
+    }
+   ],
+   "company": "Lane Orchard",
+   "email": "harper@laneorchard.example",
+   "id": 4,
+   "name": "Harper Lane",
+   "notes": "Orchard rows need a windbreak planting plan. Sketch promised this week.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Contacted",
+   "value": 2600
+  },
+  {
+   "activities": [
+    {
+     "date": "2 days ago",
+     "detail": "Added from a neighbour referral.",
+     "title": "Prospect added"
+    }
+   ],
+   "company": "Berg Cabin Co.",
+   "email": "noah@bergcabin.example",
+   "id": 5,
+   "name": "Noah Berg",
+   "notes": "New lead from a neighbour referral. Research their current yard state before reaching out.",
+   "phone": "Not added",
+   "priority": "Low",
+   "status": "Lead",
+   "value": 950
+  },
+  {
+   "activities": [
+    {
+     "date": "Last week",
+     "detail": "Autumn prune and bed tidy completed.",
+     "title": "Courtyard service"
+    }
+   ],
+   "company": "Chen Garden Suites",
+   "email": "ivy@chengardens.example",
+   "id": 6,
+   "name": "Ivy Chen",
+   "notes": "Garden suites courtyard client. Spring maintenance plan draft is ready to confirm.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Client",
+   "value": 1500
+  },
+  {
+   "activities": [
+    {
+     "date": "2 days ago",
+     "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 7,
+   "name": "Frank",
+   "notes": "Client's own words (chat note, 2026-10-20): \"i met this dude named frank, he wants me to tile his floor next friday. i told him id be there at 3 pm\" \u2014 date confirmed by Ben: Friday Oct 23. Interpreted by Remmy (concierge formatting step). Surname/company not given.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "2 days ago",
+     "detail": "Added via Liaison package PKG-C004EC85 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 8,
+   "name": "Anne",
+   "notes": "i met this lady named anne, she was very old. not sure how old. she explained that her husband died in the basement and we need to lay carpet over top of his body. she says she enjoys the smell. i offered to come over tomorrow at 7am, but she insisted i go tonight for drinks. i accepted",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "2 days ago",
+     "detail": "Added via Liaison package PKG-BD064028 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "",
+   "email": "",
+   "id": 9,
+   "name": "Larry",
+   "notes": "ii met a fellow named larry. he needs me to change the breaks on his hummer on hallowed. he offered to pay me in beer, candy and beer.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-20261022 (opportunity).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Demo Shipyards",
+   "email": "",
+   "id": 10,
+   "name": "Shipcheck Sally",
+   "notes": "Turn my conversation with Shipcheck Sally from Demo Shipyards into an opportunity: hull inspection contract, worth $1200, decision by 2026-11-30",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-53A10001 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Three Studio",
+   "email": "three@shipcheck.example",
+   "id": 11,
+   "name": "Shipcheck Three",
+   "notes": "Shipcheck row one",
+   "phone": "Not added",
+   "priority": "High",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-53A10003 (batch).",
+     "title": "Liaison add"
+    },
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-53A10001 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Four Studio",
+   "email": "four@shipcheck.example",
+   "id": 12,
+   "name": "Shipcheck Four",
+   "notes": "Shipcheck row two revised",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-57A10001 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Wendy Works",
+   "email": "wendy@wartcheck.example",
+   "id": 13,
+   "name": "Wartcheck Wendy",
+   "notes": "",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 4200
+  }
+ ],
+ "commitments": [
+  {
+   "clientId": 2,
+   "detail": "Signed copy of the retaining-wall proposal.",
+   "done": false,
+   "dueDate": "2026-10-18",
+   "evidence": "",
+   "id": 1,
+   "originalDueDate": "2026-10-18",
+   "owner": "Dana Whitaker",
+   "title": "Receive signed proposal"
+  },
+  {
+   "clientId": 1,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-20",
+   "evidence": "",
+   "id": 2,
+   "originalDueDate": "2026-10-20",
+   "owner": "Dana Whitaker",
+   "title": "Book fall cleanup crew"
+  },
+  {
+   "clientId": 3,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-21",
+   "evidence": "",
+   "id": 3,
+   "originalDueDate": "2026-10-21",
+   "owner": "Dana Whitaker",
+   "title": "Send irrigation add-on estimate"
+  },
+  {
+   "clientId": 4,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-22",
+   "evidence": "",
+   "id": 4,
+   "originalDueDate": "2026-10-22",
+   "owner": "Dana Whitaker",
+   "title": "Deliver planting sketch"
+  },
+  {
+   "clientId": 6,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-23",
+   "evidence": "",
+   "id": 5,
+   "originalDueDate": "2026-10-23",
+   "owner": "Dana Whitaker",
+   "title": "Confirm spring maintenance plan"
+  },
+  {
+   "clientId": 1,
+   "completedAt": "2026-10-17",
+   "detail": "",
+   "done": true,
+   "dueDate": "2026-10-17",
+   "evidence": "Finished and invoiced Oct 17.",
+   "id": 6,
+   "originalDueDate": "2026-10-17",
+   "owner": "Dana Whitaker",
+   "title": "Complete lakeside patio cleanup"
+  },
+  {
+   "clientId": 7,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-23",
+   "evidence": "",
+   "id": 7,
+   "originalDueDate": "2026-10-23",
+   "owner": "Dana Whitaker",
+   "title": "Tile his floor \u2014 be there at 3 pm"
+  },
+  {
+   "clientId": 9,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-10-31",
+   "evidence": "",
+   "id": 8,
+   "originalDueDate": "2026-10-31",
+   "owner": "Dana Whitaker",
+   "title": "Change the brakes on his Hummer"
+  },
+  {
+   "clientId": 11,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-20",
+   "evidence": "",
+   "id": 9,
+   "originalDueDate": "2026-11-20",
+   "owner": "Dana Whitaker",
+   "title": "Verify the ship"
+  },
+  {
+   "clientId": 12,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-21",
+   "evidence": "",
+   "id": 10,
+   "originalDueDate": "2026-11-21",
+   "owner": "Dana Whitaker",
+   "title": "Verify the revision"
+  },
+  {
+   "clientId": 12,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-22",
+   "evidence": "",
+   "id": 11,
+   "originalDueDate": "2026-11-22",
+   "owner": "Dana Whitaker",
+   "title": "Verify the revision twice"
+  }
+ ],
+ "opportunities": [
+  {
+   "client": "June Park",
+   "clientStatus": "Proposal",
+   "id": "OPP-0001",
+   "key": "cedar-opp-2",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Proposal",
+   "value": 7400.0
+  },
+  {
+   "client": "Mateo Reyes",
+   "clientStatus": "Qualified",
+   "id": "OPP-0002",
+   "key": "cedar-opp-3",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Qualified",
+   "value": 5200.0
+  },
+  {
+   "client": "Harper Lane",
+   "clientStatus": "Contacted",
+   "id": "OPP-0003",
+   "key": "cedar-opp-4",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Contacted",
+   "value": 2600.0
+  },
+  {
+   "client": "Noah Berg",
+   "clientStatus": "Lead",
+   "id": "OPP-0004",
+   "key": "cedar-opp-5",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Lead",
+   "value": 950.0
+  },
+  {
+   "client": "Shipcheck Sally",
+   "clientStatus": "Lead",
+   "id": "OPP-0005",
+   "key": "pkg:PKG-20261022:opportunity:0:opp",
+   "outcome": null,
+   "service": "hull inspection contract",
+   "stage": "New",
+   "value": 1200.0
+  }
+ ],
+ "workspace": {
+  "business": "Cedar & Stone Landscaping",
+  "note": "Synthetic demo workspace for the Layer 2 key-population test. Not a real client record.",
+  "userInitial": "D",
+  "userName": "Dana Whitaker",
+  "userRole": "Owner \u00b7 Cedar & Stone"
+ }
+}

@@ -1,0 +1,2642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse HQ CRM — Portal Key Test</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #080b12;
+  --panel: #0e131e;
+  --panel2: #111827;
+  --line: #202b3d;
+  --text: #e9f0fb;
+  --muted: #8491a8;
+  --blue: #48a9ff;
+  --cyan: #69e4f4;
+  --purple: #a48bff;
+  --green: #58e0ae;
+  --amber: #ffc875;
+  --red: #ff7d91;
+  --mono: 'DM Mono', monospace;
+  --display: 'Space Grotesk', sans-serif;
+  --body: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 72% -20%, #142442 0, transparent 44%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 13px;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+.app-shell { min-height: 100vh; display: flex; }
+
+.sidebar {
+  width: 240px;
+  flex: 0 0 240px;
+  min-height: 100vh;
+  background: #0b0f18;
+  border-right: 1px solid var(--line);
+  padding: 27px 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  color: var(--text);
+  padding: 0 8px 35px;
+}
+
+.brand-mark {
+  width: 40px; height: 40px;
+  border: 1px solid #398bde;
+  border-radius: 11px;
+  display: grid; place-items: center;
+  color: white;
+  font: 700 24px var(--display);
+  background: linear-gradient(145deg, #173a66, #101c32);
+  box-shadow: 0 0 22px #278df52a;
+}
+.brand-mark span { color: var(--cyan); }
+.brand-name { font: 700 19px var(--display); letter-spacing: 1.3px; }
+.brand-name > span { color: var(--blue); }
+.brand-name small {
+  display: block; margin-top: 4px;
+  font: 9px var(--mono); color: var(--muted); letter-spacing: 1px;
+}
+
+.workspace-label, .eyebrow, .stat-top, th, .small-muted, .version,
+.system-status, .main-footer, .live-label {
+  font: 10px var(--mono);
+  letter-spacing: 1px;
+}
+.workspace-label { color: #65748c; padding: 0 12px 13px; }
+
+.nav { display: grid; gap: 5px; }
+.nav-item {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #8c9bb2;
+  text-align: left;
+  padding: 12px;
+  border-radius: 7px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  transition: .18s;
+}
+.nav-item > :first-child { color: #71819a; }
+.nav-item:hover { background: #131b2a; color: var(--text); }
+.nav-item.active {
+  color: #eaf5ff;
+  background: linear-gradient(90deg, #153052, #101b2c);
+  border-color: #244c76;
+  box-shadow: inset 2px 0 var(--blue);
+}
+.nav-item.active:first-letter { color: var(--cyan); }
+
+.sidebar-bottom { margin-top: auto; }
+.system-status {
+  padding: 13px 8px;
+  color: #90a0b7;
+  font-size: 9px;
+  border-bottom: 1px solid var(--line);
+}
+.pulse-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px #58e0ae88;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+.user-card { display: flex; align-items: center; gap: 10px; padding: 18px 5px; }
+.avatar {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 9px;
+  background: #1c2b43;
+  border: 1px solid #314664;
+  color: #cce6ff;
+  font: 600 13px var(--display);
+}
+.avatar-ben { background: linear-gradient(135deg,#284f79,#17243b); }
+.user-card strong { display: block; font-size: 12px; }
+.user-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+.more { margin-left: auto; color: #738198; letter-spacing: 2px; }
+.version { font-size: 8px; color: #5c6980; padding: 0 6px; }
+.version span { color: var(--blue); }
+
+.main { flex: 1; min-width: 0; padding: 0 34px; max-width: 1800px; margin: 0 auto; }
+.topbar {
+  min-height: 65px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid var(--line);
+}
+.breadcrumb { color: #74829a; font: 10px var(--mono); letter-spacing: .7px; }
+.breadcrumb span { color: #3c4d66; padding: 0 10px; }
+.breadcrumb strong { color: #c5d2e5; font-weight: 400; }
+.top-actions { display: flex; align-items: center; gap: 15px; }
+.live-label { font-size: 9px; color: #8fa1ba; }
+
+.icon-button {
+  width: 34px; height: 34px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: #111827; color: #c9d9ef; font-size: 19px;
+  transition: .2s;
+}
+.icon-button:hover { border-color: var(--blue); color: var(--cyan); }
+.icon-button.small { width: 28px; height: 28px; font-size: 17px; }
+
+.page-heading {
+  padding: 31px 0 25px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
+}
+.eyebrow { color: #7f91ab; font-size: 9px; }
+.eyebrow-line { display: inline-block; width: 17px; height: 2px; background: var(--blue); margin-right: 7px; vertical-align: middle; }
+h1, h2, p { margin: 0; }
+h1 { font: 600 clamp(25px, 3vw, 35px) var(--display); letter-spacing: -1.2px; margin-top: 11px; }
+h1 span { color: var(--blue); text-shadow: 0 0 26px #48a9ff30; }
+.page-heading p { margin-top: 9px; color: var(--muted); font-size: 12px; }
+.primary-button {
+  border: 1px solid #4aa6ff;
+  background: linear-gradient(135deg,#288ce8,#1766bb);
+  color: white; border-radius: 7px; padding: 11px 15px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+  box-shadow: 0 3px 20px #1688e522;
+  transition: .2s;
+}
+.primary-button:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.primary-button span { font-size: 15px; margin-right: 5px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.stat-card {
+  padding: 17px 17px 14px; border: 1px solid var(--line);
+  background: linear-gradient(145deg,#121a29,#0d121d);
+  border-radius: 10px; min-width: 0; position: relative; overflow: hidden;
+}
+.stat-card::after {
+  content: ""; position: absolute; top: 0; right: 15%;
+  width: 70px; height: 1px; background: #48a9ff70;
+}
+.stat-top { color: #8b9bb3; display: flex; align-items: center; justify-content: space-between; font-size: 9px; letter-spacing: .6px; }
+.stat-icon { color: var(--blue); font-size: 17px; }
+.stat-value { font: 600 31px var(--display); margin: 14px 0 7px; letter-spacing: -1px; }
+.stat-foot { display: flex; align-items: center; gap: 6px; color: #8998ae; font-size: 10px; white-space: nowrap; }
+.mini-dot { width: 6px; height: 6px; display: inline-block; border-radius: 50%; }
+.blue { background: var(--blue); } .purple { background: var(--purple); }
+.amber { background: var(--amber); } .red { background: var(--red); }
+.stat-bar { height: 2px; background: #263247; margin-top: 15px; }
+.stat-bar i { display: block; height: 100%; background: var(--blue); }
+.purple-bar i { background: var(--purple); }
+.amber-bar i { background: var(--amber); }
+.red-bar i { background: var(--red); }
+
+.content-grid { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(275px,.8fr); gap: 15px; margin-top: 17px; align-items: stretch; }
+.panel { background: linear-gradient(155deg,#0f1521,#0c111b); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 19px 19px 15px; }
+h2 { font: 600 17px var(--display); letter-spacing: -.3px; margin-top: 6px; }
+.count-pill { font: 10px var(--mono); color: var(--cyan); background: #163046; border: 1px solid #24506d; border-radius: 5px; padding: 3px 6px; vertical-align: 2px; margin-left: 4px; }
+.subtle-button {
+  border: 1px solid #2a384c; background: #111927; color: #9dacc1;
+  border-radius: 6px; padding: 8px 10px; font-size: 10px;
+}
+.subtle-button:hover { color: var(--text); border-color: #506786; }
+.toolbar { display: flex; gap: 9px; padding: 0 18px 15px; }
+.search-box {
+  display: flex; flex: 1; min-width: 0; gap: 8px; align-items: center;
+  padding: 0 10px; border: 1px solid #263449; background: #0a0f18; border-radius: 6px; color: #71829a;
+}
+.search-box input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); padding: 10px 0; font-size: 11px; }
+.search-box input::placeholder { color: #637189; }
+kbd { border: 1px solid #33435a; border-radius: 3px; padding: 1px 4px; color: #7587a1; font: 10px var(--mono); }
+select {
+  background: #101725; color: #9dacc1; border: 1px solid #29364a;
+  border-radius: 6px; padding: 9px 8px; font-size: 10px; max-width: 150px;
+}
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+thead { background: #101725; }
+th { padding: 11px 12px; font-size: 8px; color: #70819b; font-weight: 400; white-space: nowrap; }
+th:first-child, td:first-child { padding-left: 19px; }
+td { padding: 13px 12px; border-top: 1px solid #1b2637; font-size: 10px; vertical-align: middle; }
+tbody tr { cursor: pointer; transition: background .15s; }
+tbody tr:hover { background: #162237; }
+tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shadow: inset 2px 0 var(--blue); }
+.person-cell { display: flex; align-items: center; gap: 9px; min-width: 155px; }
+.person-cell .avatar { width: 31px; height: 31px; border-radius: 8px; font-size: 11px; }
+.person-cell strong { display: block; font-size: 11px; font-weight: 600; color: #dce7f6; white-space: nowrap; }
+.person-cell small { display: block; margin-top: 4px; color: #8391a8; font-size: 9px; white-space: nowrap; }
+.status {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid #304158; background: #172231; color: #a9bfd9;
+  padding: 4px 7px; border-radius: 4px; font-size: 9px; white-space: nowrap;
+}
+.status::before { content: ""; width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
+.status.client { color: var(--green); border-color: #245944; background: #11271f; }
+.status.proposal { color: var(--purple); border-color: #453a71; background: #211a35; }
+.status.qualified { color: var(--cyan); border-color: #275267; background: #112631; }
+.status.contacted { color: var(--amber); border-color: #56432a; background: #292117; }
+.status.lead { color: #9baac0; }
+.next-cell { min-width: 125px; max-width: 190px; }
+.next-cell strong { display: block; font-size: 10px; color: #c0cde0; font-weight: 500; line-height: 1.4; }
+.next-cell small { display: block; margin-top: 4px; font-size: 9px; color: #788aa3; }
+.priority { font: 9px var(--mono); white-space: nowrap; }
+.priority::before { content: "●"; margin-right: 5px; }
+.priority.high { color: var(--red); }
+.priority.medium { color: var(--amber); }
+.priority.low { color: #91a1b9; }
+.table-footer { padding: 12px 18px; display: flex; justify-content: space-between; color: #6d7e96; font-size: 9px; border-top: 1px solid var(--line); }
+.table-footer > span:last-child { font: 8px var(--mono); letter-spacing: .6px; }
+.footer-dot { color: var(--blue); margin-left: 5px; }
+.empty-state { text-align: center; padding: 30px 15px; color: var(--muted); line-height: 1.6; }
+
+.detail-panel { padding: 18px; }
+.detail-topline { display: flex; align-items: center; justify-content: space-between; }
+.profile-hero { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
+.profile-main { display: flex; align-items: center; gap: 13px; }
+.profile-avatar { width: 52px; height: 52px; font-size: 17px; border-radius: 13px; }
+.profile-main h3 { font: 600 18px var(--display); letter-spacing: -.4px; overflow-wrap: anywhere; }
+.profile-main p { color: #8291a8; font-size: 10px; margin-top: 5px; }
+.profile-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+.detail-section { padding: 17px 0; border-bottom: 1px solid var(--line); }
+.section-title { color: #8292a9; font: 9px var(--mono); letter-spacing: .8px; margin-bottom: 12px; }
+.next-action-card { border: 1px solid #2b4c6a; border-radius: 7px; background: linear-gradient(130deg,#142940,#111b2a); padding: 12px; }
+.action-row { display: flex; gap: 9px; align-items: flex-start; }
+.action-mark { width: 25px; height: 25px; border: 1px solid #315b7c; background: #173650; color: var(--cyan); display: grid; place-items: center; border-radius: 6px; flex-shrink: 0; }
+.action-copy strong { display: block; font-size: 11px; line-height: 1.5; color: #e0edfc; }
+.action-copy small { display: block; color: #93a6bf; margin-top: 5px; font-size: 10px; }
+.detail-kv { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 10px; }
+.detail-kv small { display: block; color: #7889a2; font-size: 9px; margin-bottom: 6px; }
+.detail-kv strong { font-size: 11px; color: #d6e1f0; font-weight: 500; overflow-wrap: anywhere; }
+.detail-note { color: #a2b0c4; font-size: 11px; line-height: 1.7; }
+.detail-buttons { display: flex; gap: 8px; margin-top: 15px; }
+.detail-buttons button { flex: 1; }
+.detail-history { display: grid; gap: 13px; }
+.history-item { display: flex; gap: 9px; }
+.history-mark { width: 7px; height: 7px; background: var(--blue); box-shadow: 0 0 7px #48a9ff66; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.history-item strong { font-size: 10px; color: #c7d5e8; font-weight: 500; display: block; line-height: 1.5; }
+.history-item small { font-size: 9px; color: #73849d; display: block; margin-top: 4px; }
+.text-button { border: 0; background: transparent; color: var(--blue); font-size: 10px; padding: 5px 0; }
+.text-button:hover { color: var(--cyan); }
+
+.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 16px; }
+.small-muted { color: #71819a; font-size: 8px; }
+.next-action-item { display: flex; align-items: center; gap: 11px; padding: 13px 19px; border-top: 1px solid #1c2636; cursor: pointer; }
+.next-action-item:hover { background: #131d2c; }
+.action-checkbox { width: 15px; height: 15px; border: 1px solid #41536b; border-radius: 4px; flex-shrink: 0; }
+.next-action-item strong { display: block; color: #d3deed; font-size: 11px; font-weight: 500; }
+.next-action-item small { display: block; color: #7789a2; margin-top: 4px; font-size: 9px; }
+.action-due { margin-left: auto; color: var(--amber); font: 9px var(--mono); white-space: nowrap; }
+.action-due.overdue { color: var(--red); }
+.activity-entry { display: flex; gap: 11px; padding: 13px 19px; border-top: 1px solid #1c2636; }
+.activity-icon { width: 29px; height: 29px; border-radius: 7px; border: 1px solid #2a405c; background: #152337; color: var(--blue); display: grid; place-items: center; flex-shrink: 0; }
+.activity-entry strong { display: block; font-size: 10px; font-weight: 500; line-height: 1.5; color: #d3deed; }
+.activity-entry small { display: block; color: #7587a0; font-size: 9px; margin-top: 4px; line-height: 1.5; }
+
+.main-footer { display: flex; justify-content: space-between; gap: 10px; color: #65758e; font-size: 8px; padding: 22px 0; margin-top: 4px; }
+.main-footer .pulse-dot { width: 5px; height: 5px; }
+
+.modal-backdrop { position: fixed; inset: 0; background: #03060bc9; backdrop-filter: blur(5px); z-index: 20; display: grid; place-items: center; padding: 18px; overflow-y: auto; }
+.modal-backdrop[hidden] { display: none; }
+.modal { width: min(480px,100%); background: #101725; border: 1px solid #2a3d57; border-radius: 12px; padding: 24px; box-shadow: 0 20px 80px #0009; }
+.modal-heading { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+.modal h2 { font-size: 23px; }
+.modal label { display: grid; gap: 7px; color: #9eacc1; font-size: 10px; margin-bottom: 14px; }
+.modal input, .modal select, .modal textarea { width: 100%; max-width: none; border: 1px solid #2a3a50; background: #0a101a; color: var(--text); padding: 11px; border-radius: 6px; font-size: 11px; }
+.modal textarea { resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; }
+.toast { position: fixed; bottom: 25px; right: 25px; z-index: 30; background: #15283b; border: 1px solid #35618a; border-radius: 8px; padding: 13px 18px; color: #e3f3ff; box-shadow: 0 8px 35px #0007; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; max-width: calc(100vw - 40px); font-size: 11px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+[hidden] { display: none !important; }
+
+@media (min-width: 1500px) {
+  .main { padding: 0 46px; }
+  .content-grid { grid-template-columns: minmax(0,1.8fr) minmax(310px,.75fr); }
+}
+@media (max-width: 1100px) {
+  .sidebar { width: 205px; flex-basis: 205px; }
+  .main { padding: 0 22px; }
+  .content-grid { grid-template-columns: minmax(0,1.4fr) minmax(255px,.8fr); }
+  .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  th, td { padding-right: 9px; padding-left: 9px; }
+  th:first-child, td:first-child { padding-left: 13px; }
+}
+@media (max-width: 780px) {
+  .sidebar { width: 62px; flex-basis: 62px; padding: 20px 8px 12px; }
+  .brand { padding: 0 2px 28px; }
+  .brand-mark { width: 42px; height: 42px; }
+  .brand-name, .workspace-label, .nav-item span, .system-status,
+  .user-card > div:not(.avatar), .user-card .more, .version { display: none; }
+  .nav-item { justify-content: center; padding: 13px 0; font-size: 18px; }
+  .user-card { justify-content: center; padding: 15px 0; }
+  .main { padding: 0 15px; }
+  .content-grid { grid-template-columns: 1fr; }
+  .bottom-grid { grid-template-columns: 1fr; }
+  .page-heading { align-items: flex-start; flex-direction: column; }
+  .page-heading .primary-button { align-self: flex-start; }
+}
+@media (max-width: 480px) {
+  .main { padding: 0 10px; }
+  .topbar { min-height: 54px; }
+  .live-label { display: none; }
+  .page-heading { padding-top: 24px; }
+  .stats-grid { gap: 8px; }
+  .stat-card { padding: 12px; }
+  .stat-top { font-size: 8px; }
+  .stat-value { font-size: 27px; }
+  .stat-foot { white-space: normal; line-height: 1.4; }
+  .toolbar { flex-direction: column; }
+  .toolbar select { max-width: none; }
+  .main-footer { font-size: 7px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+
+/* Dedicated workspace views */
+.workspace-view {
+  margin-top: 17px;
+  animation: view-enter .18s ease-out;
+}
+
+.workspace-intro {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, #121a29, #0d121d);
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.workspace-intro p {
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.workspace-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.workspace-toolbar input,
+.workspace-toolbar select {
+  min-width: 0;
+  padding: 11px;
+  background: #0a101a;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.workspace-toolbar input {
+  flex: 1;
+}
+
+.workspace-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.workspace-mini-card {
+  padding: 17px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 9px;
+}
+
+.workspace-mini-card small {
+  display: block;
+  color: var(--muted);
+  font: 10px var(--mono);
+  letter-spacing: .5px;
+}
+
+.workspace-mini-card strong {
+  display: block;
+  margin-top: 12px;
+  font: 600 25px var(--display);
+}
+
+.pipeline-stage {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--panel);
+  margin-bottom: 15px;
+}
+
+.pipeline-stage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 17px;
+  background: #111827;
+  border-bottom: 1px solid var(--line);
+}
+
+.pipeline-stage-heading h3 {
+  font: 600 14px var(--display);
+}
+
+.pipeline-stage-heading span {
+  color: var(--muted);
+  font: 10px var(--mono);
+}
+
+.pipeline-opportunity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 15px 17px;
+  border-bottom: 1px solid #1b2637;
+}
+
+.pipeline-opportunity:last-child {
+  border-bottom: 0;
+}
+
+.pipeline-opportunity strong,
+.commitment-record strong,
+.activity-record strong {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.pipeline-opportunity small,
+.commitment-record small,
+.activity-record small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.opportunity-value {
+  color: var(--cyan);
+  font: 500 13px var(--mono);
+  text-align: right;
+}
+
+.commitment-record,
+.activity-record {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 17px;
+  border-bottom: 1px solid #1b2637;
+}
+
+.commitment-record:last-child,
+.activity-record:last-child {
+  border-bottom: 0;
+}
+
+.commitment-record > div:nth-child(2),
+.activity-record > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.commitment-record input {
+  accent-color: var(--blue);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.commitment-record.is-done strong {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.activity-record .activity-icon {
+  flex-shrink: 0;
+}
+
+.workspace-empty {
+  padding: 35px 18px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.7;
+}
+
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 780px) {
+  .workspace-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ——— Layer 2 key test (Remmy, 2026-10-19): key gate + workspace identity ——— */
+.key-gate { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 18px; background: #03060bd9; backdrop-filter: blur(6px); overflow-y: auto; }
+.key-gate[hidden] { display: none; }
+.key-card { width: min(430px, 100%); background: linear-gradient(155deg,#101725,#0c111b); border: 1px solid #2a3d57; border-radius: 12px; padding: 28px; box-shadow: 0 20px 80px #0009; }
+.key-mark { margin-bottom: 18px; }
+.key-card h2 { font-size: 22px; margin-top: 10px; }
+.key-card p { color: var(--muted); font-size: 12px; line-height: 1.65; margin-top: 10px; }
+.key-card label { display: grid; gap: 7px; color: #9eacc1; font-size: 10px; margin: 20px 0 14px; }
+.key-card input { width: 100%; border: 1px solid #2a3a50; background: #0a101a; color: var(--text); padding: 12px; border-radius: 6px; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; }
+.key-card .primary-button { width: 100%; padding: 13px 15px; font-size: 12px; }
+.key-error { border: 1px solid #6e3542; background: #2a1218; color: #ffb3c0; border-radius: 6px; padding: 10px 12px; font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
+.key-note { display: block; margin-top: 16px; color: #5c6980; font: 8px var(--mono); letter-spacing: .8px; line-height: 1.7; }
+.stage-move { display: block; margin-top: 9px; color: var(--muted); font-size: 10px; }
+.stage-move select { margin-left: 6px; padding: 5px 7px; background: #0a101a; color: var(--text); border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
+.head-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+
+/* ===== LIGHT THEME (prototype, generated + hand-tuned core) =====
+   Dark remains the default: these rules apply only when the viewer's
+   toggle sets data-theme="light" on <html>. Core variables are
+   hand-tuned; the scoped rules below them are generated from the
+   dark stylesheet by lightness inversion, so every coloured element
+   has a light counterpart. */
+html[data-theme="light"] {
+  --bg: #edf1f6;
+  --panel: #ffffff;
+  --panel2: #e7edf4;
+  --line: #ccd7e4;
+  --text: #152238;
+  --muted: #596d88;
+  --blue: #1c74d6;
+  --cyan: #0b7f96;
+  --purple: #6a4fd0;
+  --green: #0d8a5f;
+  --amber: #8f6206;
+  --red: #d63a52;
+}
+html[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse at 72% -20%, #bdcdeb 0, transparent 44%),
+    var(--bg);
+}
+html[data-theme="light"] .sidebar {
+  background: #e7ebf4;
+}
+html[data-theme="light"] .brand-mark {
+  border: 1px solid #2173c6;
+  background: linear-gradient(145deg, #99bce8, #cdd9ef);
+  box-shadow: 0 0 22px #0a70d82a;
+}
+html[data-theme="light"] .workspace-label {
+  color: #73829a;
+}
+html[data-theme="light"] .nav-item {
+  color: #4d5c73;
+}
+html[data-theme="light"] .nav-item > :first-child {
+  color: #65758e;
+}
+html[data-theme="light"] .nav-item:hover {
+  background: #d5ddec;
+}
+html[data-theme="light"] .nav-item.active {
+  color: #001b33;
+  background: linear-gradient(90deg, #adc8ea, #d3deef);
+  border-color: #89b1db;
+}
+html[data-theme="light"] .system-status {
+  color: #48586f;
+}
+html[data-theme="light"] .pulse-dot {
+  box-shadow: 0 0 8px #1fa77588;
+}
+html[data-theme="light"] .avatar {
+  background: #bccbe3;
+  border: 1px solid #9bb0ce;
+  color: #001a33;
+}
+html[data-theme="light"] .avatar-ben {
+  background: linear-gradient(135deg,#86add7,#c4d1e8);
+}
+html[data-theme="light"] .more {
+  color: #67758c;
+}
+html[data-theme="light"] .version {
+  color: #7f8ca3;
+}
+html[data-theme="light"] .breadcrumb {
+  color: #65738b;
+}
+html[data-theme="light"] .breadcrumb span {
+  color: #99aac3;
+}
+html[data-theme="light"] .breadcrumb strong {
+  color: #1a273a;
+}
+html[data-theme="light"] .live-label {
+  color: #455770;
+}
+html[data-theme="light"] .icon-button {
+  background: #d8dfee;
+  color: #102036;
+}
+html[data-theme="light"] .eyebrow {
+  color: #546680;
+}
+html[data-theme="light"] h1 span {
+  text-shadow: 0 0 26px #0061b730;
+}
+html[data-theme="light"] .primary-button {
+  border: 1px solid #005cb5;
+  background: linear-gradient(135deg,#177bd7,#4493e8);
+  box-shadow: 0 3px 20px #1a8ce922;
+}
+html[data-theme="light"] .stat-card {
+  background: linear-gradient(145deg,#d6deed,#e2e7f2);
+}
+html[data-theme="light"] .stat-card::after {
+  background: #0061b770;
+}
+html[data-theme="light"] .stat-top {
+  color: #4c5c74;
+}
+html[data-theme="light"] .stat-foot {
+  color: #516076;
+}
+html[data-theme="light"] .stat-bar {
+  background: #b8c4d9;
+}
+html[data-theme="light"] .panel {
+  background: linear-gradient(155deg,#dee4f0,#e4e9f3);
+}
+html[data-theme="light"] .count-pill {
+  background: #b9d3e9;
+  border: 1px solid #92bedb;
+}
+html[data-theme="light"] .subtle-button {
+  border: 1px solid #b3c1d5;
+  background: #d8e0ee;
+  color: #3e4d62;
+}
+html[data-theme="light"] .subtle-button:hover {
+  border-color: #7990af;
+}
+html[data-theme="light"] .search-box {
+  border: 1px solid #b6c4d9;
+  background: #e7ecf5;
+  color: #65768e;
+}
+html[data-theme="light"] .search-box input::placeholder {
+  color: #76849c;
+}
+html[data-theme="light"] kbd {
+  border: 1px solid #a5b5cc;
+  color: #5e708a;
+}
+html[data-theme="light"] select {
+  background: #dae1ef;
+  color: #3e4d62;
+  border: 1px solid #b5c2d6;
+}
+html[data-theme="light"] thead {
+  background: #dae1ef;
+}
+html[data-theme="light"] th {
+  color: #64758f;
+}
+html[data-theme="light"] td {
+  border-top: 1px solid #c8d3e4;
+}
+html[data-theme="light"] tbody tr:hover {
+  background: #c8d4e9;
+}
+html[data-theme="light"] tbody tr.selected {
+  background: linear-gradient(90deg,#b6cce8,#cfdbee);
+}
+html[data-theme="light"] .person-cell strong {
+  color: #091423;
+}
+html[data-theme="light"] .person-cell small {
+  color: #57657c;
+}
+html[data-theme="light"] .status {
+  border: 1px solid #a7b8cf;
+  background: #ced9e8;
+  color: #263c56;
+}
+html[data-theme="light"] .status.client {
+  border-color: #a6dbc6;
+  background: #d8eee6;
+}
+html[data-theme="light"] .status.proposal {
+  border-color: #998ec5;
+  background: #d1cae5;
+}
+html[data-theme="light"] .status.qualified {
+  border-color: #98c3d8;
+  background: #cee3ee;
+}
+html[data-theme="light"] .status.contacted {
+  border-color: #d5c2a9;
+  background: #e8e0d6;
+}
+html[data-theme="light"] .status.lead {
+  color: #3f4e64;
+}
+html[data-theme="light"] .next-cell strong {
+  color: #1f2c3f;
+}
+html[data-theme="light"] .next-cell small {
+  color: #5c6e87;
+}
+html[data-theme="light"] .priority.low {
+  color: #46566e;
+}
+html[data-theme="light"] .table-footer {
+  color: #697a92;
+}
+html[data-theme="light"] .profile-main p {
+  color: #57667d;
+}
+html[data-theme="light"] .section-title {
+  color: #56667d;
+}
+html[data-theme="light"] .next-action-card {
+  border: 1px solid #95b6d4;
+  background: linear-gradient(130deg,#bfd4eb,#d5dfee);
+}
+html[data-theme="light"] .action-mark {
+  border: 1px solid #83adce;
+  background: #afcee8;
+}
+html[data-theme="light"] .action-copy strong {
+  color: #03101f;
+}
+html[data-theme="light"] .action-copy small {
+  color: #40536c;
+}
+html[data-theme="light"] .detail-kv small {
+  color: #5d6e87;
+}
+html[data-theme="light"] .detail-kv strong {
+  color: #0f1a29;
+}
+html[data-theme="light"] .detail-note {
+  color: #3b495d;
+}
+html[data-theme="light"] .history-mark {
+  box-shadow: 0 0 7px #0061b766;
+}
+html[data-theme="light"] .history-item strong {
+  color: #172538;
+}
+html[data-theme="light"] .history-item small {
+  color: #62738c;
+}
+html[data-theme="light"] .small-muted {
+  color: #65758e;
+}
+html[data-theme="light"] .next-action-item {
+  border-top: 1px solid #c9d3e3;
+}
+html[data-theme="light"] .next-action-item:hover {
+  background: #d3ddec;
+}
+html[data-theme="light"] .action-checkbox {
+  border: 1px solid #94a6be;
+}
+html[data-theme="light"] .next-action-item strong {
+  color: #121d2c;
+}
+html[data-theme="light"] .next-action-item small {
+  color: #5d6f88;
+}
+html[data-theme="light"] .activity-entry {
+  border-top: 1px solid #c9d3e3;
+}
+html[data-theme="light"] .activity-icon {
+  border: 1px solid #a3b9d5;
+  background: #c8d6ea;
+}
+html[data-theme="light"] .activity-entry strong {
+  color: #121d2c;
+}
+html[data-theme="light"] .activity-entry small {
+  color: #5f718a;
+}
+html[data-theme="light"] .main-footer {
+  color: #71819a;
+}
+html[data-theme="light"] .modal-backdrop {
+  background: #183058c9;
+}
+html[data-theme="light"] .modal {
+  background: #dae1ef;
+  border: 1px solid #a8bbd5;
+  box-shadow: 0 20px 80px #38383899;
+}
+html[data-theme="light"] .modal label {
+  color: #3e4c61;
+}
+html[data-theme="light"] .modal input, html[data-theme="light"] .modal select, html[data-theme="light"] .modal textarea {
+  border: 1px solid #afbfd5;
+  background: #e5ebf5;
+}
+html[data-theme="light"] .toast {
+  background: #c4d7ea;
+  border: 1px solid #75a1ca;
+  color: #00111f;
+  box-shadow: 0 8px 35px #38383877;
+}
+html[data-theme="light"] .workspace-intro {
+  background: linear-gradient(145deg, #d6deed, #e2e7f2);
+}
+html[data-theme="light"] .workspace-toolbar input, html[data-theme="light"] .workspace-toolbar select {
+  background: #e5ebf5;
+}
+html[data-theme="light"] .pipeline-stage-heading {
+  background: #d8dfee;
+}
+html[data-theme="light"] .pipeline-opportunity {
+  border-bottom: 1px solid #c8d3e4;
+}
+html[data-theme="light"] .commitment-record, html[data-theme="light"] .activity-record {
+  border-bottom: 1px solid #c8d3e4;
+}
+html[data-theme="light"] /* ——— Layer 2 key test (Remmy, html[data-theme="light"] 2026-10-19): key gate + workspace identity ——— */
+.key-gate {
+  background: #183058d9;
+}
+html[data-theme="light"] .key-card {
+  background: linear-gradient(155deg,#dae1ef,#e4e9f3);
+  border: 1px solid #a8bbd5;
+  box-shadow: 0 20px 80px #38383899;
+}
+html[data-theme="light"] .key-card label {
+  color: #3e4c61;
+}
+html[data-theme="light"] .key-card input {
+  border: 1px solid #afbfd5;
+  background: #e5ebf5;
+}
+html[data-theme="light"] .key-error {
+  border: 1px solid #ca919e;
+  background: #edd5db;
+  color: #4c000d;
+}
+html[data-theme="light"] .key-note {
+  color: #7f8ca3;
+}
+html[data-theme="light"] .stage-move select {
+  background: #e5ebf5;
+}
+
+/* theme toggle (prototype) */
+.theme-toggle { display: flex; align-items: center; gap: 8px; width: 100%;
+  background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 11px; margin-bottom: 12px;
+  font-size: 11px; letter-spacing: .4px; }
+.theme-toggle:hover { border-color: var(--blue); }
+</style>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("liaison-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+})();
+</script>
+
+</head>
+<body>
+
+<div class="key-gate" id="keyGate">
+  <form class="key-card" id="keyForm">
+    <div class="brand-mark key-mark">P<span>+</span></div>
+    <div class="eyebrow"><span class="eyebrow-line"></span> PULSE HQ CLIENT PORTAL</div>
+    <h2>Enter your workspace key</h2>
+    <p>Your special key retrieves your business workspace and populates this page with your records — relationships, commitments, and activity.</p>
+    <label>Special key
+      <input id="keyInput" type="text" autocomplete="off" autocapitalize="characters" placeholder="e.g. CEDAR-4826" />
+    </label>
+    <div class="key-error" id="keyError" hidden></div>
+    <button class="primary-button" type="submit">Open workspace</button>
+    <small class="key-note">TEST ENVIRONMENT · SYNTHETIC DATA ONLY · Read-only population test — changes are not saved back yet.</small>
+  </form>
+</div>
+
+<div class="app-shell" id="appShell" style="visibility:hidden">
+  <aside class="sidebar">
+    <a class="brand" href="#">
+      <span class="brand-mark">P<span>+</span></span>
+      <span class="brand-name">PULSE<span>HQ</span><small>RELATIONSHIP OPERATIONS</small></span>
+    </a>
+
+    <div class="workspace-label">WORKSPACE</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="overview">◈ <span>Overview</span></button>
+      <button class="nav-item" data-view="clients">▤ <span>Clients & Prospects</span></button>
+      <button class="nav-item" data-view="pipeline">⌁ <span>Opportunity Pipeline</span></button>
+      <button class="nav-item" data-view="commitments">◷ <span>Commitments</span></button>
+      <button class="nav-item" data-view="activity">≋ <span>Activity Log</span></button>
+      <button class="nav-item" data-view="liaison">🕶 <span>Liaison</span></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Light mode</span></button>
+      <div class="system-status"><span class="pulse-dot"></span> SYSTEM OPERATIONAL</div>
+      <div class="user-card">
+        <div class="avatar avatar-ben">B</div>
+        <div><strong id="workspaceUserName">Ben</strong><small id="workspaceUserRole">Chief Executive Officer</small></div>
+        <span class="more">•••</span>
+      </div>
+      <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
+      <div class="version" id="saveState">CHANGES ARE NOT SAVED YET</div>
+      <button class="text-button" id="resetWorkspace" hidden>Reset workspace data</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb">PULSE HQ <span>/</span> <strong id="crumb">Overview</strong></div>
+      <div class="top-actions">
+        <span class="live-label" id="workspaceLabel"><span class="pulse-dot"></span> AWAITING KEY</span>
+        <button class="icon-button" id="activityQuick" title="Log activity">＋</button>
+        <div class="avatar avatar-ben">B</div>
+      </div>
+    </header>
+
+    <section class="page-heading">
+      <div>
+        <div class="eyebrow" id="pageEyebrow"><span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE</div>
+        <h1 id="pageTitle">Your business, <span>in motion.</span></h1>
+        <p id="pageSubtitle">Every relationship has a status. Every opportunity has a next step.</p>
+      </div>
+      <div class="head-actions"><span id="viewActions"></span><button class="primary-button" id="newClient"><span>＋</span> New relationship</button></div>
+    </section>
+
+    <section id="alternateView" hidden></section>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <div class="stat-top"><span>TOTAL RELATIONSHIPS</span><span class="stat-icon">◈</span></div>
+        <div class="stat-value" id="totalCount">07</div>
+        <div class="stat-foot"><span class="mini-dot blue"></span> Every relationship on file</div>
+        <div class="stat-bar"><i style="width:82%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>ACTIVE OPPORTUNITIES</span><span class="stat-icon">⌁</span></div>
+        <div class="stat-value" id="opportunityCount">04</div>
+        <div class="stat-foot"><span class="mini-dot purple"></span> <span id="pipelineValue">$8,400</span> open pipeline · clients excluded</div>
+        <div class="stat-bar purple-bar"><i style="width:64%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>OPEN COMMITMENTS</span><span class="stat-icon">◷</span></div>
+        <div class="stat-value" id="commitmentCount">05</div>
+        <div class="stat-foot"><span class="mini-dot amber"></span> Promises not yet completed</div>
+        <div class="stat-bar amber-bar"><i style="width:43%"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>FOLLOW-UPS DUE</span><span class="stat-icon">↗</span></div>
+        <div class="stat-value" id="followupCount">03</div>
+        <div class="stat-foot"><span class="mini-dot red"></span> <span id="overdueLabel">0 overdue</span> · relationships with a next step due</div>
+        <div class="stat-bar red-bar"><i style="width:35%"></i></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <div class="panel relationships-panel">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">YOUR NETWORK</div>
+            <h2>Relationships <span class="count-pill" id="listCount">07</span></h2>
+          </div>
+          <button class="subtle-button" id="exportBtn">↓ Export</button>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Search names, companies..." />
+            <kbd>/</kbd>
+          </label>
+          <select id="statusFilter" aria-label="Filter relationships">
+            <option value="all">All statuses</option>
+            <option value="Lead">Lead</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Client">Client</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>RELATIONSHIP</th><th>STATUS</th><th>NEXT ACTION</th><th>PRIORITY</th></tr>
+            </thead>
+            <tbody id="clientRows"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state" hidden>No matching relationships. Try another search or create a new one.</div>
+        </div>
+        <div class="table-footer"><span id="showingCount">Showing 7 relationships</span><span id="dataLabel">DEMO WORKSPACE <span class="footer-dot">●</span></span></div>
+      </div>
+
+      <aside class="panel detail-panel" id="detailPanel">
+        <div class="detail-topline">
+          <span class="eyebrow">RELATIONSHIP PROFILE</span>
+          <button class="icon-button small" id="closeDetail" title="Hide profile">×</button>
+        </div>
+        <div id="clientDetail"></div>
+      </aside>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel next-actions-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">WHAT NEEDS YOU</div><h2>Next actions</h2></div>
+          <span class="small-muted">BY PRIORITY</span>
+        </div>
+        <div id="nextActions"></div>
+      </div>
+
+      <div class="panel activity-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">THE PAPER TRAIL</div><h2>Recent activity</h2></div>
+          <button class="text-button" data-view="activity">View log ↗</button>
+        </div>
+        <div id="recentActivity"></div>
+      </div>
+    </section>
+
+    <footer class="main-footer">
+      <span><span class="pulse-dot"></span> YOUR WORKSPACE. YOUR RULES.</span>
+      <span>DESIGNED FOR PULSE HQ <span class="footer-dot">◆</span> <span id="clock">READY</span></span>
+    </footer>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <form class="modal" id="clientForm">
+    <div class="modal-heading">
+      <div><div class="eyebrow">EXPAND YOUR NETWORK</div><h2 id="modalTitle">New relationship</h2></div>
+      <button type="button" class="icon-button" id="cancelModal">×</button>
+    </div>
+    <label>Contact or company name<input name="name" required placeholder="e.g. Morgan Lee" /></label>
+    <label>Company<input name="company" placeholder="Business name" /></label>
+    <div class="form-row">
+      <label>Status
+        <select name="status">
+          <option>Lead</option><option>Contacted</option><option>Qualified</option>
+          <option>Proposal</option><option>Client</option>
+        </select>
+      </label>
+      <label>Priority
+        <select name="priority"><option>Medium</option><option>High</option><option>Low</option></select>
+      </label>
+    </div>
+    <label>Notes<textarea name="notes" rows="3" placeholder="Context worth keeping..."></textarea></label>
+    <div class="modal-actions"><button type="button" class="subtle-button" id="cancelModalBottom">Cancel</button><button type="submit" class="primary-button">Save relationship ↗</button></div>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="commitmentBackdrop" hidden>
+  <form class="modal" id="commitmentForm">
+    <div class="modal-heading">
+      <div><div class="eyebrow">MAKE A PROMISE</div><h2>New commitment</h2></div>
+      <button type="button" class="icon-button" id="cancelCommitment">×</button>
+    </div>
+    <label>Relationship
+      <select id="cmRelationship"></select>
+    </label>
+    <label>The promise<input id="cmTitle" placeholder="e.g. Send the revised quote" /></label>
+    <label>Details<textarea id="cmDetail" rows="2" placeholder="Anything worth recording about this promise..."></textarea></label>
+    <div class="form-row">
+      <label>Owner<input id="cmOwner" placeholder="Who is responsible?" /></label>
+      <label>Due date<input id="cmDueDate" type="date" /></label>
+    </div>
+    <div class="key-error" id="cmError" hidden></div>
+    <div class="modal-actions"><button type="button" class="subtle-button" id="cancelCommitmentBottom">Cancel</button><button type="submit" class="primary-button">Add commitment ↗</button></div>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const day = (offset) => {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+const money = (n) => new Intl.NumberFormat("en-CA", {
+  style: "currency", currency: "CAD", maximumFractionDigits: 0
+}).format(n);
+const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[c]));
+
+let clients = [];
+
+let activities = [];
+
+let commitments = [];
+
+let opportunities = [];
+
+let selectedId = null;
+let activeView = "overview";
+let editingId = null;
+let nextClientId = 8;
+let nextActivityId = 5;
+let nextCommitmentId = 1;
+let toastTimer;
+
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase();
+}
+function statusClass(status) { return status.toLowerCase(); }
+function dateLabel(date) {
+  if (!date) return "No date set";
+  const today = day(0);
+  const tomorrow = day(1);
+  if (date === today) return "Today";
+  if (date === tomorrow) return "Tomorrow";
+  if (date < today) return "Overdue · " + date;
+  return new Date(date + "T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"});
+}
+function dateOrder(date) { return date || "9999-99-99"; }
+function dueClass(date) {
+  if (!date) return "";
+  if (date < day(0)) return "overdue";
+  return "";
+}
+function showToast(message) {
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>$("toast").classList.remove("show"),2600);
+}
+function clientById(id) { return clients.find(c=>c.id===id); }
+function nextCommitmentFor(clientId) {
+  const open = commitments.filter(c => c.clientId === clientId && !c.done)
+    .sort((a, b) => dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate)) || a.id - b.id);
+  return open.length ? open[0] : null;
+}
+function derivedNext(client) {
+  const n = nextCommitmentFor(client.id);
+  return n ? { title: n.title, dueDate: n.dueDate, owner: n.owner || "" } : null;
+}
+
+// Step 3 (Alex's 3b ruling): the opportunity figures are computed
+// from actual opportunity records in the view, never from
+// relationship rows. Identified pre-fix fixture records are excluded
+// by their explicit external keys (listed in PROOF.md) — not by name
+// or amount. Opportunities on Client relationships stay excluded,
+// as the card states.
+const FIXTURE_OPP_KEYS = ["cedar-opp-2", "cedar-opp-3", "cedar-opp-4", "cedar-opp-5"];
+
+function renderStats() {
+  const activeOpps = opportunities.filter(o=>!o.outcome && o.clientStatus !== "Client" && !FIXTURE_OPP_KEYS.includes(o.key));
+  const due = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate <= day(0); });
+  const overdue = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate < day(0); });
+  $("totalCount").textContent = String(clients.length).padStart(2,"0");
+  $("opportunityCount").textContent = String(activeOpps.length).padStart(2,"0");
+  $("commitmentCount").textContent = String(commitments.filter(c=>!c.done).length).padStart(2,"0");
+  $("followupCount").textContent = String(due.length).padStart(2,"0");
+  $("overdueLabel").textContent = `${overdue.length} overdue`;
+  $("pipelineValue").textContent = money(activeOpps.reduce((s,o)=>s+(Number(o.value)||0),0));
+}
+
+function renderRows() {
+  const query = $("searchInput").value.toLowerCase().trim();
+  const status = $("statusFilter").value;
+  const filtered = clients.filter(c => {
+    const matchesStatus = status==="all" || c.status===status;
+    const nx = derivedNext(c);
+    const matchesQuery = [c.name,c.company,c.status,nx?nx.title:"",c.notes]
+      .join(" ").toLowerCase().includes(query);
+    return matchesStatus && matchesQuery;
+  });
+
+  const nextByClient = new Map(clients.map(cl=>[cl.id, derivedNext(cl)]));
+  $("clientRows").innerHTML = filtered.map(c=>`
+    <tr data-id="${c.id}" class="${c.id===selectedId?"selected":""}" tabindex="0" aria-label="Open ${escapeHTML(c.name)}">
+      <td><div class="person-cell">
+        <div class="avatar">${escapeHTML(initials(c.name))}</div>
+        <div><strong>${escapeHTML(c.name)}</strong><small>${escapeHTML(c.company||"No company added")}</small></div>
+      </div></td>
+      <td><span class="status ${statusClass(c.status)}">${escapeHTML(c.status)}</span></td>
+      <td><div class="next-cell"><strong>${escapeHTML(nextByClient.get(c.id)?nextByClient.get(c.id).title:"No open commitments")}</strong><small>${nextByClient.get(c.id)?escapeHTML(dateLabel(nextByClient.get(c.id).dueDate)):"Nothing promised"}</small></div></td>
+      <td><span class="priority ${c.priority.toLowerCase()}">${escapeHTML(c.priority)}</span></td>
+    </tr>`).join("");
+
+  $("emptyState").hidden = filtered.length>0;
+  $("listCount").textContent = String(filtered.length).padStart(2,"0");
+  $("showingCount").textContent = `Showing ${filtered.length} of ${clients.length} relationships`;
+}
+
+function renderDetail() {
+  const c = clientById(selectedId);
+  if (!c) {
+    $("clientDetail").innerHTML = `<div class="empty-state">Select a relationship to view its profile.</div>`;
+    return;
+  }
+
+  const nx = derivedNext(c);
+  $("clientDetail").innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-main">
+        <div class="avatar profile-avatar">${escapeHTML(initials(c.name))}</div>
+        <div><h3>${escapeHTML(c.name)}</h3><p>${escapeHTML(c.company||"Independent contact")}</p></div>
+      </div>
+      <div class="profile-tags">
+        <span class="status ${statusClass(c.status)}">${escapeHTML(c.status)}</span>
+        <span class="priority ${c.priority.toLowerCase()}">${escapeHTML(c.priority)} priority</span>
+      </div>
+      <div class="detail-buttons">
+        <button class="subtle-button" id="editClient">Edit profile</button>
+        <button class="primary-button" id="logClientActivity">＋ Log activity</button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">NEXT COMMITMENT</div>
+      ${nx ? `
+      <div class="next-action-card">
+        <div class="action-row">
+          <div class="action-mark">↗</div>
+          <div class="action-copy">
+            <strong>${escapeHTML(nx.title)}</strong>
+            <small>${escapeHTML(dateLabel(nx.dueDate))}${nx.owner ? ` · Owner: ${escapeHTML(nx.owner)}` : ""}</small>
+          </div>
+        </div>
+      </div>` : `
+      <div class="next-action-card">
+        <div class="action-row">
+          <div class="action-mark">○</div>
+          <div class="action-copy">
+            <strong>No open commitments</strong>
+            <small>Nothing is currently promised to this relationship.</small>
+          </div>
+        </div>
+      </div>`}
+      <button class="subtle-button" id="addCommitment" style="margin-top:10px">＋ Add commitment</button>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">RELATIONSHIP DETAILS</div>
+      <div class="detail-kv">
+        <div><small>Opportunity value</small><strong>${money(c.value||0)}</strong></div>
+        <div><small>Relationship ID</small><strong>REL-${String(c.id).padStart(4,"0")}</strong></div>
+        <div><small>Email</small><strong>${escapeHTML(c.email||"Not added")}</strong></div>
+        <div><small>Phone</small><strong>${escapeHTML(c.phone||"Not added")}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">CONTEXT & NOTES</div>
+      <p class="detail-note">${escapeHTML(c.notes||"No notes recorded yet.")}</p>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">RELATIONSHIP HISTORY</div>
+      <div class="detail-history">
+        ${(c.activities||[]).map(a=>`
+          <div class="history-item"><span class="history-mark"></span><div>
+            <strong>${escapeHTML(a.title)}</strong><small>${escapeHTML(a.date)} · ${escapeHTML(a.detail||"")}</small>
+          </div></div>`).join("") || `<span class="detail-note">No activity recorded.</span>`}
+      </div>
+    </div>`;
+  $("editClient").addEventListener("click",()=>openModal(c.id));
+  $("logClientActivity").addEventListener("click",()=>logActivity(c.id));
+  $("addCommitment").addEventListener("click",()=>openCommitmentModal(c.id));
+}
+
+function renderNextActions() {
+  const pending = commitments.filter(c=>!c.done).sort((a,b)=>dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate))).slice(0,5);
+  $("nextActions").innerHTML = pending.map(c=>{
+    const person=clientById(c.clientId);
+    return `<div class="next-action-item" data-commitment="${c.id}" tabindex="0" role="button" aria-label="Complete ${escapeHTML(c.title)}">
+      <span class="action-checkbox"></span>
+      <div><strong>${escapeHTML(c.title)}</strong><small>${escapeHTML(person?.company||"Unknown relationship")}</small></div>
+      <span class="action-due ${dueClass(c.dueDate)}">${escapeHTML(dateLabel(c.dueDate))}</span>
+    </div>`;
+  }).join("") || `<div class="empty-state">All caught up. Nothing outstanding.</div>`;
+}
+
+function renderActivity() {
+  $("recentActivity").innerHTML = activities.slice(0,5).map(a=>{
+    const person=clientById(a.clientId);
+    return `<div class="activity-entry">
+      <div class="activity-icon">${escapeHTML(a.icon||"≋")}</div>
+      <div><strong>${escapeHTML(a.title)} · ${escapeHTML(person?.name||"Workspace")}</strong><small>${escapeHTML(a.detail)} · ${escapeHTML(a.date)}</small></div>
+    </div>`;
+  }).join("") || `<div class="empty-state">No activity recorded yet.</div>`;
+}
+
+function renderAll() {
+  renderStats(); renderRows(); renderDetail(); renderNextActions(); renderActivity();
+  persistLocalState();
+}
+
+function selectClient(id) {
+  selectedId=Number(id);
+  renderRows(); renderDetail();
+}
+
+function renderAlternateView(view) {
+  const target = $("alternateView");
+
+  const stageOrder = ["Lead", "Contacted", "Qualified", "Proposal"];
+  const openCommitments = commitments.filter(c => !c.done);
+  const completedCommitments = commitments.filter(c => c.done);
+  const query = $("searchInput").value.toLowerCase().trim();
+
+  const matches = (text) => String(text ?? "")
+    .toLowerCase()
+    .includes(query);
+
+  if (view === "liaison") {
+    target.innerHTML = liaisonHTML();
+    wireLiaison();
+    pollLiaisonStatus();
+    return;
+  }
+
+  if (view === "pipeline") {
+    const stages = stageOrder.map(status => {
+      const items = clients.filter(c => c.status === status);
+      const total = items.reduce(
+        (sum, c) => sum + (Number(c.value) || 0), 0
+      );
+
+      return `
+        <section class="pipeline-stage">
+          <div class="pipeline-stage-heading">
+            <h3>${escapeHTML(status)}</h3>
+            <span>${items.length} · ${money(total)}</span>
+          </div>
+          ${items.map(c => `
+            <div class="pipeline-opportunity">
+              <div>
+                <strong>${escapeHTML(c.company || c.name)}</strong>
+                <small>${escapeHTML(c.name)} · ${escapeHTML(c.priority)} priority</small>
+                <small>${escapeHTML(c.nextAction || "Next action not set")} · ${escapeHTML(dateLabel(c.dueDate))}</small>
+                <button class="text-button" data-open-client="${c.id}">
+                  Open relationship ↗
+                </button>
+                <label class="stage-move">Stage
+                  <select data-move-stage="${c.id}">
+                    ${["Lead", "Contacted", "Qualified", "Proposal", "Client"].map(s => `<option ${s === c.status ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                </label>
+              </div>
+              <div class="opportunity-value">${money(c.value || 0)}</div>
+            </div>
+          `).join("") || `
+            <div class="workspace-empty">No relationships at this stage.</div>
+          `}
+        </section>`;
+    }).join("");
+
+    const totalValue = clients
+      .filter(c => stageOrder.includes(c.status))
+      .reduce((sum, c) => sum + (Number(c.value) || 0), 0);
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">SALES WORKSPACE</div>
+          <h2>Opportunity pipeline</h2>
+          <p>Track prospects from first contact through proposal. Select a relationship to inspect its full record.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>OPEN OPPORTUNITIES</small>
+            <strong>${clients.filter(c => stageOrder.includes(c.status)).length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>PIPELINE VALUE</small>
+            <strong>${money(totalValue)}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>PROPOSALS OUT</small>
+            <strong>${clients.filter(c => c.status === "Proposal").length}</strong>
+          </div>
+        </div>
+        ${stages}
+      </div>`;
+  }
+
+  if (view === "commitments") {
+    const all = [
+      ...openCommitments.map(c => ({...c, isDone: false})),
+      ...completedCommitments.map(c => ({...c, isDone: true}))
+    ].filter(c => {
+      const person = clientById(c.clientId);
+      return matches([c.title, person?.name, person?.company].join(" "));
+    }).sort((a, b) => {
+      if (a.isDone !== b.isDone) return Number(a.isDone) - Number(b.isDone);
+      return dateOrder(a.dueDate).localeCompare(dateOrder(b.dueDate));
+    });
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">EXECUTION TRACKER</div>
+          <h2>Commitments</h2>
+          <p>Every outstanding promise in one place. Mark an item complete only when the work has actually been done.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>OUTSTANDING</small>
+            <strong>${openCommitments.length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>OVERDUE</small>
+            <strong>${openCommitments.filter(c => c.dueDate && c.dueDate < day(0)).length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>COMPLETED</small>
+            <strong>${completedCommitments.length}</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">ACTION REGISTER</div>
+              <h2>All commitments</h2>
+            </div>
+          </div>
+          <div>
+            ${all.map(c => {
+              const person = clientById(c.clientId);
+              return `
+                <div class="commitment-record ${c.isDone ? "is-done" : ""}">
+                  <input type="checkbox"
+                    data-complete-commitment="${c.id}"
+                    aria-label="${c.isDone ? "Completed" : "Complete"}: ${escapeHTML(c.title)}"
+                    ${c.isDone ? "checked disabled" : ""}>
+                  <div>
+                    <strong>${escapeHTML(c.title)}</strong>
+                    ${c.detail ? `<small>${escapeHTML(c.detail)}</small>` : ""}
+                    <small>${escapeHTML(person?.company || person?.name || "Unknown relationship")}</small>
+                    <small>${escapeHTML(dateLabel(c.dueDate))} · Owner: ${escapeHTML(c.owner || "Unassigned")}</small>
+                    ${c.originalDueDate && c.originalDueDate !== c.dueDate ? `<small>Originally due ${escapeHTML(dateLabel(c.originalDueDate))}</small>` : ""}
+                    ${c.isDone ? `<small>Evidence: ${escapeHTML(c.evidence || "No evidence recorded")}</small>` : ""}
+                    ${!c.isDone ? `<button class="text-button" data-reschedule-commitment="${c.id}">Reschedule</button>` : ""}
+                    ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
+                  </div>
+                  <span class="priority ${c.dueDate && c.dueDate < day(0) && !c.isDone ? "high" : "low"}">
+                    ${c.isDone ? "DONE" : c.dueDate && c.dueDate < day(0) ? "OVERDUE" : "OPEN"}
+                  </span>
+                </div>`;
+            }).join("") || `<div class="workspace-empty">No commitments match your search.</div>`}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  if (view === "activity") {
+    const filtered = activities.filter(a => {
+      const person = clientById(a.clientId);
+      return matches([a.title, a.detail, person?.name, person?.company, a.date].join(" "));
+    });
+
+    target.innerHTML = `
+      <div class="workspace-view">
+        <div class="workspace-intro">
+          <div class="eyebrow">AUDIT TRAIL · DEMO DATA</div>
+          <h2>Activity log</h2>
+          <p>Review recorded interactions and changes. This prototype's activity log exists only in browser memory and is not a durable audit system.</p>
+        </div>
+        <div class="workspace-card-grid">
+          <div class="workspace-mini-card">
+            <small>RECORDED EVENTS</small>
+            <strong>${activities.length}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>RELATIONSHIPS INVOLVED</small>
+            <strong>${new Set(activities.map(a => a.clientId)).size}</strong>
+          </div>
+          <div class="workspace-mini-card">
+            <small>SHOWING</small>
+            <strong>${filtered.length}</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">RECENT FIRST</div>
+              <h2>Recorded activity</h2>
+            </div>
+          </div>
+          ${filtered.map(a => {
+            const person = clientById(a.clientId);
+            return `
+              <div class="activity-record">
+                <div class="activity-icon">${escapeHTML(a.icon || "≋")}</div>
+                <div>
+                  <strong>${escapeHTML(a.title)}</strong>
+                  <small>${escapeHTML(a.detail || "No additional context recorded.")}</small>
+                  <small>${escapeHTML(person?.name || "Workspace")} · ${escapeHTML(person?.company || "")} · ${escapeHTML(a.date)}</small>
+                  ${person ? `<button class="text-button" data-open-client="${person.id}">Open relationship ↗</button>` : ""}
+                </div>
+              </div>`;
+          }).join("") || `<div class="workspace-empty">No matching activity records.</div>`}
+        </div>
+      </div>`;
+  }
+
+  target.querySelectorAll("[data-open-client]").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = Number(button.dataset.openClient);
+      selectClient(id);
+      setView("clients");
+    });
+  });
+
+  target.querySelectorAll("[data-move-stage]").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const c = clients.find(item => item.id === Number(sel.dataset.moveStage));
+      if (!c || c.status === sel.value) return;
+      const from = c.status;
+      c.status = sel.value;
+      addActivityRecord(c.id, "Stage changed", `${from} → ${sel.value}`, "↗");
+      renderAll();
+      setView("pipeline");
+      showToast(`Moved to ${sel.value}.`);
+    });
+  });
+
+  target.querySelectorAll("[data-reschedule-commitment]").forEach(button => {
+    button.addEventListener("click", () => {
+      const c = commitments.find(item => item.id === Number(button.dataset.rescheduleCommitment));
+      if (c && !c.done) rescheduleCommitment(c);
+    });
+  });
+
+  target.querySelectorAll("[data-complete-commitment]").forEach(input => {
+    input.addEventListener("change", () => {
+      const c = commitments.find(
+        item => item.id === Number(input.dataset.completeCommitment)
+      );
+      if (!c || c.done) return;
+
+      if (!completeCommitment(c)) {
+        input.checked = false;
+        return;
+      }
+
+      renderAll();
+      setView("commitments");
+      showToast("Commitment marked complete.");
+    });
+  });
+}
+
+function setView(view) {
+  const validViews = ["overview", "clients", "pipeline", "commitments", "activity", "liaison"];
+  if (!validViews.includes(view)) view = "overview";
+
+  activeView = view;
+
+  const config = {
+    overview: [
+      "Overview", "Your business, ", "in motion.",
+      "Every relationship has a status. Every opportunity has a next step."
+    ],
+    clients: [
+      "Clients & Prospects", "Know every ", "relationship.",
+      "One record for every contact, client, and prospect."
+    ],
+    pipeline: [
+      "Opportunity Pipeline", "Turn interest ", "into action.",
+      "See the relationships most likely to become your next client."
+    ],
+    commitments: [
+      "Commitments", "Nothing falls ", "through.",
+      "Track promised actions, due dates, and completed work."
+    ],
+    activity: [
+      "Activity Log", "Every action ", "accounted for.",
+      "Review recorded interactions and changes across your relationships."
+    ],
+    liaison: [
+      "Liaison", "Your guy, ", "on it.",
+      "Hand the Liaison a note or a file. Pulse HQ formats it, saves it to your database, and it lands here."
+    ]
+  };
+
+  const [crumb, first, accent, subtitle] = config[view];
+
+  $("crumb").textContent = crumb;
+  $("pageTitle").innerHTML =
+    escapeHTML(first) + `<span>${escapeHTML(accent)}</span>`;
+  $("pageSubtitle").textContent = subtitle;
+  const bizName = workspaceInfo?.business;
+  $("pageEyebrow").innerHTML = activeView === "overview" && bizName
+    ? `<span class="eyebrow-line"></span> ${escapeHTML(bizName.toUpperCase())}`
+    : `<span class="eyebrow-line"></span> RELATIONSHIP INTELLIGENCE`;
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+
+  const overview = view === "overview";
+  const clientsView = view === "clients";
+
+  // Show only the sections that belong to the selected workspace.
+  document.querySelector(".stats-grid").hidden = !overview;
+  document.querySelector(".content-grid").hidden = !overview && !clientsView;
+  document.querySelector(".bottom-grid").hidden = !overview;
+  $("alternateView").hidden = overview || clientsView;
+  $("newClient").hidden = !overview && !clientsView;
+  $("viewActions").innerHTML =
+    activeView === "commitments" ? `<button class="subtle-button" id="headExportCommitments">↓ Export CSV</button><button class="primary-button" id="headAddCommitment">＋ Add commitment</button>` :
+    activeView === "activity" ? `<button class="subtle-button" id="headExportActivity">↓ Export CSV</button>` : "";
+
+  if (view === "pipeline") {
+    $("statusFilter").value = "all";
+  } else if (view === "overview" || view === "clients") {
+    $("statusFilter").value = "all";
+  }
+
+  $("searchInput").placeholder =
+    view === "activity" ? "Search events, people, details..." :
+    view === "commitments" ? "Search commitments and relationships..." :
+    view === "pipeline" ? "Search pipeline..." :
+    "Search names, companies...";
+
+  if (view === "overview" || view === "clients") {
+    renderRows();
+    renderDetail();
+  } else {
+    renderAlternateView(view);
+  }
+}
+function openModal(id=null) {
+  editingId=id;
+  const form=$("clientForm");
+  form.reset();
+  $("modalTitle").textContent=id?"Edit relationship":"New relationship";
+  if(id) {
+    const c=clientById(id);
+    if(!c) return;
+    for(const key of ["name","company","status","priority","notes"]) {
+      form.elements[key].value=c[key]||"";
+    }
+  }
+  $("modalBackdrop").hidden=false;
+  form.elements.name.focus();
+}
+function closeModal() {
+  $("modalBackdrop").hidden=true;
+  editingId=null;
+}
+function addActivityRecord(clientId,title,detail,icon="≋") {
+  const date="Today";
+  const item={id:nextActivityId++,clientId,title,detail,date,icon};
+  activities.unshift(item);
+  const c=clientById(clientId);
+  if(c) c.activities.unshift({title,date,detail});
+}
+function completeCommitment(c) {
+  const person = clientById(c.clientId);
+  if (!window.confirm(`Mark "${c.title}" complete for ${person?.name || "this relationship"}?`)) return false;
+  const evidence = window.prompt("Completion evidence (optional — what proves this is done?):") || "";
+  c.done = true;
+  c.evidence = evidence.trim();
+  c.completedAt = day(0);
+  addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
+  return true;
+}
+function rescheduleCommitment(c) {
+  const input = window.prompt(`Reschedule "${c.title}" — new due date (YYYY-MM-DD):`, c.dueDate || "");
+  if (input === null) return;
+  const value = input.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) { showToast("Date not changed — use YYYY-MM-DD."); return; }
+  if (!c.originalDueDate) c.originalDueDate = c.dueDate || "";
+  const old = c.dueDate;
+  c.dueDate = value;
+  addActivityRecord(c.clientId, "Commitment rescheduled", `${c.title}: ${old || "no date"} → ${value}`, "↗");
+  renderAll();
+  if (activeView === "commitments") setView("commitments");
+  showToast("Commitment rescheduled — still open.");
+}
+function logActivity(clientId) {
+  const c=clientById(clientId);
+  if(!c) return;
+  const title=window.prompt("What happened? (e.g. Follow-up email sent)");
+  if(!title?.trim()) return;
+  const detail=window.prompt("Add context (optional):")||"Activity recorded.";
+  addActivityRecord(clientId,title.trim(),detail.trim());
+  renderAll();
+  showToast("Activity recorded for "+c.name+".");
+}
+function openCommitmentModal(clientId=null) {
+  const form = $("commitmentForm");
+  form.reset();
+  $("cmError").hidden = true;
+  const sel = $("cmRelationship");
+  sel.innerHTML = clients.map(c=>`<option value="${c.id}">${escapeHTML(c.company || c.name)} — ${escapeHTML(c.name)}</option>`).join("");
+  if (clientId) { sel.value = String(clientId); sel.disabled = true; }
+  else { sel.disabled = false; if (selectedId) sel.value = String(selectedId); }
+  $("cmOwner").value = workspaceInfo?.userName || "";
+  $("commitmentBackdrop").hidden = false;
+  $("cmTitle").focus();
+}
+function closeCommitmentModal() { $("commitmentBackdrop").hidden = true; }
+function csvEscape(value) {
+  return '"'+String(value??"").replace(/"/g,'""')+'"';
+}
+function downloadCSV(filename, columns, rows) {
+  const lines=[columns.join(","),...rows.map(r=>columns.map(k=>csvEscape(r[k])).join(","))];
+  const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportCSV() {
+  const columns=["id","name","company","status","priority","nextAction","dueDate","value","email","phone","notes"];
+  const rows=clients.map(c=>{ const nx=derivedNext(c); return {...c,nextAction:nx?nx.title:"",dueDate:nx?nx.dueDate:""}; });
+  downloadCSV("pulse-hq-relationships.csv", columns, rows);
+  showToast("Relationship CSV exported.");
+}
+function exportCommitmentsCSV() {
+  const columns=["id","clientId","relationship","company","title","detail","owner","dueDate","originalDueDate","status","evidence","completedAt"];
+  const rows=commitments.map(c=>{ const p=clientById(c.clientId); return { id:c.id, clientId:c.clientId, relationship:p?.name||"", company:p?.company||"", title:c.title, detail:c.detail||"", owner:c.owner||"", dueDate:c.dueDate||"", originalDueDate:c.originalDueDate||"", status:c.done?"Completed":"Open", evidence:c.evidence||"", completedAt:c.completedAt||"" }; });
+  downloadCSV("pulse-hq-commitments.csv", columns, rows);
+  showToast("Commitments CSV exported.");
+}
+function exportActivityCSV() {
+  const columns=["id","clientId","relationship","company","title","detail","date"];
+  const rows=activities.map(a=>{ const p=clientById(a.clientId); return { id:a.id, clientId:a.clientId, relationship:p?.name||"", company:p?.company||"", title:a.title, detail:a.detail||"", date:a.date }; });
+  downloadCSV("pulse-hq-activity.csv", columns, rows);
+  showToast("Activity CSV exported.");
+}
+
+$("clientRows").addEventListener("click",e=>{
+  const row=e.target.closest("tr[data-id]");
+  if(row) selectClient(row.dataset.id);
+});
+$("clientRows").addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("tr[data-id]")){
+    e.preventDefault(); selectClient(e.target.dataset.id);
+  }
+});
+$("searchInput").addEventListener("input", () => {
+  if (activeView === "overview" || activeView === "clients") {
+    renderRows();
+  } else {
+    renderAlternateView(activeView);
+  }
+});
+$("statusFilter").addEventListener("change",renderRows);
+$("resetWorkspace").addEventListener("click", () => {
+  if (!currentKey) return;
+  if (!window.confirm("Remove the changes saved in this browser and reload the original workspace data?")) return;
+  try { localStorage.removeItem(localStoreKey(currentKey)); } catch (e) {}
+  location.reload();
+});
+$("viewActions").addEventListener("click",e=>{
+  if(e.target.id==="headAddCommitment") openCommitmentModal(null);
+  else if(e.target.id==="headExportCommitments") exportCommitmentsCSV();
+  else if(e.target.id==="headExportActivity") exportActivityCSV();
+});
+$("newClient").addEventListener("click",()=>openModal());
+$("cancelModal").addEventListener("click",closeModal);
+$("cancelModalBottom").addEventListener("click",closeModal);
+$("modalBackdrop").addEventListener("click",e=>{
+  if(e.target===$("modalBackdrop")) closeModal();
+});
+$("exportBtn").addEventListener("click",exportCSV);
+$("activityQuick").addEventListener("click",()=>{
+  if(!selectedId) return showToast("Select a relationship first.");
+  logActivity(selectedId);
+});
+$("closeDetail").addEventListener("click",()=>{
+  $("clientDetail").innerHTML='<div class="empty-state">Profile hidden. Select a relationship to reopen it.</div>';
+});
+
+$("clientForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(e.currentTarget).entries());
+  if(editingId) {
+    const c=clientById(editingId);
+    Object.assign(c,data,{value:Number(c.value)||0});
+    addActivityRecord(c.id,"Relationship updated","Profile details were updated.","✓");
+    selectedId=c.id;
+    closeModal(); renderAll(); showToast("Relationship updated.");
+  } else {
+    const c={
+      id:nextClientId++,name:data.name.trim(),company:data.company.trim(),
+      status:data.status,priority:data.priority,
+      value:0,email:"",phone:"",notes:data.notes.trim(),activities:[]
+    };
+    clients.unshift(c);
+    selectedId=c.id;
+    addActivityRecord(c.id,"Relationship created","New relationship added to Pulse HQ.","＋");
+    closeModal(); renderAll(); showToast("New relationship created.");
+  }
+});
+
+$("commitmentForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const title = $("cmTitle").value.trim();
+  const clientId = Number($("cmRelationship").value);
+  const err = $("cmError");
+  if (!title || !clientById(clientId)) {
+    err.textContent = "A commitment needs a promise and a relationship.";
+    err.hidden = false;
+    return;
+  }
+  commitments.push({
+    id: nextCommitmentId++,
+    clientId,
+    title,
+    detail: $("cmDetail").value.trim(),
+    owner: $("cmOwner").value.trim(),
+    dueDate: $("cmDueDate").value || "",
+    originalDueDate: $("cmDueDate").value || "",
+    done: false,
+    evidence: ""
+  });
+  addActivityRecord(clientId, "Commitment created", title, "＋");
+  closeCommitmentModal();
+  renderAll();
+  if (activeView === "commitments") setView("commitments");
+  showToast("Commitment added.");
+});
+$("cancelCommitment").addEventListener("click",closeCommitmentModal);
+$("cancelCommitmentBottom").addEventListener("click",closeCommitmentModal);
+$("commitmentBackdrop").addEventListener("click",e=>{
+  if(e.target===$("commitmentBackdrop")) closeCommitmentModal();
+});
+
+$("nextActions").addEventListener("click",e=>{
+  const row=e.target.closest("[data-commitment]");
+  if(!row) return;
+  const c=commitments.find(x=>x.id===Number(row.dataset.commitment));
+  if(!c || c.done) return;
+  if(!completeCommitment(c)) return;
+  renderAll(); showToast("Commitment marked complete.");
+});
+$("nextActions").addEventListener("keydown",e=>{
+  if(e.key==="Enter"||e.key===" ") {
+    const row=e.target.closest("[data-commitment]");
+    if(row) { e.preventDefault(); row.click(); }
+  }
+});
+
+document.querySelectorAll("[data-view]").forEach(b=>{
+  b.addEventListener("click",()=>setView(b.dataset.view));
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") { closeModal(); closeCommitmentModal(); }
+  if(e.key==="/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)){
+    e.preventDefault(); $("searchInput").focus();
+  }
+});
+
+let workspaceInfo = null;
+let currentKey = "";
+function localStoreKey(key) { return `pulsehq-crm-local:${key}`; }
+function readLocalState(key) {
+  try {
+    const raw = localStorage.getItem(localStoreKey(key));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.clients) || !Array.isArray(parsed.commitments) || !Array.isArray(parsed.activities)) return null;
+    return parsed;
+  } catch (e) { return null; }
+}
+function persistLocalState() {
+  if (!currentKey) return;
+  const el = $("saveState");
+  try {
+    localStorage.setItem(localStoreKey(currentKey), JSON.stringify({ clients, commitments, activities, nextClientId, nextCommitmentId, nextActivityId, savedAt: new Date().toISOString() }));
+    if (el) el.textContent = "DEMO · VIEW GENERATED FROM DATABASE ON FILE";
+  } catch (e) {
+    if (el) el.textContent = "SAVING UNAVAILABLE IN THIS BROWSER";
+  }
+}
+async function loadWorkspace(rawKey) {
+  const key = String(rawKey || "").trim().toLowerCase();
+  const err = $("keyError");
+  err.hidden = true;
+  if (!key) {
+    err.textContent = "Enter your workspace key to continue.";
+    err.hidden = false;
+    return;
+  }
+  try {
+    const res = await fetch(`data/${encodeURIComponent(key)}.json`, { cache: "no-store" });
+    if (!res.ok) throw new Error("workspace not found");
+    const data = await res.json();
+    if (!Array.isArray(data.clients) || !Array.isArray(data.commitments) || !Array.isArray(data.activities)) {
+      throw new Error("workspace data incomplete");
+    }
+    clients = data.clients;
+    commitments = data.commitments;
+    activities = data.activities;
+    opportunities = data.opportunities || [];
+    workspaceInfo = data.workspace || {};
+    selectedId = clients.length ? clients[0].id : null;
+    nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
+    nextCommitmentId = commitments.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    currentKey = key;
+    const saved = null; // LIAISON DEMO: the view always comes from the database-generated file. Browser-local snapshots are disabled here — the database on file is the only truth.
+    let loadedSaved = false;
+    if (saved) {
+      clients = saved.clients;
+      commitments = saved.commitments;
+      activities = saved.activities;
+      nextClientId = saved.nextClientId || nextClientId;
+      nextActivityId = saved.nextActivityId || nextActivityId;
+      nextCommitmentId = saved.nextCommitmentId || nextCommitmentId;
+      selectedId = clients.length ? clients[0].id : null;
+      loadedSaved = true;
+    }
+    const business = workspaceInfo.business || "Client workspace";
+    $("workspaceLabel").innerHTML = `<span class="pulse-dot"></span> ${escapeHTML(business.toUpperCase())}`;
+    $("workspaceUserName").textContent = workspaceInfo.userName || "Workspace user";
+    $("workspaceUserRole").textContent = workspaceInfo.userRole || business;
+    document.querySelectorAll(".avatar-ben").forEach(a => { a.textContent = workspaceInfo.userInitial || "W"; });
+    $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
+    $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
+    $("resetWorkspace").hidden = false;
+    $("keyGate").hidden = true;
+    $("appShell").style.visibility = "visible";
+    activeView = "overview";
+    renderAll();
+    setView("overview");
+    showToast(loadedSaved ? `Workspace loaded: ${business} — with your saved changes (this browser).` : `Workspace loaded: ${business}.`);
+  } catch (e) {
+    err.textContent = "That key didn't retrieve a workspace. Check the key and try again. (The page must be opened from its web address, not as a downloaded file.)";
+    err.hidden = false;
+  }
+}
+$("keyForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  loadWorkspace($("keyInput").value);
+});
+$("keyInput").focus();
+
+renderAll();
+$("clock").textContent="READY";
+
+/* ================= LIAISON (demo) =================
+   The Liaison takes a chat note and/or a CSV file, bundles them into a
+   package, and sends the package back to Pulse HQ. HQ formats it, commits
+   it to this workspace's database on file, verifies the save, and only
+   then does the updated view land here. This panel never edits records
+   itself. */
+/* LIAISON-RENDER-BEGIN — pure rendering of the published status file.
+   Every function in this block is a pure function of the status entry
+   (plus the clock): nothing is remembered between renders, so elapsed
+   time and history survive a page restart because they are recomputed
+   from the published receivedAt / transitions every time.
+   Honesty rules (Alex's rendering brief, 2026-10-20):
+   - No generic "Working…": every state renders specifically.
+   - Queue time is never presented as active processing time.
+   - History shows only transitions that were actually recorded; a
+     package without a recorded history says so, plainly.
+   - A local save attestation ("live" in HQ's records) is never
+     labelled public publication. Only an entry carrying
+     publicationVerifiedAt (stamped by the publisher after it re-reads
+     the public page) may say "Live on this page".
+   - Unresolved evidence (auditAmbiguous, ledgerPending) stays visibly
+     unresolved — never dressed as success or as a clean failure — and
+     governs the WHOLE card: it suppresses every publication claim on
+     the card, not just the headline (Alex's revision, 2026-10-20).
+   - Timestamps are validated before any duration is calculated, and
+     malformed history entries render as visibly unknown, never as
+     raw internals or "undefined" (Alex's revision, 2026-10-20).
+   - A failure never claims "nothing was saved" here; that claim can
+     only come from the recorded error text, which HQ writes only
+     after the database confirms it. */
+const LIAISON_EVENT_LABELS = {
+  received: "Received at Pulse HQ",
+  formatting: "Formatting",
+  checked: "Checked",
+  interpretation_queued: "Queued for interpretation",
+  interpretation_claimed: "Claimed for interpretation",
+  interpretation_released: "Released back to the queue",
+  clarification_requested: "Question sent to you",
+  clarification_answered: "Your answer received",
+  legacy_commit_reconciled: "Earlier save verified against the database record",
+  saved: "Saved to the database",
+  live: "Live in HQ's records",
+  failed: "Failed",
+  recovered: "Recovered \u2014 saved after a failed first attempt"
+};
+const LIAISON_TERMINAL = { live: true, failed: true, recovered_live: true };
+
+function liaisonParseTime(iso) {
+  if (!iso || typeof iso !== "string") return null;
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? null : t;
+}
+function liaisonHasOffset(iso) {
+  return /([zZ]|[+-]\d{2}:?\d{2})$/.test(String(iso || "").trim());
+}
+function liaisonFmtDur(ms) {
+  if (ms == null || ms < 0) return null;
+  const s = Math.round(ms / 1000);
+  if (s < 60) return s + "s";
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + " min";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + " h " + (m % 60) + " min";
+  return Math.floor(h / 24) + " d " + (h % 24) + " h";
+}
+function liaisonFmtClock(iso) {
+  const t = liaisonParseTime(iso);
+  if (t == null) return String(iso);
+  if (!liaisonHasOffset(iso)) return String(iso) + " (as recorded)";
+  try {
+    return new Date(t).toLocaleString("en-CA", {
+      timeZone: "America/Vancouver", month: "short", day: "numeric",
+      hour: "numeric", minute: "2-digit"
+    });
+  } catch (e) {
+    return new Date(t).toLocaleString("en-CA");
+  }
+}
+
+/* Headline state. Extras are read BEFORE the status: an ambiguous or
+   ledger-pending entry also carries status "saved", and must not be
+   presented as an ordinary save. */
+function liaisonStateLabel(p) {
+  if (p.auditAmbiguous) return "Needs review — the save could not be verified";
+  if (p.ledgerPending) return "Saved to your database — status record update pending";
+  switch (p.status) {
+    case "received": return "Received at Pulse HQ";
+    case "formatting": return "Being formatted at Pulse HQ";
+    case "checked": return "Checked — waiting for interpretation";
+    case "interpreting_queued": return "Waiting in the interpretation queue";
+    case "interpreting":
+      return p.claimedBy
+        ? "Being interpreted — " + p.claimedBy + " is reading it"
+        : "Being interpreted at Pulse HQ";
+    case "clarification": return "Needs a detail — waiting on you";
+    case "saved": return "Saved to your database — not yet published to this page";
+    case "live":
+      return p.publicationVerifiedAt
+        ? "Saved to your database · Live on this page"
+        : "Saved to your database";
+    case "failed": return "Failed";
+    case "recovered_live": return "Saved to your database \u2014 recovered after a failed first attempt";
+    default: return "Status not recorded";
+  }
+}
+
+function liaisonSummaryText(p) {
+  if (p.auditAmbiguous)
+    return "Recovery required — HQ found conflicting database evidence for this package, so it is not being called saved or live. Nothing will be re-submitted automatically." +
+      (p.error ? " Recorded detail: " + escapeHTML(p.error) : "");
+  if (p.ledgerPending)
+    return "The save is verified in the database; the status record itself is still catching up and will be reconciled. Not live yet." +
+      (p.error ? " Recorded detail: " + escapeHTML(p.error) : "");
+  if (p.status === "failed")
+    return p.error
+      ? escapeHTML(p.error)
+      : "This package failed. The failure reason was not recorded.";
+  if (p.status === "recovered_live")
+    return "This package's first attempt failed; the failure is preserved in its history above. Its save was later verified against the database record and published \u2014 nothing was rewritten." +
+      (p.summary ? " (+" + p.summary.created + " new \u00b7 " + p.summary.matched + " matched an existing record \u00b7 " + p.summary.commitments + " commitments added.)" : "");
+  if (p.status === "clarification")
+    return "Held — nothing saved yet. A question is waiting in the chat above.";
+  if ((p.status === "live" || p.status === "saved") && p.summary) {
+    const s = p.summary;
+    return "+" + s.created + " new · " + s.matched + " matched an existing record · " +
+      s.commitments + " commitments added · " + s.duplicateFlagsOpened +
+      " possible duplicate flagged for review" +
+      (s.carried ? " · " + s.carried + " carried from the earlier version of this list" : "") +
+      (s.vanished ? " · " + s.vanished + " no longer in the file (left untouched, nothing deleted)" : "") +
+      (s.replayed && !s.created && !s.matched && !s.commitments && !s.carried
+        ? " · this file was already imported — nothing was duplicated" : "");
+  }
+  switch (p.status) {
+    case "received": return "Received — nothing saved yet.";
+    case "formatting": return "Being formatted — nothing saved yet.";
+    case "checked": return "Checked — nothing saved yet.";
+    case "interpreting_queued":
+      return "In the queue for a human interpreter — nothing saved yet. Time here is waiting time, not work time.";
+    case "interpreting":
+      return "Being read by " + (p.claimedBy || "the interpreter") + " — nothing saved yet.";
+    case "saved":
+      return "Saved to your database. Publication to this page is still pending.";
+    case "live":
+      return "Saved to your database and live in HQ's records.";
+    default: return "No summary was recorded for this package.";
+  }
+}
+
+/* Elapsed / waiting line, derived only from published timestamps.
+   Every timestamp is validated BEFORE any duration is calculated:
+   - missing receipt            -> stated as not recorded;
+   - recorded but unparseable   -> stated as unreadable, shown as recorded;
+   - recorded without a timezone -> shown as recorded; NO elapsed maths is
+     done on it (a duration against an unknown timezone would be invented);
+   - stamped in the future      -> beyond a 60-second clock-skew tolerance
+     the record is called inconsistent and no duration is shown;
+   - a completion or state stamp earlier than the stamp it is measured
+     from, or in the future -> the specific duration is withheld and the
+     inconsistency is stated instead. Terminal completion stamps get
+     the same future check as every other stamp: a live/failed package
+     whose completion is stamped in the future shows no duration
+     (Alex's second revision, 2026-10-20).
+   No code path in this function can render the word "null". */
+const LIAISON_SKEW_MS = 60 * 1000;
+function liaisonTimingLine(p, nowMs) {
+  const now = nowMs == null ? Date.now() : nowMs;
+  if (!p.receivedAt || typeof p.receivedAt !== "string")
+    return "Receipt time not recorded for this package.";
+  const received = liaisonParseTime(p.receivedAt);
+  if (received == null)
+    return "Receipt time was recorded but could not be read: " +
+      p.receivedAt + " (as recorded).";
+  if (!liaisonHasOffset(p.receivedAt))
+    return "Received " + p.receivedAt + " (as recorded — no timezone was " +
+      "recorded with it, so elapsed time is not calculated).";
+  if (received - now > LIAISON_SKEW_MS)
+    return "Receipt is stamped " + liaisonFmtClock(p.receivedAt) + " — that " +
+      "is in the future, so the recorded times are inconsistent and " +
+      "elapsed time is not calculated.";
+  const agoMs = Math.max(0, now - received);
+  const parts = ["Received " + liaisonFmtClock(p.receivedAt) +
+    " (" + liaisonFmtDur(agoMs) + " ago)"];
+  const transitions = Array.isArray(p.transitions) ? p.transitions : [];
+  const last = transitions.length ? transitions[transitions.length - 1] : null;
+  const lastRaw = last ? last.at : p.updatedAt;
+  const lastAt = liaisonParseTime(lastRaw);
+  if (LIAISON_TERMINAL[p.status]) {
+    const end = liaisonParseTime(p.updatedAt);
+    if (end != null && liaisonHasOffset(p.updatedAt)) {
+      if (end - now > LIAISON_SKEW_MS)
+        parts.push("the completion stamp is in the future — the " +
+          "recorded times are inconsistent, so no duration is shown");
+      else if (end >= received)
+        parts.push("receipt to " + (p.status === "live" ? "live" : "failed") +
+          " took " + liaisonFmtDur(end - received));
+      else
+        parts.push("the completion stamp is earlier than the receipt " +
+          "stamp — the recorded times are inconsistent, so no duration " +
+          "is shown");
+    }
+    return parts.join(" · ");
+  }
+  if (lastAt != null && liaisonHasOffset(lastRaw)) {
+    if (lastAt - now > LIAISON_SKEW_MS) {
+      parts.push("the latest recorded step is stamped in the future — " +
+        "the recorded times are inconsistent, so current-state timing " +
+        "is not calculated");
+    } else if (lastAt < received) {
+      parts.push("the latest recorded step is stamped before the receipt " +
+        "— the recorded times are inconsistent, so current-state timing " +
+        "is not calculated");
+    } else {
+      const inState = liaisonFmtDur(Math.max(0, now - lastAt));
+      if (p.status === "interpreting_queued")
+        parts.push("in the queue for " + inState + " — waiting, not being worked on");
+      else if (p.status === "interpreting")
+        parts.push("with the interpreter for " + inState);
+      else if (p.status === "clarification")
+        parts.push("waiting on you for " + inState);
+      else if (p.status === "saved")
+        parts.push("saved " + inState + " ago — publication to this page still pending");
+      else
+        parts.push("in this state for " + inState);
+      if (now - lastAt > 30 * 60 * 1000)
+        parts.push("no update recorded for " + liaisonFmtDur(now - lastAt));
+    }
+  }
+  if (p.waitingOn) parts.push("waiting on: " + p.waitingOn);
+  return parts.join(" · ");
+}
+
+/* Recorded history only. An entry with no transitions array predates
+   the ledger; the page says so instead of inventing a story. Individual
+   malformed entries stay visibly malformed: an unrecognised step type is
+   labelled as unrecognised (never rendered as its raw internal name) and
+   a missing or unreadable timestamp is labelled, never rendered as
+   "undefined" or a guessed time. */
+function liaisonHistoryHTML(p) {
+  const transitions = Array.isArray(p.transitions) ? p.transitions : null;
+  if (!transitions || !transitions.length)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:12.5px;margin-top:4px">Step history was not recorded for this package (it predates the history ledger).</div>';
+  const rows = transitions.map(t => {
+    const label = (t && LIAISON_EVENT_LABELS[t.event]) || "Step type not recognised";
+    const who = t && t.actor ? " — " + escapeHTML(t.actor) : "";
+    let when;
+    if (!t || !t.at) when = "time not recorded";
+    else if (liaisonParseTime(t.at) == null) when = "time recorded but unreadable";
+    else when = liaisonFmtClock(t.at);
+    return '<div style="font-size:12.5px;color:var(--muted,#8fa1b8)">' +
+      escapeHTML(label) + who + " · " + escapeHTML(when) + "</div>";
+  }).join("");
+  return '<div style="margin-top:4px">' + rows + "</div>";
+}
+
+function liaisonPackageHTML(p, nowMs) {
+  const unresolved = p.auditAmbiguous || p.ledgerPending;
+  const border = unresolved ? "border-left:3px solid #d8a13c;padding-left:10px" : "";
+  /* An unresolved entry makes NO publication claim anywhere on its card:
+     the publication line is suppressed entirely, even if the entry also
+     carries status "live" and a publicationVerifiedAt stamp — unresolved
+     evidence governs the whole card, not just the headline. */
+  const pubLine = unresolved ? ""
+    : p.status === "live"
+    ? (p.publicationVerifiedAt
+        ? '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">Published to this page — verified ' +
+          escapeHTML(liaisonFmtClock(p.publicationVerifiedAt)) + ".</div>"
+        : '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">Live in HQ\'s records — publication to this page has not been verified yet.</div>')
+    : "";
+  return '<div class="activity-entry" style="padding:10px 0;border-bottom:1px solid #1b2942;' + border + '">' +
+    '<div class="activity-icon">🕶</div>' +
+    "<div><strong>" + escapeHTML(p.packageId) + "</strong>" +
+    '<span style="margin-left:8px">' + escapeHTML(liaisonStateLabel(p)) + "</span>" +
+    '<div style="color:var(--muted,#8fa1b8);font-size:13px">' + liaisonSummaryText(p) + "</div>" +
+    '<div style="color:var(--muted,#8fa1b8);font-size:12.5px">' +
+      escapeHTML(liaisonTimingLine(p, nowMs)) + "</div>" +
+    pubLine +
+    liaisonHistoryHTML(p) +
+    "</div></div>";
+}
+
+function liaisonTurnaroundHTML(data) {
+  const t = data && data.turnaround;
+  if (!t)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:13px">Turnaround figures are not published in this copy yet.</div>';
+  if (!t.ready || !t.wallClock)
+    return '<div style="color:var(--muted,#8fa1b8);font-size:13px"><strong style="color:#e8eef7">Building our baseline</strong> — ' +
+      "turnaround is measured on completed packages only; " +
+      ((t.wallClock && t.wallClock.sample) || 0) + " measured so far. Figures appear once there is a meaningful sample.</div>";
+  const fmt = s => liaisonFmtDur(s * 1000);
+  let out = '<div style="color:var(--muted,#8fa1b8);font-size:13px"><strong style="color:#e8eef7">' +
+    escapeHTML(t.label || "Recent turnaround") + "</strong> — typical (median) " +
+    fmt(t.wallClock.medianSeconds) + " · average " + fmt(t.wallClock.meanSeconds) +
+    " · based on " + t.wallClock.sample + " completed packages (wall clock, waits included).";
+  /* Wording follows the metrics producer exactly (lifecycle.py):
+     the adjusted figure subtracts ONLY recorded, closed clarification
+     waits; adjustedExcluded counts completed packages left out of the
+     adjusted figure because a clarification question on them was still
+     unanswered at completion (wait never closed on the record);
+     adjustedAvailable is false exactly when inconsistentPackages > 0.
+     The exclusion sentence is only shown alongside a figure it actually
+     describes — never next to the "unavailable" notice. */
+  if (t.internal && t.adjustedAvailable) {
+    out += " Excluding recorded, closed waits for answers: median " +
+      fmt(t.internal.medianSeconds) + " (based on " + t.internal.sample +
+      " packages).";
+    if (t.adjustedExcluded)
+      out += " " + t.adjustedExcluded + " completed package(s) are counted " +
+        "in the wall-clock figures above but not in the adjusted figure — " +
+        "a clarification question on them was still unanswered when they " +
+        "completed, so that wait was never closed on the record and " +
+        "nothing was subtracted for them.";
+  } else if (!t.adjustedAvailable) {
+    out += " The wait-adjusted figure is unavailable — " + (t.inconsistentPackages || 0) +
+      " package(s) had inconsistent records and were left unadjusted rather than repaired.";
+  } else {
+    out += " No wait-adjusted figure yet — no completed package has a " +
+      "recorded, closed clarification wait to subtract.";
+    if (t.adjustedExcluded)
+      out += " " + t.adjustedExcluded + " completed package(s) still have " +
+        "an unanswered clarification question on their record.";
+  }
+  return out + "</div>";
+}
+/* LIAISON-RENDER-END */
+window.__liaisonReloaded = window.__liaisonReloaded || {};
+
+function liaisonHTML() {
+  return `
+  <div class="workspace-view">
+    <div class="workspace-intro">
+      <div class="eyebrow">PULSE HQ LIAISON</div>
+      <h2>🕶 The Liaison</h2>
+      <p>Don't learn a CRM. Talk to your guy — a quick note, or the spreadsheet
+      you've already got — and watch it become records. Everything he saves goes
+      into your database at Pulse HQ first; this page only ever shows what's
+      actually saved there.</p>
+    </div>
+    <div style="padding:13px 16px;margin-bottom:18px;border:1px solid #2a3c5c;border-radius:12px;background:#0d1626;color:#c7d5ea;font-size:13.5px">
+      <strong style="color:#e8eef7">How tonight works, honestly:</strong>
+      you're talking to the Liaison, and a human concierge — Remmy at
+      Pulse HQ — interprets every note by hand; a small demo doorman carries
+      the packages (a demonstration bridge, not the production system, and it
+      only ever touches this demo book). Talk naturally — you don't need
+      forms or field names. If something important is unclear, she'll ask
+      right here. A received message isn't a saved record: the stamps under
+      Packages only move when the real database and this page say so.
+    </div>
+    <section class="panel" style="padding:22px;margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em">CONVERSATION</span>
+        <button id="liaisonReset" style="background:none;border:1px solid #22314a;border-radius:8px;color:#8fa1b8;padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer">↺ New conversation</button>
+      </div>
+      <div id="liaisonThread" style="display:flex;flex-direction:column;gap:10px;max-height:430px;overflow-y:auto;padding:4px 2px 10px"></div>
+      <div style="border-top:1px solid #1b2942;padding-top:14px">
+        <textarea id="liaisonInput" rows="2" placeholder="Message the Liaison — talk like you'd talk to a person"
+          style="width:100%;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:12px;font:inherit"></textarea>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <button class="primary-button" id="liaisonSend">Send to the Liaison ↗</button>
+          <label style="color:var(--muted,#8fa1b8);font-size:13px;cursor:pointer">
+            📎 Attach a CSV batch
+            <input id="liaisonFile" type="file" accept=".csv,text/csv" style="display:none">
+          </label>
+          <span id="liaisonFileName" style="color:var(--muted,#8fa1b8);font-size:13px"></span>
+          <select id="liaisonListMode"
+            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px">
+            <option value="">CSV list: automatic</option>
+            <option value="new">New list</option>
+            <option value="update">Update of an existing list</option>
+          </select>
+          <input id="liaisonList" type="text" placeholder="List name (for New / Update)"
+            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px;width:210px">
+        </div>
+        <p style="margin:6px 0 0;color:var(--muted,#8fa1b8);font-size:12.5px">Automatic fits a first upload, or re-sending a file unchanged — it files itself and duplicates nothing. A second, genuinely separate list should use New list even if it looks similar: Automatic may hold and ask which list you mean rather than guess. Updating a list? Choose Update and reuse its exact name: unchanged rows carry over, changed rows are added as new, and rows that disappear are reported — never deleted.</p>
+        <p style="margin:10px 0 0;color:var(--muted,#8fa1b8);font-size:13px">CSV columns: name, company, email, phone, status, value, commitment, due_date, notes, priority. Possible duplicates are flagged for a human — never merged silently. On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
+        <div style="margin-top:14px;border-top:1px dashed #22314a;padding-top:12px">
+          <div style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em;margin-bottom:8px">ADD AN OPPORTUNITY</div>
+          <input id="oppNote" type="text" placeholder="Turn my conversation with ___ into an opportunity: ___"
+            style="width:100%;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:10px 12px;font:inherit">
+          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input id="oppValue" type="text" inputmode="decimal" placeholder="Value in $ (optional)"
+              style="width:170px;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:9px 12px;font:inherit">
+            <button id="oppAdd" style="background:none;border:1px solid #2b4a73;border-radius:8px;color:#cfe3ff;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer">Add opportunity</button>
+            <span style="color:var(--muted,#8fa1b8);font-size:12.5px">Travels the same road as a chat note — interpreted and verified before it's a record. Nothing you leave blank gets invented.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" style="padding:22px">
+      <h3 style="margin:0 0 12px">Packages</h3>
+      <div id="liaisonTurnaround" style="margin-bottom:14px"></div>
+      <div id="liaisonPackages"><div class="workspace-empty">No packages yet this session.</div></div>
+    </section>
+  </div>`;
+}
+
+/* ---- Liaison chat thread (persisted in this browser, per workspace) ---- */
+function threadKey() { return `liaison-thread:${(currentKey || "").toUpperCase()}`; }
+function loadThread() {
+  try { return JSON.parse(localStorage.getItem(threadKey()) || "[]"); } catch (e) { return []; }
+}
+function saveThread(turns) {
+  try { localStorage.setItem(threadKey(), JSON.stringify(turns.slice(-200))); } catch (e) {}
+}
+function appendTurn(from, text, pkgId, isReply) {
+  const turns = loadThread();
+  turns.push({ from, text, at: new Date().toISOString(), pkg: pkgId || null, reply: !!isReply });
+  saveThread(turns);
+  renderThread();
+}
+function renderThread() {
+  const box = $("liaisonThread");
+  if (!box) return;
+  let turns = loadThread();
+  if (!turns.length) {
+    turns = [{ from: "liaison", text: "🕶 Hey — I'm your Liaison. Tell me who you met, what you promised, or hand me the spreadsheet you've already got. I'll turn it into records, and if I need a detail, I'll ask you right here.", at: new Date().toISOString(), pkg: null, reply: false }];
+    saveThread(turns);
+  }
+  box.innerHTML = turns.map(t => t.from === "client"
+    ? `<div style="align-self:flex-end;max-width:82%;background:#12314f;border:1px solid #23507c;border-radius:14px 14px 4px 14px;padding:10px 13px;color:#eaf4ff;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+    : `<div style="align-self:flex-start;max-width:82%;background:#101c2e;border:1px solid #22314a;border-radius:14px 14px 14px 4px;padding:10px 13px;color:#dbe7f5;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+  ).join("");
+  box.scrollTop = box.scrollHeight;
+}
+
+function wireLiaison() {
+  renderThread();
+  const file = $("liaisonFile");
+  if (file) file.addEventListener("change", () => {
+    $("liaisonFileName").textContent = file.files.length ? file.files[0].name : "";
+  });
+  const send = $("liaisonSend");
+  if (send) send.addEventListener("click", sendChatTurn);
+  const reset = $("liaisonReset");
+  if (reset) reset.addEventListener("click", () => {
+    try { localStorage.removeItem(threadKey()); } catch (e) {}
+    window.__openClarify = null;
+    renderThread();
+    showToast("New conversation started.");
+  });
+  const input = $("liaisonInput");
+  if (input) input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatTurn(); }
+  });
+}
+
+/* LIAISON-OPP-BEGIN — Item 2: the Add-opportunity entry. One natural-
+   language input + one optional detail (value). Composition is verbatim:
+   the client's sentence travels unchanged; a stated value is appended
+   as a worth-clause only when the sentence carries no $ of its own.
+   The composed note enters the SAME send path as any chat note — a
+   package, interpreted and verified; never a direct write. */
+function composeOpportunityNote(note, value) {
+  const text = String(note || "").trim();
+  if (!text) return "";
+  const v = String(value || "").trim().replace(/^\$/, "").replace(/,/g, "");
+  if (!v || /\$\s*[\d]/.test(text)) return text;
+  return text + " — worth $" + v;
+}
+
+document.addEventListener("click", (e) => {
+  if (!e.target || e.target.id !== "oppAdd") return;
+  const noteEl = document.getElementById("oppNote");
+  const valEl = document.getElementById("oppValue");
+  const composed = composeOpportunityNote(noteEl ? noteEl.value : "",
+                                          valEl ? valEl.value : "");
+  if (!composed) {
+    showToast("Describe the opportunity first — in your own words.");
+    return;
+  }
+  const input = document.getElementById("liaisonInput");
+  if (input) input.value = composed;
+  if (noteEl) noteEl.value = "";
+  if (valEl) valEl.value = "";
+  sendChatTurn();
+});
+/* LIAISON-OPP-END */
+
+/* The demo doorman's intake endpoint. This page holds NO credential in any
+   mode — the doorman's secret stays on the server side. */
+const DOORMAN_URL = "https://liaison-doorman.getpulsehq-1c7.workers.dev/api/packages";
+
+async function sendChatTurn() {
+  const input = $("liaisonInput");
+  const note = input ? input.value.trim() : "";
+  const fileInput = $("liaisonFile");
+  let csvText = "", fileName = "";
+  if (fileInput && fileInput.files.length) {
+    fileName = fileInput.files[0].name;
+    csvText = await fileInput.files[0].text();
+  }
+  const listEl = $("liaisonList");
+  const modeEl = $("liaisonListMode");
+  const listMode = csvText && modeEl ? modeEl.value : "";
+  // A name counts only in New / Update mode; Automatic never sends
+  // one (the processor refuses the combination outright).
+  const listName = csvText && listEl && listMode
+    ? listEl.value.trim() : "";
+  if (csvText && (listMode === "new" || listMode === "update") && !listName) {
+    showToast("Name the list — a new list needs a name, and an update needs the name it was first sent with.");
+    return;
+  }
+  if (!note && !csvText) {
+    showToast("Say something to the Liaison first — or attach a CSV.");
+    return;
+  }
+  appendTurn("client", note || `📎 ${fileName}`);
+  const threadRef = window.__openClarify || null;
+  const clearInputs = () => {
+    if (input) input.value = "";
+    if (fileInput) { fileInput.value = ""; $("liaisonFileName").textContent = ""; }
+    if (listEl) listEl.value = "";
+    if (modeEl) modeEl.value = "";
+  };
+  // Same-machine development: the local demo server takes a slim package and assigns the id.
+  if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+    try {
+      const res = await fetch("/api/packages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspaceKey: (currentKey || "").toUpperCase(), chatNote: note, csvText, fileName, listName, listMode, threadRef })
+      });
+      if (!res.ok) throw new Error("send failed");
+      const out = await res.json();
+      appendTurn("liaison", csvText && !note
+        ? "Got the file — packaging it for Pulse HQ now. Watch the Packages list below; I'll report back in this chat."
+        : "Got it — packaging that for Pulse HQ now. Watch the Packages list below; I'll report back in this chat.", out.packageId);
+      clearInputs();
+      pollLiaisonStatus();
+      return;
+    } catch (e) { /* fall through to the doorman */ }
+  }
+  // Public page: the package travels by the demo doorman.
+  const pkgId = "PKG-" + (Math.random().toString(16).slice(2, 10).toUpperCase() + "00000000").slice(0, 8);
+  const pkg = {
+    packageId: pkgId,
+    workspaceKey: (currentKey || "").toUpperCase(),
+    receivedAt: new Date().toISOString(),
+    status: "received",
+    chatNote: note,
+    threadRef,
+    csv: { fileName, text: csvText, list: listName, intent: listMode }
+  };
+  if (DOORMAN_URL && DOORMAN_URL.indexOf("__") !== 0) {
+    try {
+      const res = await fetch(DOORMAN_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pkg) });
+      if (res.ok) {
+        appendTurn("liaison", csvText && !note
+          ? "Got the file — the demo doorman is carrying it to Pulse HQ now. Watch the Packages list below; I'll report back in this chat."
+          : "Got it — the demo doorman is carrying that to Pulse HQ now. Watch the Packages list below; I'll report back in this chat.", pkgId);
+        clearInputs();
+        pollLiaisonStatus();
+        return;
+      }
+      const err = await res.json().catch(() => ({}));
+      appendTurn("liaison", `The doorman refused that package — ${err.error || ("error " + res.status)}. Nothing was sent, and what you wrote is still in this thread.`, pkgId);
+      clearInputs();
+      return;
+    } catch (e) { /* network failure — fall through to the file */ }
+  }
+  // Last resort: the package travels as a file, exactly as before the doorman.
+  const blob = new Blob([JSON.stringify(pkg, null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `liaison-package-${pkgId}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  appendTurn("liaison", `That message is packaged as ${pkgId} — the file just downloaded. Send it to Remmy in chat and she'll carry it to Pulse HQ by hand. My reply will land back in this thread.`, pkgId);
+  clearInputs();
+}
+
+async function pollLiaisonStatus() {
+  try {
+    const res = await fetch("data/liaison-status.json", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    const pkgs = data.packages || [];
+    const tbox = $("liaisonTurnaround");
+    if (tbox) tbox.innerHTML = liaisonTurnaroundHTML(data);
+    const box = $("liaisonPackages");
+    if (box) {
+      box.innerHTML = pkgs.length ? pkgs.map(p => liaisonPackageHTML(p)).join("") : `<div class="workspace-empty">No packages yet this session.</div>`;
+    }
+    // Fold the Liaison's replies — including clarification questions — into
+    // the chat thread, once each, keyed by package. Track the open question
+    // so the client's next message is packaged as its answer.
+    const turns = loadThread();
+    let folded = false;
+    // The open question is the newest package's, if it is waiting on one.
+    window.__openClarify = (pkgs.length && pkgs[0].status === "clarification")
+      ? pkgs[0].packageId : null;
+    for (const p of pkgs) {
+      if (p.reply && !turns.some(t => t.reply && t.pkg === p.packageId)) {
+        turns.push({ from: "liaison", text: p.reply, at: p.updatedAt || new Date().toISOString(), pkg: p.packageId, reply: true });
+        folded = true;
+      }
+    }
+    if (folded) { saveThread(turns); renderThread(); }
+    for (const p of pkgs) {
+      if (p.status === "live" && currentKey && !window.__liaisonReloaded[p.packageId]) {
+        window.__liaisonReloaded[p.packageId] = true;
+        showToast("Liaison: package saved to your database — refreshing your records.");
+        loadWorkspace(currentKey);
+      }
+    }
+  } catch (e) { /* status file not there yet */ }
+}
+setInterval(pollLiaisonStatus, 3000);
+
+</script>
+
+<script>
+(function () {
+  var btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  function sync() {
+    var light = document.documentElement.dataset.theme === "light";
+    btn.querySelector(".theme-toggle-icon").textContent = light ? "☾" : "☀";
+    btn.querySelector(".theme-toggle-label").textContent = light ? "Dark mode" : "Light mode";
+  }
+  btn.addEventListener("click", function () {
+    var next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("liaison-theme", next); } catch (e) {}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>
