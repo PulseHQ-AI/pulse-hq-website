@@ -918,6 +918,17 @@ html[data-theme="light"] .stage-move select {
   border-radius: 8px; padding: 8px 11px; margin-bottom: 12px;
   font-size: 11px; letter-spacing: .4px; }
 .theme-toggle:hover { border-color: var(--blue); }
+
+/* hand-tuned fix (Ben, 2026-10-22): the generated inversion left the
+   brand mark a pale tile with a white P on it. In light mode the mark
+   mirrors the primary button instead — solid blue, white P, ice-blue +. */
+html[data-theme="light"] .brand-mark {
+  background: linear-gradient(145deg, #1c74d6, #155a9e);
+  border-color: #155a9e;
+  color: #ffffff;
+  box-shadow: 0 4px 14px #1c74d633;
+}
+html[data-theme="light"] .brand-mark span { color: #bfe0ff; }
 </style>
 <script>
 (function () {
