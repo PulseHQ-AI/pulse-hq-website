@@ -1,6 +1,61 @@
 {
  "packages": [
   {
+   "packageId": "PKG-53A10002",
+   "status": "live",
+   "updatedAt": "2026-10-22T21:55:56+00:00",
+   "summary": {
+    "created": 0,
+    "matched": 0,
+    "replayed": 2,
+    "commitments": 0,
+    "opportunities": 0,
+    "carried": 0,
+    "vanished": 0,
+    "duplicateFlagsOpened": 0,
+    "duplicateFlagsOpen": 0
+   },
+   "dbCounts": {
+    "relationships": 12,
+    "opportunities": 5,
+    "commitments": 10,
+    "activities": 15,
+    "duplicate_flags": 0,
+    "audit_log": 49
+   },
+   "reply": "That package was already processed \u2014 nothing was duplicated in your database.",
+   "receivedAt": "2026-10-22T21:55:54+00:00",
+   "transitions": [
+    {
+     "event": "received",
+     "at": "2026-10-22T21:55:54+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "formatting",
+     "at": "2026-10-22T21:55:54+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "checked",
+     "at": "2026-10-22T21:55:55+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "saved",
+     "at": "2026-10-22T21:55:55+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "live",
+     "at": "2026-10-22T21:55:56+00:00",
+     "actor": "liaison-server"
+    }
+   ],
+   "waitingOn": null,
+   "claimedBy": null
+  },
+  {
    "packageId": "PKG-53A10009",
    "status": "interpreting_queued",
    "updatedAt": "2026-10-22T21:55:05+00:00",
@@ -237,21 +292,21 @@
   "commitments": 10,
   "activities": 15,
   "duplicate_flags": 0,
-  "audit_log": 48
+  "audit_log": 49
  },
  "turnaround": {
   "ready": false,
   "label": "Building our baseline",
   "windowDays": 30,
   "wallClock": {
-   "meanSeconds": 1.5,
-   "medianSeconds": 1.5,
-   "sample": 2
+   "meanSeconds": 1.7,
+   "medianSeconds": 2.0,
+   "sample": 3
   },
   "internal": {
-   "meanSeconds": 1.5,
-   "medianSeconds": 1.5,
-   "sample": 2
+   "meanSeconds": 1.7,
+   "medianSeconds": 2.0,
+   "sample": 3
   },
   "adjustedAvailable": true,
   "adjustedExcluded": 0,
