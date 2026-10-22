@@ -2,7 +2,7 @@
  "activities": [
   {
    "clientId": 5,
-   "date": "Today",
+   "date": "2 days ago",
    "detail": "Added from a neighbour referral.",
    "icon": "\uff0b",
    "id": 1,
@@ -10,7 +10,7 @@
   },
   {
    "clientId": 1,
-   "date": "Yesterday",
+   "date": "3 days ago",
    "detail": "Fall cleanup visit confirmed for next week.",
    "icon": "\u2713",
    "id": 2,
@@ -18,7 +18,7 @@
   },
   {
    "clientId": 3,
-   "date": "2 days ago",
+   "date": "4 days ago",
    "detail": "Confirmed three properties and a spring start date.",
    "icon": "\u2713",
    "id": 3,
@@ -26,7 +26,7 @@
   },
   {
    "clientId": 2,
-   "date": "4 days ago",
+   "date": "6 days ago",
    "detail": "Retaining wall proposal delivered for signature.",
    "icon": "\u2197",
    "id": 4,
@@ -42,7 +42,7 @@
   },
   {
    "clientId": 7,
-   "date": "Today",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
    "icon": "\u25c8",
    "id": 10,
@@ -50,7 +50,7 @@
   },
   {
    "clientId": 8,
-   "date": "Today",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-C004EC85 (batch).",
    "icon": "\u25c8",
    "id": 11,
@@ -58,10 +58,18 @@
   },
   {
    "clientId": 9,
-   "date": "Today",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-BD064028 (batch).",
    "icon": "\u25c8",
    "id": 12,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 10,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-20261022 (opportunity).",
+   "icon": "\u25c8",
+   "id": 13,
    "title": "Liaison add"
   }
  ],
@@ -69,7 +77,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "3 days ago",
      "detail": "Fall cleanup visit confirmed for next week.",
      "title": "Cleanup booked"
     },
@@ -97,7 +105,7 @@
   {
    "activities": [
     {
-     "date": "4 days ago",
+     "date": "6 days ago",
      "detail": "Retaining wall proposal delivered for signature.",
      "title": "Proposal sent"
     },
@@ -120,7 +128,7 @@
   {
    "activities": [
     {
-     "date": "2 days ago",
+     "date": "4 days ago",
      "detail": "Confirmed three properties and a spring start date.",
      "title": "Lead qualified"
     }
@@ -138,7 +146,7 @@
   {
    "activities": [
     {
-     "date": "3 days ago",
+     "date": "5 days ago",
      "detail": "Walked the orchard rows and discussed windbreak options.",
      "title": "Initial contact"
     }
@@ -156,7 +164,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "2 days ago",
      "detail": "Added from a neighbour referral.",
      "title": "Prospect added"
     }
@@ -192,7 +200,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
      "title": "Liaison add"
     }
@@ -210,7 +218,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-C004EC85 (batch).",
      "title": "Liaison add"
     }
@@ -228,7 +236,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-BD064028 (batch).",
      "title": "Liaison add"
     }
@@ -238,6 +246,24 @@
    "id": 9,
    "name": "Larry",
    "notes": "ii met a fellow named larry. he needs me to change the breaks on his hummer on hallowed. he offered to pay me in beer, candy and beer.",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-20261022 (opportunity).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Demo Shipyards",
+   "email": "",
+   "id": 10,
+   "name": "Shipcheck Sally",
+   "notes": "Turn my conversation with Shipcheck Sally from Demo Shipyards into an opportunity: hull inspection contract, worth $1200, decision by 2026-11-30",
    "phone": "Not added",
    "priority": "Medium",
    "status": "Lead",
