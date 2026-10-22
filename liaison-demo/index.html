@@ -809,6 +809,8 @@ let activities = [];
 
 let commitments = [];
 
+let opportunities = [];
+
 let selectedId = null;
 let activeView = "overview";
 let editingId = null;
@@ -853,8 +855,16 @@ function derivedNext(client) {
   return n ? { title: n.title, dueDate: n.dueDate, owner: n.owner || "" } : null;
 }
 
+// Step 3 (Alex's 3b ruling): the opportunity figures are computed
+// from actual opportunity records in the view, never from
+// relationship rows. Identified pre-fix fixture records are excluded
+// by their explicit external keys (listed in PROOF.md) — not by name
+// or amount. Opportunities on Client relationships stay excluded,
+// as the card states.
+const FIXTURE_OPP_KEYS = ["cedar-opp-2", "cedar-opp-3", "cedar-opp-4", "cedar-opp-5"];
+
 function renderStats() {
-  const activeOpps = clients.filter(c=>!["Client"].includes(c.status));
+  const activeOpps = opportunities.filter(o=>!o.outcome && o.clientStatus !== "Client" && !FIXTURE_OPP_KEYS.includes(o.key));
   const due = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate <= day(0); });
   const overdue = clients.filter(c=>{ const nx = derivedNext(c); return nx && nx.dueDate && nx.dueDate < day(0); });
   $("totalCount").textContent = String(clients.length).padStart(2,"0");
@@ -862,7 +872,7 @@ function renderStats() {
   $("commitmentCount").textContent = String(commitments.filter(c=>!c.done).length).padStart(2,"0");
   $("followupCount").textContent = String(due.length).padStart(2,"0");
   $("overdueLabel").textContent = `${overdue.length} overdue`;
-  $("pipelineValue").textContent = money(activeOpps.reduce((s,c)=>s+(Number(c.value)||0),0));
+  $("pipelineValue").textContent = money(activeOpps.reduce((s,o)=>s+(Number(o.value)||0),0));
 }
 
 function renderRows() {
@@ -1599,6 +1609,7 @@ async function loadWorkspace(rawKey) {
     clients = data.clients;
     commitments = data.commitments;
     activities = data.activities;
+    opportunities = data.opportunities || [];
     workspaceInfo = data.workspace || {};
     selectedId = clients.length ? clients[0].id : null;
     nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
@@ -1687,9 +1698,10 @@ const LIAISON_EVENT_LABELS = {
   legacy_commit_reconciled: "Earlier save verified against the database record",
   saved: "Saved to the database",
   live: "Live in HQ's records",
-  failed: "Failed"
+  failed: "Failed",
+  recovered: "Recovered \u2014 saved after a failed first attempt"
 };
-const LIAISON_TERMINAL = { live: true, failed: true };
+const LIAISON_TERMINAL = { live: true, failed: true, recovered_live: true };
 
 function liaisonParseTime(iso) {
   if (!iso || typeof iso !== "string") return null;
@@ -1745,6 +1757,7 @@ function liaisonStateLabel(p) {
         ? "Saved to your database · Live on this page"
         : "Saved to your database";
     case "failed": return "Failed";
+    case "recovered_live": return "Saved to your database \u2014 recovered after a failed first attempt";
     default: return "Status not recorded";
   }
 }
@@ -1760,6 +1773,9 @@ function liaisonSummaryText(p) {
     return p.error
       ? escapeHTML(p.error)
       : "This package failed. The failure reason was not recorded.";
+  if (p.status === "recovered_live")
+    return "This package's first attempt failed; the failure is preserved in its history above. Its save was later verified against the database record and published \u2014 nothing was rewritten." +
+      (p.summary ? " (+" + p.summary.created + " new \u00b7 " + p.summary.matched + " matched an existing record \u00b7 " + p.summary.commitments + " commitments added.)" : "");
   if (p.status === "clarification")
     return "Held — nothing saved yet. A question is waiting in the chat above.";
   if ((p.status === "live" || p.status === "saved") && p.summary) {
