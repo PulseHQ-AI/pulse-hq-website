@@ -2001,6 +2001,17 @@ function liaisonHTML() {
           <span id="liaisonFileName" style="color:var(--muted,#8fa1b8);font-size:13px"></span>
         </div>
         <p style="margin:10px 0 0;color:var(--muted,#8fa1b8);font-size:13px">CSV columns: name, company, email, phone, status, value, commitment, due_date, notes, priority. Possible duplicates are flagged for a human — never merged silently. On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
+        <div style="margin-top:14px;border-top:1px dashed #22314a;padding-top:12px">
+          <div style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em;margin-bottom:8px">ADD AN OPPORTUNITY</div>
+          <input id="oppNote" type="text" placeholder="Turn my conversation with ___ into an opportunity: ___"
+            style="width:100%;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:10px 12px;font:inherit">
+          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input id="oppValue" type="text" inputmode="decimal" placeholder="Value in $ (optional)"
+              style="width:170px;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:9px 12px;font:inherit">
+            <button id="oppAdd" style="background:none;border:1px solid #2b4a73;border-radius:8px;color:#cfe3ff;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer">Add opportunity</button>
+            <span style="color:var(--muted,#8fa1b8);font-size:12.5px">Travels the same road as a chat note — interpreted and verified before it's a record. Nothing you leave blank gets invented.</span>
+          </div>
+        </div>
       </div>
     </section>
     <section class="panel" style="padding:22px">
@@ -2060,6 +2071,38 @@ function wireLiaison() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatTurn(); }
   });
 }
+
+/* LIAISON-OPP-BEGIN — Item 2: the Add-opportunity entry. One natural-
+   language input + one optional detail (value). Composition is verbatim:
+   the client's sentence travels unchanged; a stated value is appended
+   as a worth-clause only when the sentence carries no $ of its own.
+   The composed note enters the SAME send path as any chat note — a
+   package, interpreted and verified; never a direct write. */
+function composeOpportunityNote(note, value) {
+  const text = String(note || "").trim();
+  if (!text) return "";
+  const v = String(value || "").trim().replace(/^\$/, "").replace(/,/g, "");
+  if (!v || /\$\s*[\d]/.test(text)) return text;
+  return text + " — worth $" + v;
+}
+
+document.addEventListener("click", (e) => {
+  if (!e.target || e.target.id !== "oppAdd") return;
+  const noteEl = document.getElementById("oppNote");
+  const valEl = document.getElementById("oppValue");
+  const composed = composeOpportunityNote(noteEl ? noteEl.value : "",
+                                          valEl ? valEl.value : "");
+  if (!composed) {
+    showToast("Describe the opportunity first — in your own words.");
+    return;
+  }
+  const input = document.getElementById("liaisonInput");
+  if (input) input.value = composed;
+  if (noteEl) noteEl.value = "";
+  if (valEl) valEl.value = "";
+  sendChatTurn();
+});
+/* LIAISON-OPP-END */
 
 /* The demo doorman's intake endpoint. This page holds NO credential in any
    mode — the doorman's secret stays on the server side. */
