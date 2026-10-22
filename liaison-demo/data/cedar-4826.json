@@ -485,6 +485,58 @@
    "title": "Verify the revision twice"
   }
  ],
+ "opportunities": [
+  {
+   "client": "June Park",
+   "clientStatus": "Proposal",
+   "id": "OPP-0001",
+   "key": "cedar-opp-2",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Proposal",
+   "value": 7400.0
+  },
+  {
+   "client": "Mateo Reyes",
+   "clientStatus": "Qualified",
+   "id": "OPP-0002",
+   "key": "cedar-opp-3",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Qualified",
+   "value": 5200.0
+  },
+  {
+   "client": "Harper Lane",
+   "clientStatus": "Contacted",
+   "id": "OPP-0003",
+   "key": "cedar-opp-4",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Contacted",
+   "value": 2600.0
+  },
+  {
+   "client": "Noah Berg",
+   "clientStatus": "Lead",
+   "id": "OPP-0004",
+   "key": "cedar-opp-5",
+   "outcome": null,
+   "service": "Landscaping services",
+   "stage": "Lead",
+   "value": 950.0
+  },
+  {
+   "client": "Shipcheck Sally",
+   "clientStatus": "Lead",
+   "id": "OPP-0005",
+   "key": "pkg:PKG-20261022:opportunity:0:opp",
+   "outcome": null,
+   "service": "hull inspection contract",
+   "stage": "New",
+   "value": 1200.0
+  }
+ ],
  "workspace": {
   "business": "Cedar & Stone Landscaping",
   "note": "Synthetic demo workspace for the Layer 2 key-population test. Not a real client record.",
