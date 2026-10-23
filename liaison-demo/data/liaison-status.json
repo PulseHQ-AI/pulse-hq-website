@@ -53,7 +53,8 @@
     }
    ],
    "waitingOn": null,
-   "claimedBy": null
+   "claimedBy": null,
+   "publicationVerifiedAt": "2026-10-23T00:59:24.227451+00:00"
   },
   {
    "packageId": "PKG-6A140001",
@@ -108,7 +109,8 @@
     }
    ],
    "waitingOn": null,
-   "claimedBy": null
+   "claimedBy": null,
+   "publicationVerifiedAt": "2026-10-23T00:59:24.227451+00:00"
   },
   {
    "packageId": "PKG-6A110001",
