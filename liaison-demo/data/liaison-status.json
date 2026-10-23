@@ -1,6 +1,38 @@
 {
  "packages": [
   {
+   "packageId": "PKG-6A110001",
+   "status": "clarification",
+   "updatedAt": "2026-10-23T00:34:18+00:00",
+   "reply": "That file has a column I don't have a place for: proof_marker. I won't drop it silently, so nothing was saved. Take that column out \u2014 or tell me which of my columns the data belongs in \u2014 and send the file again.",
+   "clarificationQuestion": "That file has a column I don't have a place for: proof_marker. I won't drop it silently, so nothing was saved. Take that column out \u2014 or tell me which of my columns the data belongs in \u2014 and send the file again.",
+   "receivedAt": "2026-10-23T00:34:17+00:00",
+   "transitions": [
+    {
+     "event": "received",
+     "at": "2026-10-23T00:34:17+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "formatting",
+     "at": "2026-10-23T00:34:18+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "checked",
+     "at": "2026-10-23T00:34:18+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "clarification_requested",
+     "at": "2026-10-23T00:34:18+00:00",
+     "actor": "liaison-server"
+    }
+   ],
+   "waitingOn": "you \u2014 a question is waiting in the chat",
+   "claimedBy": null
+  },
+  {
    "packageId": "PKG-53A10003",
    "status": "recovered_live",
    "updatedAt": "2026-10-22T23:08:30+00:00",
