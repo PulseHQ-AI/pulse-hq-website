@@ -5,9 +5,9 @@
    "status": "live",
    "updatedAt": "2026-10-23T05:23:46+00:00",
    "summary": {
-    "created": 1,
+    "created": 0,
     "matched": 0,
-    "replayed": 0,
+    "replayed": 1,
     "commitments": 0,
     "opportunities": 0,
     "carried": 0,
@@ -21,9 +21,9 @@
     "commitments": 13,
     "activities": 20,
     "duplicate_flags": 0,
-    "audit_log": 73
+    "audit_log": 74
    },
-   "reply": "Saved to your database: GAP5 Ship Smoke. 0 commitment(s) added \u2014 it's live in your records now.",
+   "reply": "That package was already processed \u2014 nothing was duplicated in your database.",
    "receivedAt": "2026-10-23T05:23:44+00:00",
    "transitions": [
     {
@@ -600,7 +600,7 @@
   "commitments": 13,
   "activities": 20,
   "duplicate_flags": 0,
-  "audit_log": 73
+  "audit_log": 74
  },
  "turnaround": {
   "ready": true,
