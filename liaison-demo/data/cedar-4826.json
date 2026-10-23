@@ -103,6 +103,22 @@
    "icon": "\u25c8",
    "id": 17,
    "title": "Liaison add"
+  },
+  {
+   "clientId": 14,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-6A140001 (chat).",
+   "icon": "\u25c8",
+   "id": 18,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 15,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-6A140002 (batch).",
+   "icon": "\u25c8",
+   "id": 19,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -359,6 +375,42 @@
    "priority": "Medium",
    "status": "Lead",
    "value": 4200
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-6A140001 (chat).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Fields Studio",
+   "email": "",
+   "id": 14,
+   "name": "Nora Fields",
+   "notes": "",
+   "phone": "Not added",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-6A140002 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Marsh Consulting",
+   "email": "owen@example.com",
+   "id": 15,
+   "name": "Owen Marsh",
+   "notes": "",
+   "phone": "555-0142",
+   "priority": "Medium",
+   "status": "Lead",
+   "value": 250
   }
  ],
  "commitments": [
@@ -483,6 +535,28 @@
    "originalDueDate": "2026-11-22",
    "owner": "Dana Whitaker",
    "title": "Verify the revision twice"
+  },
+  {
+   "clientId": 14,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-12",
+   "evidence": "",
+   "id": 12,
+   "originalDueDate": "2026-11-12",
+   "owner": "Dana Whitaker",
+   "title": "send the proposal"
+  },
+  {
+   "clientId": 15,
+   "detail": "",
+   "done": false,
+   "dueDate": "2026-11-15",
+   "evidence": "",
+   "id": 13,
+   "originalDueDate": "2026-11-15",
+   "owner": "Dana Whitaker",
+   "title": "Send the starter pack"
   }
  ],
  "opportunities": [
