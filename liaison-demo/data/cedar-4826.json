@@ -127,6 +127,14 @@
    "icon": "\u25c8",
    "id": 20,
    "title": "Liaison add"
+  },
+  {
+   "clientId": 17,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-5A5A0003 (batch).",
+   "icon": "\u25c8",
+   "id": 21,
+   "title": "Liaison add"
   }
  ],
  "clients": [
@@ -434,6 +442,24 @@
    "name": "GAP5 Ship Smoke",
    "notes": "GAP-5 S3 ship smoke - synthetic",
    "phone": "250-555-0199",
+   "priority": "Low",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-5A5A0003 (batch).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "Control Test Synthetic Co",
+   "email": "control@gap5ship.example",
+   "id": 17,
+   "name": "GAP5 Revocation Control",
+   "notes": "GAP-5 S6 revocation control - synthetic",
+   "phone": "250-555-0147",
    "priority": "Low",
    "status": "Lead",
    "value": 0
