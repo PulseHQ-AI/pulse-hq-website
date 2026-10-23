@@ -677,5 +677,10 @@
   "adjustedExcluded": 0,
   "inconsistentPackages": 0,
   "tornLines": 0
+ },
+ "operations": {
+  "state": "stopped",
+  "revision": 3,
+  "changedAt": "2026-10-23T08:50:52+00:00"
  }
 }
