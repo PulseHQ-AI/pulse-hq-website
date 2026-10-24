@@ -1,6 +1,41 @@
 {
  "packages": [
   {
+   "packageId": "PKG-6A030001",
+   "status": "live",
+   "updatedAt": "2026-10-24T21:40:36+00:00",
+   "receivedAt": "2026-10-24T21:40:33+00:00",
+   "transitions": [
+    {
+     "event": "received",
+     "at": "2026-10-24T21:40:33+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "formatting",
+     "at": "2026-10-24T21:40:34+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "checked",
+     "at": "2026-10-24T21:40:35+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "saved",
+     "at": "2026-10-24T21:40:36+00:00",
+     "actor": "liaison-server"
+    },
+    {
+     "event": "live",
+     "at": "2026-10-24T21:40:36+00:00",
+     "actor": "liaison-server"
+    }
+   ],
+   "waitingOn": null,
+   "claimedBy": null
+  },
+  {
    "packageId": "PKG-5A5A0003",
    "status": "live",
    "updatedAt": "2026-10-23T07:24:51+00:00",
@@ -652,26 +687,26 @@
   }
  ],
  "dbCounts": {
-  "relationships": 17,
-  "opportunities": 5,
+  "relationships": 18,
+  "opportunities": 6,
   "commitments": 13,
-  "activities": 21,
+  "activities": 22,
   "duplicate_flags": 0,
-  "audit_log": 78
+  "audit_log": 82
  },
  "turnaround": {
   "ready": true,
   "label": "Recent turnaround (last 30 days)",
   "windowDays": 30,
   "wallClock": {
-   "meanSeconds": 1.8,
+   "meanSeconds": 1.9,
    "medianSeconds": 2.0,
-   "sample": 8
+   "sample": 9
   },
   "internal": {
-   "meanSeconds": 1.8,
+   "meanSeconds": 1.9,
    "medianSeconds": 2.0,
-   "sample": 8
+   "sample": 9
   },
   "adjustedAvailable": true,
   "adjustedExcluded": 0,
@@ -679,8 +714,8 @@
   "tornLines": 0
  },
  "operations": {
-  "state": "stopped",
-  "revision": 3,
-  "changedAt": "2026-10-24T21:34:30+00:00"
+  "state": "running",
+  "revision": 4,
+  "changedAt": "2026-10-24T21:40:16+00:00"
  }
 }

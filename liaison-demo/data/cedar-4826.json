@@ -2,7 +2,7 @@
  "activities": [
   {
    "clientId": 5,
-   "date": "3 days ago",
+   "date": "4 days ago",
    "detail": "Added from a neighbour referral.",
    "icon": "\uff0b",
    "id": 1,
@@ -10,7 +10,7 @@
   },
   {
    "clientId": 1,
-   "date": "4 days ago",
+   "date": "5 days ago",
    "detail": "Fall cleanup visit confirmed for next week.",
    "icon": "\u2713",
    "id": 2,
@@ -18,7 +18,7 @@
   },
   {
    "clientId": 3,
-   "date": "5 days ago",
+   "date": "6 days ago",
    "detail": "Confirmed three properties and a spring start date.",
    "icon": "\u2713",
    "id": 3,
@@ -42,7 +42,7 @@
   },
   {
    "clientId": 7,
-   "date": "3 days ago",
+   "date": "4 days ago",
    "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
    "icon": "\u25c8",
    "id": 10,
@@ -50,7 +50,7 @@
   },
   {
    "clientId": 8,
-   "date": "3 days ago",
+   "date": "4 days ago",
    "detail": "Added via Liaison package PKG-C004EC85 (batch).",
    "icon": "\u25c8",
    "id": 11,
@@ -58,7 +58,7 @@
   },
   {
    "clientId": 9,
-   "date": "3 days ago",
+   "date": "4 days ago",
    "detail": "Added via Liaison package PKG-BD064028 (batch).",
    "icon": "\u25c8",
    "id": 12,
@@ -66,7 +66,7 @@
   },
   {
    "clientId": 10,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-20261022 (opportunity).",
    "icon": "\u25c8",
    "id": 13,
@@ -74,7 +74,7 @@
   },
   {
    "clientId": 11,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-53A10001 (batch).",
    "icon": "\u25c8",
    "id": 14,
@@ -82,7 +82,7 @@
   },
   {
    "clientId": 12,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-53A10001 (batch).",
    "icon": "\u25c8",
    "id": 15,
@@ -90,7 +90,7 @@
   },
   {
    "clientId": 12,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-53A10003 (batch).",
    "icon": "\u25c8",
    "id": 16,
@@ -98,7 +98,7 @@
   },
   {
    "clientId": 13,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-57A10001 (batch).",
    "icon": "\u25c8",
    "id": 17,
@@ -106,7 +106,7 @@
   },
   {
    "clientId": 14,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-6A140001 (chat).",
    "icon": "\u25c8",
    "id": 18,
@@ -114,7 +114,7 @@
   },
   {
    "clientId": 15,
-   "date": "Yesterday",
+   "date": "2 days ago",
    "detail": "Added via Liaison package PKG-6A140002 (batch).",
    "icon": "\u25c8",
    "id": 19,
@@ -122,7 +122,7 @@
   },
   {
    "clientId": 16,
-   "date": "Today",
+   "date": "Yesterday",
    "detail": "Added via Liaison package PKG-5A5A0001 (batch).",
    "icon": "\u25c8",
    "id": 20,
@@ -130,10 +130,18 @@
   },
   {
    "clientId": 17,
-   "date": "Today",
+   "date": "Yesterday",
    "detail": "Added via Liaison package PKG-5A5A0003 (batch).",
    "icon": "\u25c8",
    "id": 21,
+   "title": "Liaison add"
+  },
+  {
+   "clientId": 18,
+   "date": "Today",
+   "detail": "Added via Liaison package PKG-6A030001 (opportunity).",
+   "icon": "\u25c8",
+   "id": 22,
    "title": "Liaison add"
   }
  ],
@@ -141,7 +149,7 @@
   {
    "activities": [
     {
-     "date": "4 days ago",
+     "date": "5 days ago",
      "detail": "Fall cleanup visit confirmed for next week.",
      "title": "Cleanup booked"
     },
@@ -192,7 +200,7 @@
   {
    "activities": [
     {
-     "date": "5 days ago",
+     "date": "6 days ago",
      "detail": "Confirmed three properties and a spring start date.",
      "title": "Lead qualified"
     }
@@ -210,7 +218,7 @@
   {
    "activities": [
     {
-     "date": "6 days ago",
+     "date": "Last week",
      "detail": "Walked the orchard rows and discussed windbreak options.",
      "title": "Initial contact"
     }
@@ -228,7 +236,7 @@
   {
    "activities": [
     {
-     "date": "3 days ago",
+     "date": "4 days ago",
      "detail": "Added from a neighbour referral.",
      "title": "Prospect added"
     }
@@ -264,7 +272,7 @@
   {
    "activities": [
     {
-     "date": "3 days ago",
+     "date": "4 days ago",
      "detail": "Added via Liaison package PKG-EE168CC4 (batch).",
      "title": "Liaison add"
     }
@@ -282,7 +290,7 @@
   {
    "activities": [
     {
-     "date": "3 days ago",
+     "date": "4 days ago",
      "detail": "Added via Liaison package PKG-C004EC85 (batch).",
      "title": "Liaison add"
     }
@@ -300,7 +308,7 @@
   {
    "activities": [
     {
-     "date": "3 days ago",
+     "date": "4 days ago",
      "detail": "Added via Liaison package PKG-BD064028 (batch).",
      "title": "Liaison add"
     }
@@ -318,7 +326,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-20261022 (opportunity).",
      "title": "Liaison add"
     }
@@ -336,7 +344,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-53A10001 (batch).",
      "title": "Liaison add"
     }
@@ -354,12 +362,12 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-53A10003 (batch).",
      "title": "Liaison add"
     },
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-53A10001 (batch).",
      "title": "Liaison add"
     }
@@ -377,7 +385,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-57A10001 (batch).",
      "title": "Liaison add"
     }
@@ -395,7 +403,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-6A140001 (chat).",
      "title": "Liaison add"
     }
@@ -413,7 +421,7 @@
   {
    "activities": [
     {
-     "date": "Yesterday",
+     "date": "2 days ago",
      "detail": "Added via Liaison package PKG-6A140002 (batch).",
      "title": "Liaison add"
     }
@@ -431,7 +439,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "Yesterday",
      "detail": "Added via Liaison package PKG-5A5A0001 (batch).",
      "title": "Liaison add"
     }
@@ -449,7 +457,7 @@
   {
    "activities": [
     {
-     "date": "Today",
+     "date": "Yesterday",
      "detail": "Added via Liaison package PKG-5A5A0003 (batch).",
      "title": "Liaison add"
     }
@@ -461,6 +469,24 @@
    "notes": "GAP-5 S6 revocation control - synthetic",
    "phone": "250-555-0147",
    "priority": "Low",
+   "status": "Lead",
+   "value": 0
+  },
+  {
+   "activities": [
+    {
+     "date": "Today",
+     "detail": "Added via Liaison package PKG-6A030001 (opportunity).",
+     "title": "Liaison add"
+    }
+   ],
+   "company": "GAP-3 Test Yards",
+   "email": "",
+   "id": 18,
+   "name": "Drillmaster Dana",
+   "notes": "Turn my conversation with Drillmaster Dana from GAP-3 Test Yards into an opportunity: harbour safety audit, worth $2400, decision by 2026-12-15",
+   "phone": "Not added",
+   "priority": "Medium",
    "status": "Lead",
    "value": 0
   }
@@ -661,6 +687,16 @@
    "service": "hull inspection contract",
    "stage": "New",
    "value": 1200.0
+  },
+  {
+   "client": "Drillmaster Dana",
+   "clientStatus": "Lead",
+   "id": "OPP-0006",
+   "key": "pkg:PKG-6A030001:opportunity:0:opp",
+   "outcome": null,
+   "service": "harbour safety audit",
+   "stage": "New",
+   "value": 2400.0
   }
  ],
  "workspace": {
