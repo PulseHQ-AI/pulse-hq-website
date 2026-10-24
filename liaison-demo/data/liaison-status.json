@@ -4,6 +4,26 @@
    "packageId": "PKG-6A030001",
    "status": "live",
    "updatedAt": "2026-10-24T21:40:36+00:00",
+   "summary": {
+    "created": 0,
+    "matched": 0,
+    "replayed": 1,
+    "commitments": 0,
+    "opportunities": 0,
+    "carried": 0,
+    "vanished": 0,
+    "duplicateFlagsOpened": 0,
+    "duplicateFlagsOpen": 0
+   },
+   "dbCounts": {
+    "relationships": 18,
+    "opportunities": 6,
+    "commitments": 13,
+    "activities": 22,
+    "duplicate_flags": 0,
+    "audit_log": 83
+   },
+   "reply": "That package was already processed \u2014 nothing was duplicated in your database.",
    "receivedAt": "2026-10-24T21:40:33+00:00",
    "transitions": [
     {
@@ -692,7 +712,7 @@
   "commitments": 13,
   "activities": 22,
   "duplicate_flags": 0,
-  "audit_log": 82
+  "audit_log": 83
  },
  "turnaround": {
   "ready": true,
