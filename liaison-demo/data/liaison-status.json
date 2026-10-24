@@ -679,8 +679,8 @@
   "tornLines": 0
  },
  "operations": {
-  "state": "stopped",
-  "revision": 3,
-  "changedAt": "2026-10-24T16:37:56+00:00"
+  "state": "running",
+  "revision": 1,
+  "changedAt": "2026-10-24T21:29:25+00:00"
  }
 }
