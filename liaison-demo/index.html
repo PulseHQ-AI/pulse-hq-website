@@ -210,7 +210,7 @@ h1 span { color: var(--blue); text-shadow: 0 0 26px #48a9ff30; }
 .amber-bar i { background: var(--amber); }
 .red-bar i { background: var(--red); }
 
-.content-grid { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(275px,.8fr); gap: 15px; margin-top: 17px; align-items: stretch; }
+.content-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 15px; margin-top: 17px; align-items: stretch; }
 .panel { background: linear-gradient(155deg,#0f1521,#0c111b); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
 .panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 19px 19px 15px; }
 h2 { font: 600 17px var(--display); letter-spacing: -.3px; margin-top: 6px; }
@@ -271,6 +271,11 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .empty-state { text-align: center; padding: 30px 15px; color: var(--muted); line-height: 1.6; }
 
 .detail-panel { padding: 18px; }
+/* — relationship profile pop-up card (Group 1, 2026-10-25) — */
+#detailBackdrop { position: fixed; inset: 0; background: rgba(2,6,14,.66); z-index: 60; display: none; }
+#detailBackdrop.show { display: block; }
+#detailPanel { display: none; }
+#detailPanel.open { display: block; position: fixed; z-index: 61; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(520px, calc(100vw - 24px)); max-height: 88dvh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
 .detail-topline { display: flex; align-items: center; justify-content: space-between; }
 .profile-hero { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
 .profile-main { display: flex; align-items: center; gap: 13px; }
@@ -332,12 +337,12 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 
 @media (min-width: 1500px) {
   .main { padding: 0 46px; }
-  .content-grid { grid-template-columns: minmax(0,1.8fr) minmax(310px,.75fr); }
+  .content-grid { grid-template-columns: minmax(0,1fr); }
 }
 @media (max-width: 1100px) {
   .sidebar { width: 205px; flex-basis: 205px; }
   .main { padding: 0 22px; }
-  .content-grid { grid-template-columns: minmax(0,1.4fr) minmax(255px,.8fr); }
+  .content-grid { grid-template-columns: minmax(0,1fr); }
   .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   th, td { padding-right: 9px; padding-left: 9px; }
   th:first-child, td:first-child { padding-left: 13px; }
@@ -1110,7 +1115,6 @@ html[data-theme="light"] .brand-mark {
       <div class="user-card">
         <div class="avatar avatar-ben">B</div>
         <div><strong id="workspaceUserName">Ben</strong><small id="workspaceUserRole">Chief Executive Officer</small></div>
-        <span class="more">•••</span>
       </div>
       <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
       <div class="version" id="saveState">CHANGES ARE NOT SAVED YET</div>
@@ -1204,6 +1208,7 @@ html[data-theme="light"] .brand-mark {
         <div class="table-footer"><span id="showingCount">Showing 7 relationships</span><span id="dataLabel">DEMO WORKSPACE <span class="footer-dot">●</span></span></div>
       </div>
 
+      <div id="detailBackdrop"></div>
       <aside class="panel detail-panel" id="detailPanel">
         <div class="detail-topline">
           <span class="eyebrow">RELATIONSHIP PROFILE</span>
@@ -1370,16 +1375,27 @@ function renderStats() {
   $("pipelineValue").textContent = money(activeOpps.reduce((s,o)=>s+(Number(o.value)||0),0));
 }
 
-function renderRows() {
+function filteredClients() {
   const query = $("searchInput").value.toLowerCase().trim();
   const status = $("statusFilter").value;
-  const filtered = clients.filter(c => {
+  return clients.filter(c => {
     const matchesStatus = status==="all" || c.status===status;
     const nx = derivedNext(c);
     const matchesQuery = [c.name,c.company,c.status,nx?nx.title:"",c.notes]
       .join(" ").toLowerCase().includes(query);
     return matchesStatus && matchesQuery;
   });
+}
+function syncSelectionToFilter() {
+  const f = filteredClients();
+  if (!f.length) {
+    if (selectedId !== null) { selectedId = null; renderRows(); renderDetail(); }
+    return;
+  }
+  if (!f.some(c => c.id === selectedId)) selectClient(f[0].id, { open: false });
+}
+function renderRows() {
+  const filtered = filteredClients();
 
   const nextByClient = new Map(clients.map(cl=>[cl.id, derivedNext(cl)]));
   $("clientRows").innerHTML = filtered.map(c=>`
@@ -1502,9 +1518,18 @@ function renderAll() {
   persistLocalState();
 }
 
-function selectClient(id) {
+function openDetailPop() {
+  $("detailPanel").classList.add("open");
+  $("detailBackdrop").classList.add("show");
+}
+function closeDetailPop() {
+  $("detailPanel").classList.remove("open");
+  $("detailBackdrop").classList.remove("show");
+}
+function selectClient(id, opts = {}) {
   selectedId=Number(id);
   renderRows(); renderDetail();
+  if (opts.open !== false) openDetailPop();
 }
 
 function renderAlternateView(view) {
@@ -1759,6 +1784,7 @@ function renderAlternateView(view) {
 }
 
 function setView(view) {
+  closeDetailPop();
   const validViews = ["overview", "clients", "pipeline", "commitments", "activity", "liaison"];
   if (!validViews.includes(view)) view = "overview";
 
@@ -1903,8 +1929,9 @@ function openCommitmentModal(clientId=null) {
   $("cmError").hidden = true;
   const sel = $("cmRelationship");
   sel.innerHTML = clients.map(c=>`<option value="${c.id}">${escapeHTML(c.company || c.name)} — ${escapeHTML(c.name)}</option>`).join("");
-  if (clientId) { sel.value = String(clientId); sel.disabled = true; }
-  else { sel.disabled = false; if (selectedId) sel.value = String(selectedId); }
+  sel.disabled = false;
+  if (clientId) sel.value = String(clientId);
+  else if (selectedId) sel.value = String(selectedId);
   $("cmOwner").value = workspaceInfo?.userName || "";
   $("commitmentBackdrop").hidden = false;
   $("cmTitle").focus();
@@ -1952,11 +1979,12 @@ $("clientRows").addEventListener("keydown",e=>{
 $("searchInput").addEventListener("input", () => {
   if (activeView === "overview" || activeView === "clients") {
     renderRows();
+    syncSelectionToFilter();
   } else {
     renderAlternateView(activeView);
   }
 });
-$("statusFilter").addEventListener("change",renderRows);
+$("statusFilter").addEventListener("change", () => { renderRows(); syncSelectionToFilter(); });
 $("resetWorkspace").addEventListener("click", () => {
   if (!currentKey) return;
   if (!window.confirm("Remove the changes saved in this browser and reload the original workspace data?")) return;
@@ -1979,9 +2007,9 @@ $("activityQuick").addEventListener("click",()=>{
   if(!selectedId) return showToast("Select a relationship first.");
   logActivity(selectedId);
 });
-$("closeDetail").addEventListener("click",()=>{
-  $("clientDetail").innerHTML='<div class="empty-state">Profile hidden. Select a relationship to reopen it.</div>';
-});
+$("closeDetail").addEventListener("click", closeDetailPop);
+$("detailBackdrop").addEventListener("click", closeDetailPop);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDetailPop(); });
 
 $("clientForm").addEventListener("submit",e=>{
   e.preventDefault();
