@@ -1048,6 +1048,13 @@ html[data-theme="light"] .brand-mark {
   .key-card input { font-size: 16px; }
   .key-card .primary-button { min-height: 50px; }
 }
+
+  /* — scroll-trap fix (Ben's tap 2026-10-25): on phone the Liaison
+     conversation flows with the page instead of scrolling inside
+     its own box, so an upward swipe is never trapped; the stat
+     footers wrap instead of clipping. Desktop pane unchanged. — */
+  #liaisonThread { max-height: none !important; overflow-y: visible !important; }
+  .stat-foot { white-space: normal; line-height: 1.45; }
 @media (max-width: 480px) {
   #pageTitle { font-size: 25px; }
   .main { padding-left: 11px; padding-right: 11px; }
