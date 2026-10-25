@@ -1865,6 +1865,7 @@ function setView(view) {
   }
 }
 function openModal(id=null) {
+  closeDetailPop();
   editingId=id;
   const form=$("clientForm");
   form.reset();
@@ -1924,6 +1925,7 @@ function logActivity(clientId) {
   showToast("Activity recorded for "+c.name+".");
 }
 function openCommitmentModal(clientId=null) {
+  closeDetailPop();
   const form = $("commitmentForm");
   form.reset();
   $("cmError").hidden = true;
