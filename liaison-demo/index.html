@@ -276,6 +276,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 #detailBackdrop.show { display: block; }
 #detailPanel { display: none; }
 #detailPanel.open { display: block; position: fixed; z-index: 61; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(520px, calc(100vw - 24px)); max-height: 88dvh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+.detail-close-btn { width: 100%; margin-top: 16px; min-height: 48px; }
 .detail-topline { display: flex; align-items: center; justify-content: space-between; }
 .profile-hero { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
 .profile-main { display: flex; align-items: center; gap: 13px; }
@@ -1215,6 +1216,7 @@ html[data-theme="light"] .brand-mark {
           <button class="icon-button small" id="closeDetail" title="Hide profile">×</button>
         </div>
         <div id="clientDetail"></div>
+        <button class="primary-button detail-close-btn" id="closeDetailBottom" type="button">CLOSE</button>
       </aside>
     </section>
 
@@ -1518,14 +1520,40 @@ function renderAll() {
   persistLocalState();
 }
 
-function openDetailPop() {
-  $("detailPanel").classList.add("open");
-  $("detailBackdrop").classList.add("show");
-}
-function closeDetailPop() {
+function hideDetailPopUI() {
   $("detailPanel").classList.remove("open");
   $("detailBackdrop").classList.remove("show");
 }
+function openDetailPop() {
+  $("detailPanel").classList.add("open");
+  $("detailBackdrop").classList.add("show");
+  armOverlay("detail");
+}
+function closeDetailPop() {
+  hideDetailPopUI();
+  disarmOverlay(false);
+}
+/* — overlay history: Back closes the open overlay instead of leaving the app (2026-10-25) — */
+let overlayOpen = null;
+let overlayGuard = false;
+function armOverlay(name) {
+  if (overlayOpen === name) return;
+  overlayOpen = name;
+  try { history.pushState({ liaisonOverlay: name }, ""); } catch (e) {}
+}
+function disarmOverlay(fromPopstate) {
+  if (!overlayOpen) return;
+  overlayOpen = null;
+  if (!fromPopstate) { overlayGuard = true; try { history.back(); } catch (e) { overlayGuard = false; } }
+}
+window.addEventListener("popstate", () => {
+  if (overlayGuard) { overlayGuard = false; return; }
+  if (!overlayOpen) return;
+  const name = overlayOpen; overlayOpen = null;
+  if (name === "detail") hideDetailPopUI();
+  else if (name === "client") closeModal();
+  else if (name === "commitment") closeCommitmentModal();
+});
 function selectClient(id, opts = {}) {
   selectedId=Number(id);
   renderRows(); renderDetail();
@@ -1878,11 +1906,13 @@ function openModal(id=null) {
     }
   }
   $("modalBackdrop").hidden=false;
+  armOverlay("client");
   form.elements.name.focus();
 }
 function closeModal() {
   $("modalBackdrop").hidden=true;
   editingId=null;
+  disarmOverlay(false);
 }
 function addActivityRecord(clientId,title,detail,icon="≋") {
   const date="Today";
@@ -1936,9 +1966,10 @@ function openCommitmentModal(clientId=null) {
   else if (selectedId) sel.value = String(selectedId);
   $("cmOwner").value = workspaceInfo?.userName || "";
   $("commitmentBackdrop").hidden = false;
+  armOverlay("commitment");
   $("cmTitle").focus();
 }
-function closeCommitmentModal() { $("commitmentBackdrop").hidden = true; }
+function closeCommitmentModal() { $("commitmentBackdrop").hidden = true; disarmOverlay(false); }
 function csvEscape(value) {
   return '"'+String(value??"").replace(/"/g,'""')+'"';
 }
@@ -2010,6 +2041,7 @@ $("activityQuick").addEventListener("click",()=>{
   logActivity(selectedId);
 });
 $("closeDetail").addEventListener("click", closeDetailPop);
+$("closeDetailBottom").addEventListener("click", closeDetailPop);
 $("detailBackdrop").addEventListener("click", closeDetailPop);
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDetailPop(); });
 
