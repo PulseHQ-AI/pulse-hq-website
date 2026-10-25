@@ -928,6 +928,130 @@ html[data-theme="light"] .brand-mark {
   border-color: #155a9e;
   box-shadow: 0 4px 14px #1c74d633;
 }
+
+/* ===== MOBILE APP LAYER — port of Alex's approved template design
+   (Ben's tap 2026-10-24 21:00) =====
+   Phone layout only (<=780px); the desktop layout is untouched.
+   Layout only: no data, key, or behaviour changes. The portal's own
+   nav buttons become the bottom tab bar (reordered to the approved
+   Home / Commitments / Pipeline / People / Activity / Liaison order
+   by flex order alone), the sidebar becomes a slim header strip,
+   and the relationships table becomes record cards. */
+@media (max-width: 780px) {
+  .app-shell { flex-direction: column; }
+
+  /* — header strip (was the sidebar) — */
+  .sidebar {
+    width: 100%; flex: 0 0 auto; min-height: 0;
+    flex-direction: row; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-right: 0; border-bottom: 1px solid var(--line);
+  }
+  .brand { padding: 0; gap: 9px; }
+  .brand-mark { width: 36px; height: 36px; border-radius: 10px; }
+  .brand-name { display: block; font-size: 16px; }
+  .brand-name small { display: none; }
+  .workspace-label { display: none; }
+  .sidebar-bottom { margin: 0 0 0 auto; display: flex; align-items: center; }
+  .theme-toggle { width: auto; margin: 0; padding: 8px 10px; }
+  .system-status, .user-card, .version { display: none; }
+
+  /* — bottom tab bar (the portal's own nav, relocated) — */
+  .nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    display: flex; gap: 2px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    background: #0b0f18f5;
+    border-top: 1px solid var(--line);
+  }
+  html[data-theme="light"] .nav { background: #fffffff5; }
+  .nav-item {
+    flex: 1 1 0; min-width: 0; min-height: 54px;
+    flex-direction: column; justify-content: center; gap: 3px;
+    padding: 7px 2px 6px; font-size: 16px; text-align: center;
+    border-radius: 10px;
+  }
+  .nav-item span {
+    display: block;
+    font-size: 8.5px; line-height: 1.2; letter-spacing: 0;
+    white-space: normal; overflow-wrap: break-word; max-width: 100%;
+  }
+  .nav-item.active { box-shadow: inset 0 2px var(--blue); }
+  .nav-item[data-view="overview"] { order: 1; }
+  .nav-item[data-view="commitments"] { order: 2; }
+  .nav-item[data-view="pipeline"] { order: 3; }
+  .nav-item[data-view="clients"] { order: 4; }
+  .nav-item[data-view="activity"] { order: 5; }
+  .nav-item[data-view="liaison"] { order: 6; }
+
+  /* — main column — */
+  .main { padding: 0 14px calc(98px + env(safe-area-inset-bottom)); width: 100%; }
+  .topbar { min-height: 48px; }
+  .page-heading { padding-top: 18px; gap: 12px; }
+  #pageTitle { font-size: 27px; line-height: 1.12; }
+  #pageSubtitle { font-size: 12.5px; line-height: 1.5; }
+  .head-actions { width: 100%; justify-content: flex-start; }
+  .head-actions .primary-button { flex: 1 1 auto; justify-content: center; min-height: 48px; }
+
+  /* — home pulse: 2x2 stat cards — */
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .stat-card { border-radius: 14px; padding: 14px; }
+  .stat-value { font-size: 30px; }
+
+  /* — panels — */
+  .panel { border-radius: 14px; }
+  .content-grid, .bottom-grid { gap: 12px; }
+
+  /* — relationships table becomes record cards — */
+  .table-wrap { overflow: visible; }
+  .relationships-panel table, .relationships-panel tbody { display: block; }
+  .relationships-panel thead { display: none; }
+  .relationships-panel tbody tr {
+    display: grid; grid-template-columns: 1fr auto; column-gap: 10px;
+    padding: 13px 14px; margin: 0 0 9px;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--panel2); cursor: pointer;
+  }
+  .relationships-panel tbody td { display: block; padding: 0; border: 0; }
+  .relationships-panel tbody td:nth-child(1) { grid-column: 1 / -1; grid-row: 1; margin-bottom: 9px; }
+  .relationships-panel tbody td:nth-child(2) { grid-column: 1; grid-row: 2; align-self: center; }
+  .relationships-panel tbody td:nth-child(4) { grid-column: 2; grid-row: 2; align-self: center; justify-self: end; }
+  .relationships-panel tbody td:nth-child(3) { grid-column: 1 / -1; grid-row: 3; margin-top: 9px; }
+  .toolbar .search-box { flex: 1 1 100%; }
+  .toolbar select { flex: 1 1 100%; max-width: none; min-height: 44px; }
+  .toolbar input { min-height: 44px; font-size: 15px; }
+
+  /* — next actions / activity: full-size tap rows — */
+  .next-action-item { padding: 15px 14px; min-height: 54px; }
+  .next-action-item strong { font-size: 13px; }
+  .next-action-item small { font-size: 10.5px; }
+
+  /* — workspace views (pipeline / commitments / activity / liaison) — */
+  .workspace-intro { border-radius: 14px; padding: 17px; }
+  .workspace-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .workspace-mini-card { border-radius: 14px; padding: 12px 10px; }
+  .workspace-mini-card strong { font-size: 21px; margin-top: 8px; }
+  .workspace-mini-card small { font-size: 8.5px; line-height: 1.35; }
+  .workspace-toolbar input, .workspace-toolbar select { flex: 1 1 100%; min-height: 46px; font-size: 15px; }
+  .pipeline-stage { border-radius: 14px; }
+  .commitment-record { padding: 14px 12px; gap: 11px; }
+  .commitment-record input[type="checkbox"] { width: 26px; height: 26px; flex-shrink: 0; }
+  .commitment-record .text-button { padding: 8px 10px; min-height: 40px; }
+  .activity-record { padding: 14px 12px; }
+  #liaisonInput { font-size: 15px; }
+  #liaisonSend { min-height: 48px; width: 100%; justify-content: center; }
+
+  /* — sheets, toast, key gate — */
+  .modal { width: calc(100vw - 24px); max-height: 88dvh; overflow-y: auto; border-radius: 16px; padding: 20px 17px; }
+  .modal input, .modal select, .modal textarea { font-size: 15px; }
+  .toast { bottom: calc(88px + env(safe-area-inset-bottom)); left: 12px; right: 12px; max-width: none; text-align: center; }
+  .key-card input { font-size: 16px; }
+  .key-card .primary-button { min-height: 50px; }
+}
+@media (max-width: 480px) {
+  #pageTitle { font-size: 25px; }
+  .main { padding-left: 11px; padding-right: 11px; }
+}
 </style>
 <script>
 (function () {
