@@ -234,6 +234,23 @@ select {
 }
 
 .table-wrap { overflow-x: auto; }
+  .req-panel { padding: 22px; }
+  .req-state { color: #8fa8c4; }
+  .req-card { border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: 12px; padding: 15px 16px; margin: 12px 0; background: var(--panel2); }
+  .req-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .req-name { font-weight: 650; }
+  .req-when { color: #8fa8c4; font-size: 12px; white-space: nowrap; }
+  .req-words { font-size: 16.5px; line-height: 1.45; margin: 8px 0 4px; white-space: pre-wrap; overflow-wrap: break-word; }
+  .req-words.req-cleared { font-size: 13.5px; color: #8fa8c4; font-style: italic; }
+  .req-meta { color: #8fa8c4; font-size: 12.5px; margin: 2px 0; }
+  .req-standing { font-size: 13.5px; margin: 8px 0 2px; }
+  .req-trail { margin-top: 8px; }
+  .req-trail summary { cursor: pointer; color: var(--cyan); font-size: 12.5px; }
+  .req-trail dl { margin: 8px 0 2px; display: grid; gap: 4px; }
+  .req-trail dl div { display: flex; gap: 10px; font-size: 12.5px; }
+  .req-trail dt { color: #8fa8c4; min-width: 108px; }
+  .req-trail dd { margin: 0; overflow-wrap: anywhere; }
+  .req-foot { color: #6d7e96; font-size: 11px; margin-bottom: 0; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 thead { background: #101725; }
 th { padding: 11px 12px; font-size: 8px; color: #70819b; font-weight: 400; white-space: nowrap; }
@@ -1576,13 +1593,42 @@ function renderAlternateView(view) {
     .includes(query);
 
   if (view === "requests") {
-    target.innerHTML = `<section class="panel" style="padding:22px"><h3 style="margin-top:0">Customer Requests</h3><p id="reqState">Loading requests…</p><div class="table-wrap"><table id="reqTable" hidden><thead><tr><th>Reference</th><th>Received</th><th>Stage</th><th>Trust</th><th>Receipt</th><th>Duplicate of</th><th>Hallway cleared</th></tr></thead><tbody id="reqBody"></tbody></table></div><p style="color:#6d7e96;font-size:11px;margin-bottom:0">The trail only — the full record of each request lives in the customer's and the client's email inboxes.</p></section>`;
+    target.innerHTML = `<section class="panel req-panel"><h3>Customer Requests</h3><p id="reqState" class="req-state">Loading requests…</p><div id="reqCards"></div><p class="req-foot">Every request that arrived through your customer door. The full record of each one also lives in your email inbox.</p></section>`;
     fetch("data/requests-export.json").then(r => r.json()).then(d => {
       const rows = d.requests || [];
-      $("reqState").textContent = rows.length ? "" : "No customer requests yet. When someone sends a request through your door, its trail appears here.";
+      $("reqState").textContent = rows.length ? "" : "No customer requests yet. When someone sends a request through your door, it appears here.";
       if (!rows.length) return;
-      $("reqTable").hidden = false;
-      $("reqBody").innerHTML = rows.map(x => `<tr><td>${escapeHTML(x.reference)}</td><td>${escapeHTML(x.received)}</td><td>${escapeHTML(x.stage)}</td><td>${escapeHTML(x.trust)}</td><td>${escapeHTML(x.receipt)}</td><td>${escapeHTML(x.duplicateOf || "—")}</td><td>${escapeHTML(x.cleared || "—")}</td></tr>`).join("");
+      const stageWord = st => st === "RECEIVED" ? "Recorded" : st;
+      const dayWord = iso => { const dt = new Date(iso); return isNaN(dt) ? iso : dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + ", " + dt.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); };
+      $("reqCards").innerHTML = rows.map(x => {
+        const held = x.receipt === "held" || !!x.duplicateOf;
+        const standing = held
+          ? `Looks like a repeat of ${escapeHTML(x.duplicateOf || "an earlier request")} — held for your eye before anything is sent.`
+          : `${stageWord(escapeHTML(x.stage))} · ${x.receipt === "issued" ? "Receipt sent to the customer" : "Receipt ready, not sent yet"}`;
+        const words = x.contentState === "cleared"
+          ? `<p class="req-words req-cleared">The office copy of this request has been cleared — the customer's words live in your inbox and theirs.</p>`
+          : `<p class="req-words">“${escapeHTML(x.request)}”</p>`;
+        const meta = [x.type, x.when].filter(Boolean).map(escapeHTML).join(" · ");
+        return `<article class="req-card">
+          <div class="req-top"><span class="req-name">${escapeHTML(x.name || "A customer")}</span><span class="req-when">${dayWord(x.received)}</span></div>
+          ${words}
+          ${meta ? `<p class="req-meta">${meta}</p>` : ""}
+          <p class="req-standing">${standing}</p>
+          <details class="req-trail"><summary>Trail</summary>
+            <dl>
+              <div><dt>Reference</dt><dd>${escapeHTML(x.reference)}</dd></div>
+              <div><dt>Received</dt><dd>${escapeHTML(x.received)}</dd></div>
+              <div><dt>Stage</dt><dd>${escapeHTML(x.stage)}</dd></div>
+              <div><dt>Trust</dt><dd>${escapeHTML(x.trust)}</dd></div>
+              <div><dt>Receipt</dt><dd>${escapeHTML(x.receipt)}</dd></div>
+              <div><dt>Duplicate of</dt><dd>${escapeHTML(x.duplicateOf || "—")}</dd></div>
+              <div><dt>Handed off</dt><dd>${escapeHTML(x.handedOff || "—")}</dd></div>
+              <div><dt>Hallway cleared</dt><dd>${escapeHTML(x.cleared || "—")}</dd></div>
+              <div><dt>Fingerprint</dt><dd>${escapeHTML(x.fingerprint)}</dd></div>
+            </dl>
+          </details>
+        </article>`;
+      }).join("");
     }).catch(() => { $("reqState").textContent = "Requests could not be loaded right now."; });
     return;
   }
