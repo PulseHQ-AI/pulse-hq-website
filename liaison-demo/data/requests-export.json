@@ -10,7 +10,12 @@
    "receipt": "issued",
    "handedOff": "",
    "cleared": "",
-   "duplicateOf": ""
+   "duplicateOf": "",
+   "name": "Jesus ",
+   "request": "I need someone to come and cook refried beans ",
+   "type": "A new job or project",
+   "when": "Asap ",
+   "contentState": "held"
   },
   {
    "reference": "REQ-20261025-002",
@@ -21,7 +26,12 @@
    "receipt": "composed",
    "handedOff": "",
    "cleared": "2026-10-26T01:29:59Z",
-   "duplicateOf": ""
+   "duplicateOf": "",
+   "name": "",
+   "request": "",
+   "type": "",
+   "when": "",
+   "contentState": "cleared"
   },
   {
    "reference": "REQ-20261025-003",
@@ -32,7 +42,12 @@
    "receipt": "held",
    "handedOff": "",
    "cleared": "",
-   "duplicateOf": "REQ-20261025-002"
+   "duplicateOf": "REQ-20261025-002",
+   "name": "TEST RACE \u2014 Riley Synthetic",
+   "request": "TEST RACE submission \u2014 please build a gravel path.",
+   "type": "A new job or project",
+   "when": "Next week",
+   "contentState": "held"
   }
  ]
 }
