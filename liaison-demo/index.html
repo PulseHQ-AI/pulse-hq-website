@@ -990,6 +990,7 @@ html[data-theme="light"] .brand-mark {
   .nav-item[data-view="clients"] { order: 4; }
   .nav-item[data-view="activity"] { order: 5; }
   .nav-item[data-view="liaison"] { order: 6; }
+  .nav-item[data-view="requests"] { order: 3; }
 
   /* — main column — */
   .main { padding: 0 14px calc(98px + env(safe-area-inset-bottom)); width: 100%; }
@@ -1107,6 +1108,7 @@ html[data-theme="light"] .brand-mark {
       <button class="nav-item" data-view="clients">▤ <span>Clients & Prospects</span></button>
       <button class="nav-item" data-view="pipeline">⌁ <span>Opportunity Pipeline</span></button>
       <button class="nav-item" data-view="commitments">◷ <span>Commitments</span></button>
+      <button class="nav-item" data-view="requests">✉ <span>Customer Requests</span></button>
       <button class="nav-item" data-view="activity">≋ <span>Activity Log</span></button>
       <button class="nav-item" data-view="liaison">🕶 <span>Liaison</span></button>
     </nav>
@@ -1573,6 +1575,18 @@ function renderAlternateView(view) {
     .toLowerCase()
     .includes(query);
 
+  if (view === "requests") {
+    target.innerHTML = `<section class="panel" style="padding:22px"><h3 style="margin-top:0">Customer Requests</h3><p id="reqState">Loading requests…</p><div class="table-wrap"><table id="reqTable" hidden><thead><tr><th>Reference</th><th>Received</th><th>Stage</th><th>Trust</th><th>Receipt</th><th>Duplicate of</th><th>Hallway cleared</th></tr></thead><tbody id="reqBody"></tbody></table></div><p style="color:#6d7e96;font-size:11px;margin-bottom:0">The trail only — the full record of each request lives in the customer's and the client's email inboxes.</p></section>`;
+    fetch("data/requests-export.json").then(r => r.json()).then(d => {
+      const rows = d.requests || [];
+      $("reqState").textContent = rows.length ? "" : "No customer requests yet. When someone sends a request through your door, its trail appears here.";
+      if (!rows.length) return;
+      $("reqTable").hidden = false;
+      $("reqBody").innerHTML = rows.map(x => `<tr><td>${escapeHTML(x.reference)}</td><td>${escapeHTML(x.received)}</td><td>${escapeHTML(x.stage)}</td><td>${escapeHTML(x.trust)}</td><td>${escapeHTML(x.receipt)}</td><td>${escapeHTML(x.duplicateOf || "—")}</td><td>${escapeHTML(x.cleared || "—")}</td></tr>`).join("");
+    }).catch(() => { $("reqState").textContent = "Requests could not be loaded right now."; });
+    return;
+  }
+
   if (view === "liaison") {
     target.innerHTML = liaisonHTML();
     wireLiaison();
@@ -1839,6 +1853,10 @@ function setView(view) {
     activity: [
       "Activity Log", "Every action ", "accounted for.",
       "Review recorded interactions and changes across your relationships."
+    ],
+    requests: [
+      "Customer Requests", "Every request, ", "accounted for.",
+      "Requests that arrived through your customer door. The record itself lives in your email — this is the trail."
     ],
     liaison: [
       "Liaison", "Your guy, ", "on it.",

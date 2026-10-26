@@ -1,0 +1,38 @@
+{
+ "business": "Cedar & Stone",
+ "requests": [
+  {
+   "reference": "REQ-20261025-001",
+   "received": "2026-10-26T01:27:11Z",
+   "stage": "RECEIVED",
+   "trust": "OK",
+   "fingerprint": "659d0f0fa788\u2026",
+   "receipt": "issued",
+   "handedOff": "",
+   "cleared": "",
+   "duplicateOf": ""
+  },
+  {
+   "reference": "REQ-20261025-002",
+   "received": "2026-10-26T01:29:21Z",
+   "stage": "RECEIVED",
+   "trust": "OK",
+   "fingerprint": "cec24ed34f57\u2026",
+   "receipt": "composed",
+   "handedOff": "",
+   "cleared": "2026-10-26T01:29:59Z",
+   "duplicateOf": ""
+  },
+  {
+   "reference": "REQ-20261025-003",
+   "received": "2026-10-26T01:29:26Z",
+   "stage": "RECEIVED",
+   "trust": "OK",
+   "fingerprint": "853efa63d7dc\u2026",
+   "receipt": "held",
+   "handedOff": "",
+   "cleared": "",
+   "duplicateOf": "REQ-20261025-002"
+  }
+ ]
+}
