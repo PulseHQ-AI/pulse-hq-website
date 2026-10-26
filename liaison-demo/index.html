@@ -1872,14 +1872,7 @@ function renderAlternateView(view) {
   });
 }
 
-function setView(view) {
-  closeDetailPop();
-  const validViews = ["overview", "clients", "pipeline", "commitments", "requests", "activity", "liaison"];
-  if (!validViews.includes(view)) view = "overview";
-
-  activeView = view;
-
-  const config = {
+const VIEWS = {
     overview: [
       "Overview", "Your business, ", "in motion.",
       "Every relationship has a status. Every opportunity has a next step."
@@ -1908,9 +1901,15 @@ function setView(view) {
       "Liaison", "Your guy, ", "on it.",
       "Hand the Liaison a note or a file. Pulse HQ formats it, saves it to your database, and it lands here."
     ]
-  };
+};
 
-  const [crumb, first, accent, subtitle] = config[view];
+function setView(view) {
+  closeDetailPop();
+  if (!VIEWS[view]) { console.warn("Unknown view ignored:", view); return; }
+
+  activeView = view;
+
+  const [crumb, first, accent, subtitle] = VIEWS[view];
 
   $("crumb").textContent = crumb;
   $("pageTitle").innerHTML =
@@ -2213,6 +2212,8 @@ function persistLocalState() {
   }
 }
 async function loadWorkspace(rawKey) {
+  const hadWorkspace = !!currentKey;
+  const viewBefore = activeView;
   const key = String(rawKey || "").trim().toLowerCase();
   const err = $("keyError");
   err.hidden = true;
@@ -2260,9 +2261,8 @@ async function loadWorkspace(rawKey) {
     $("resetWorkspace").hidden = false;
     $("keyGate").hidden = true;
     $("appShell").style.visibility = "visible";
-    activeView = "overview";
     renderAll();
-    setView("overview");
+    setView(hadWorkspace ? viewBefore : "overview");
     showToast(loadedSaved ? `Workspace loaded: ${business} — with your saved changes (this browser).` : `Workspace loaded: ${business}.`);
   } catch (e) {
     err.textContent = "That key didn't retrieve a workspace. Check the key and try again. (The page must be opened from its web address, not as a downloaded file.)";
