@@ -235,6 +235,7 @@ select {
 
 .table-wrap { overflow-x: auto; }
   .req-panel { padding: 22px; }
+  .refresh-prompt { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 60; padding: 11px 18px; border-radius: 999px; border: 1px solid var(--cyan); background: #0d1b26; color: var(--cyan); font-size: 13.5px; font-weight: 600; box-shadow: 0 6px 24px #000a; cursor: pointer; }
   .req-state { color: #8fa8c4; }
   .req-card { border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: 12px; padding: 15px 16px; margin: 12px 0; background: var(--panel2); }
   .req-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
@@ -1139,6 +1140,7 @@ html[data-theme="light"] .brand-mark {
       </div>
       <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
       <div class="version" id="saveState">CHANGES ARE NOT SAVED YET</div>
+      <button class="text-button" id="refreshWorkspace" hidden>↻ Refresh</button>
       <button class="text-button" id="resetWorkspace" hidden>Reset workspace data</button>
     </div>
   </aside>
@@ -2082,6 +2084,27 @@ $("searchInput").addEventListener("input", () => {
   }
 });
 $("statusFilter").addEventListener("change", () => { renderRows(); syncSelectionToFilter(); });
+$("refreshWorkspace").addEventListener("click", () => {
+  if (!currentKey) return;
+  hideRefreshPrompt();
+  loadWorkspace(currentKey);
+});
+function showRefreshPrompt() {
+  let bar = $("refreshPrompt");
+  if (!bar) {
+    bar = document.createElement("button");
+    bar.id = "refreshPrompt";
+    bar.className = "refresh-prompt";
+    bar.textContent = "Your records were updated — tap to refresh";
+    bar.addEventListener("click", () => { hideRefreshPrompt(); if (currentKey) loadWorkspace(currentKey); });
+    document.body.appendChild(bar);
+  }
+  bar.hidden = false;
+}
+function hideRefreshPrompt() {
+  const bar = $("refreshPrompt");
+  if (bar) bar.hidden = true;
+}
 $("resetWorkspace").addEventListener("click", () => {
   if (!currentKey) return;
   if (!window.confirm("Remove the changes saved in this browser and reload the original workspace data?")) return;
@@ -2259,6 +2282,7 @@ async function loadWorkspace(rawKey) {
     $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
     $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
     $("resetWorkspace").hidden = false;
+    $("refreshWorkspace").hidden = false;
     $("keyGate").hidden = true;
     $("appShell").style.visibility = "visible";
     renderAll();
@@ -2878,8 +2902,8 @@ async function pollLiaisonStatus() {
     for (const p of pkgs) {
       if (p.status === "live" && currentKey && !window.__liaisonReloaded[p.packageId]) {
         window.__liaisonReloaded[p.packageId] = true;
-        showToast("Liaison: package saved to your database — refreshing your records.");
-        loadWorkspace(currentKey);
+        showToast("Liaison: package saved to your database.");
+        showRefreshPrompt();
       }
     }
   } catch (e) { /* status file not there yet */ }
