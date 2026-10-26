@@ -1828,7 +1828,7 @@ function renderAlternateView(view) {
 
 function setView(view) {
   closeDetailPop();
-  const validViews = ["overview", "clients", "pipeline", "commitments", "activity", "liaison"];
+  const validViews = ["overview", "clients", "pipeline", "commitments", "requests", "activity", "liaison"];
   if (!validViews.includes(view)) view = "overview";
 
   activeView = view;
