@@ -236,8 +236,25 @@ select {
 .table-wrap { overflow-x: auto; }
   .req-panel { padding: 22px; }
   .refresh-prompt { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 60; padding: 11px 18px; border-radius: 999px; border: 1px solid var(--cyan); background: #0d1b26; color: var(--cyan); font-size: 13.5px; font-weight: 600; box-shadow: 0 6px 24px #000a; cursor: pointer; }
+  .topbar { position: relative; }
+  .ws-menu { position: absolute; top: calc(100% + 6px); right: 12px; z-index: 70; min-width: 228px; padding: 6px; border-radius: 14px; border: 1px solid var(--line); background: #0d1524; box-shadow: 0 14px 34px #000c; }
+  html[data-theme="light"] .ws-menu { background: #ffffff; box-shadow: 0 14px 34px #1233; }
+  .ws-menu-item { display: flex; align-items: center; width: 100%; min-height: 46px; padding: 10px 12px; border: 0; border-radius: 9px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 500; text-align: left; cursor: pointer; }
+  .ws-menu-item:hover, .ws-menu-item:active { background: #69e4f41a; }
+  .ws-menu-item.danger { color: #e88a7a; }
+  .ws-menu-sep { height: 1px; margin: 5px 8px; background: var(--line); }
   .req-state { color: #8fa8c4; }
   .req-card { border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: 12px; padding: 15px 16px; margin: 12px 0; background: var(--panel2); }
+  .req-job { color: var(--ink); margin: 2px 0 6px; font-size: 14px; }
+  .req-contact { margin: 4px 0 0; }
+  .req-contact-none { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+  .req-tech { margin-top: 8px; }
+  .req-tech summary { color: var(--muted); font-size: 12px; cursor: pointer; }
+  .space-switch { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
+  .space-tab { border: 1px solid var(--line); background: var(--panel2); color: var(--muted); border-radius: 999px; padding: 7px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .space-tab.active { color: var(--ink); border-color: var(--cyan); background: var(--cyan-dim); }
+  .space-count { opacity: .75; font-weight: 500; }
+  .space-note { flex-basis: 100%; color: var(--muted); font-size: 12.5px; margin: 2px 0 0; }
   .req-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
   .req-name { font-weight: 650; }
   .req-when { color: #8fa8c4; font-size: 12px; white-space: nowrap; }
@@ -293,7 +310,7 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 #detailBackdrop { position: fixed; inset: 0; background: rgba(2,6,14,.66); z-index: 60; display: none; }
 #detailBackdrop.show { display: block; }
 #detailPanel { display: none; }
-#detailPanel.open { display: block; position: fixed; z-index: 61; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(520px, calc(100vw - 24px)); max-height: 88dvh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+#detailPanel.open { display: block; position: fixed; z-index: 61; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(520px, calc(100vw - 24px)); max-height: 88dvh; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
 .detail-close-btn { width: 100%; margin-top: 16px; min-height: 48px; }
 .detail-topline { display: flex; align-items: center; justify-content: space-between; }
 .profile-hero { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
@@ -340,9 +357,9 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .main-footer { display: flex; justify-content: space-between; gap: 10px; color: #65758e; font-size: 8px; padding: 22px 0; margin-top: 4px; }
 .main-footer .pulse-dot { width: 5px; height: 5px; }
 
-.modal-backdrop { position: fixed; inset: 0; background: #03060bc9; backdrop-filter: blur(5px); z-index: 20; display: grid; place-items: center; padding: 18px; overflow-y: auto; }
+.modal-backdrop { position: fixed; inset: 0; background: #03060bc9; backdrop-filter: blur(5px); z-index: 20; display: grid; place-items: center; padding: 18px; overflow-y: auto; overscroll-behavior: contain; }
 .modal-backdrop[hidden] { display: none; }
-.modal { width: min(480px,100%); background: #101725; border: 1px solid #2a3d57; border-radius: 12px; padding: 24px; box-shadow: 0 20px 80px #0009; }
+.modal { width: min(480px,100%); max-height: calc(100dvh - 36px); overflow-y: auto; overscroll-behavior: contain; background: #101725; border: 1px solid #2a3d57; border-radius: 12px; padding: 24px; box-shadow: 0 20px 80px #0009; }
 .modal-heading { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
 .modal h2 { font-size: 23px; }
 .modal label { display: grid; gap: 7px; color: #9eacc1; font-size: 10px; margin-bottom: 14px; }
@@ -350,6 +367,46 @@ tbody tr.selected { background: linear-gradient(90deg,#172d49,#111d30); box-shad
 .modal textarea { resize: vertical; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; }
+body.scroll-locked { overflow: hidden; }
+#sheetBackdrop { z-index: 80; }
+.sheet-message { color: #c4d2e4; font-size: 14px; line-height: 1.5; margin: 0 0 16px; }
+.sheet-fields { display: grid; gap: 14px; margin-bottom: 6px; }
+.sheet-fields label { display: grid; gap: 7px; color: #9eacc1; font-size: 12px; margin-bottom: 0; }
+.sheet-fields input, .sheet-fields textarea { width: 100%; max-width: none; border: 1px solid #2a3a50; background: #0a101a; color: var(--text); padding: 11px; border-radius: 6px; font-size: 14px; }
+.sheet-error { border: 1px solid #7c2d3e; background: #2a1218; color: #ff9dac; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
+.danger-button { background: #b3273a; border: 1px solid #d6455a; color: #fff; border-radius: 8px; padding: 10px 16px; font: inherit; font-weight: 600; cursor: pointer; min-height: 44px; }
+.contact-link { display: inline-flex; align-items: center; min-height: 36px; padding: 5px 11px; border: 1px solid #24506d; border-radius: 8px; background: #112631; color: var(--cyan); font-weight: 600; font-size: 13.5px; text-decoration: none; word-break: break-all; }
+.contact-link:active { background: #16384a; }
+.liaison-honest { padding: 13px 16px; margin-bottom: 18px; border: 1px solid #2a3c5c; border-radius: 12px; background: #0d1626; color: #c7d5ea; font-size: 14px; line-height: 1.6; }
+.liaison-honest strong { color: #e8eef7; }
+.liaison-panel { padding: 22px; margin-bottom: 18px; }
+.liaison-panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; }
+.liaison-panel-label { color: var(--muted, #8fa1b8); font-size: 12.5px; letter-spacing: .08em; }
+.liaison-quiet-button { background: none; border: 1px solid #22314a; border-radius: 8px; color: #8fa1b8; padding: 7px 12px; font: inherit; font-size: 12.5px; cursor: pointer; min-height: 36px; }
+.liaison-composer { border-top: 1px solid #1b2942; padding-top: 14px; margin-top: 6px; }
+.liaison-composer textarea { width: 100%; box-sizing: border-box; background: #0d1420; border: 1px solid #22314a; border-radius: 10px; color: #e8eef7; padding: 12px; font: inherit; font-size: 15px; line-height: 1.5; }
+.liaison-composer-row { margin-top: 10px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+#liaisonFileName { color: var(--muted, #8fa1b8); font-size: 13px; }
+.liaison-more { margin-top: 14px; border-top: 1px dashed #22314a; padding-top: 10px; }
+.liaison-more > summary { cursor: pointer; color: #cfe3ff; font-size: 13.5px; padding: 6px 2px; min-height: 32px; }
+.liaison-more-body { display: grid; gap: 10px; padding: 6px 0 4px; }
+.liaison-more-body p { margin: 0; color: var(--muted, #8fa1b8); font-size: 13px; line-height: 1.55; }
+.liaison-more-body input[type="text"], .liaison-more-body select { background: #0d1420; border: 1px solid #22314a; border-radius: 8px; color: #e8eef7; padding: 9px 11px; font: inherit; font-size: 13.5px; }
+.liaison-file-label { color: #cfe3ff; font-size: 13.5px; cursor: pointer; }
+.liaison-opp-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.liaison-opp-row input { width: 170px; }
+#oppAdd { background: none; border: 1px solid #2b4a73; border-radius: 8px; color: #cfe3ff; padding: 9px 14px; font: inherit; font-size: 13.5px; cursor: pointer; min-height: 40px; }
+.liaison-send-note { margin: 12px 0 0; color: var(--muted, #8fa1b8); font-size: 13px; line-height: 1.55; }
+.liaison-packages-title { margin: 0 0 12px; }
+.pkg-details { margin-top: 6px; }
+.pkg-details > summary { cursor: pointer; color: #9db8d9; font-size: 12.5px; padding: 4px 0; }
+.liaison-bubble { line-height: 1.5; }
+.top-actions .theme-toggle { width: auto; margin: 0; padding: 7px 11px; font-size: 12.5px; white-space: nowrap; }
+@media (max-width: 780px) {
+  .top-actions { gap: 9px; }
+  .top-actions .avatar { display: none; }
+  .liaison-panel { padding: 16px 14px; }
+}
 .toast { position: fixed; bottom: 25px; right: 25px; z-index: 30; background: #15283b; border: 1px solid #35618a; border-radius: 8px; padding: 13px 18px; color: #e3f3ff; box-shadow: 0 8px 35px #0007; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; max-width: calc(100vw - 40px); font-size: 11px; }
 .toast.show { opacity: 1; transform: translateY(0); }
 [hidden] { display: none !important; }
@@ -1075,12 +1132,20 @@ html[data-theme="light"] .brand-mark {
   .key-card .primary-button { min-height: 50px; }
 }
 
-  /* — scroll-trap fix (Ben's tap 2026-10-25): on phone the Liaison
-     conversation flows with the page instead of scrolling inside
-     its own box, so an upward swipe is never trapped; the stat
-     footers wrap instead of clipping. Desktop pane unchanged. — */
-  #liaisonThread { max-height: none !important; overflow-y: visible !important; }
+  /* — the stat footers wrap instead of clipping (2026-10-25). — */
   .stat-foot { white-space: normal; line-height: 1.45; }
+
+  /* — Package 3 (item 9): the Liaison conversation owns its scroll.
+     Ben's later, explicit item-9 ruling (2026-10-25 evening) supersedes
+     the same-day flow-with-page shape: the box holds a set height with
+     its own scrollbar, so the page stops growing with the thread.
+     overscroll-behavior stays auto, so a swipe that reaches the top of
+     the box still chains to the page — the 2026-10-24 scroll trap stays
+     fixed by chaining, not by abolishing the box. — */
+  #liaisonThread { display: flex; flex-direction: column; gap: 10px; height: min(430px, 60dvh); overflow-y: auto; overscroll-behavior: auto; scrollbar-gutter: stable; padding: 4px 2px 10px; }
+  @media (max-width: 780px) {
+    #liaisonThread { height: 54dvh; }
+  }
 @media (max-width: 480px) {
   #pageTitle { font-size: 25px; }
   .main { padding-left: 11px; padding-right: 11px; }
@@ -1132,7 +1197,6 @@ html[data-theme="light"] .brand-mark {
     </nav>
 
     <div class="sidebar-bottom">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Light mode</span></button>
       <div class="system-status"><span class="pulse-dot"></span> SYSTEM OPERATIONAL</div>
       <div class="user-card">
         <div class="avatar avatar-ben">B</div>
@@ -1140,8 +1204,6 @@ html[data-theme="light"] .brand-mark {
       </div>
       <div class="version" id="workspaceVersion">PULSE HQ CRM <span>·</span> CONCEPT 01</div>
       <div class="version" id="saveState">CHANGES ARE NOT SAVED YET</div>
-      <button class="text-button" id="refreshWorkspace" hidden>↻ Refresh</button>
-      <button class="text-button" id="resetWorkspace" hidden>Reset workspace data</button>
     </div>
   </aside>
 
@@ -1151,6 +1213,13 @@ html[data-theme="light"] .brand-mark {
       <div class="top-actions">
         <span class="live-label" id="workspaceLabel"><span class="pulse-dot"></span> AWAITING KEY</span>
         <button class="icon-button" id="activityQuick" title="Log activity">＋</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Light mode</span></button>
+        <button class="icon-button" id="wsMenuButton" type="button" title="Workspace menu" aria-label="Workspace menu">⋯</button>
+        <div class="ws-menu" id="wsMenu" hidden role="menu" aria-label="Workspace">
+          <button class="ws-menu-item" id="menuRefresh" type="button">↻&ensp;Refresh records</button>
+          <div class="ws-menu-sep"></div>
+          <button class="ws-menu-item danger" id="menuReset" type="button">Reset workspace data</button>
+        </div>
         <div class="avatar avatar-ben">B</div>
       </div>
     </header>
@@ -1201,6 +1270,12 @@ html[data-theme="light"] .brand-mark {
             <h2>Relationships <span class="count-pill" id="listCount">07</span></h2>
           </div>
           <button class="subtle-button" id="exportBtn">↓ Export</button>
+        </div>
+
+        <div class="space-switch" id="spaceSwitch" hidden>
+          <button type="button" class="space-tab" data-space="clients">Clients <span class="space-count" id="spaceCountClients">0</span></button>
+          <button type="button" class="space-tab" data-space="prospects">Prospects <span class="space-count" id="spaceCountProspects">0</span></button>
+          <p class="space-note" id="spaceNote"></p>
         </div>
 
         <div class="toolbar">
@@ -1289,6 +1364,16 @@ html[data-theme="light"] .brand-mark {
     <label>Notes<textarea name="notes" rows="3" placeholder="Context worth keeping..."></textarea></label>
     <div class="modal-actions"><button type="button" class="subtle-button" id="cancelModalBottom">Cancel</button><button type="submit" class="primary-button">Save relationship ↗</button></div>
   </form>
+</div>
+
+<div class="modal-backdrop" id="sheetBackdrop" hidden>
+  <div class="modal sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="modal-heading"><div><h2 id="sheetTitle">Confirm</h2></div></div>
+    <p class="sheet-message" id="sheetMessage"></p>
+    <div class="sheet-fields" id="sheetFields"></div>
+    <div class="sheet-error" id="sheetError" hidden></div>
+    <div class="modal-actions"><button type="button" class="subtle-button" id="sheetCancel">Cancel</button><button type="button" class="primary-button" id="sheetConfirm">Confirm</button></div>
+  </div>
 </div>
 
 <div class="modal-backdrop" id="commitmentBackdrop" hidden>
@@ -1399,15 +1484,21 @@ function renderStats() {
   $("pipelineValue").textContent = money(activeOpps.reduce((s,o)=>s+(Number(o.value)||0),0));
 }
 
+let peopleSpace = "clients"; // Item 7: the Clients view holds two spaces; this is the one the list shows.
+function inPeopleSpace(c) {
+  if (activeView !== "clients") return true;
+  return peopleSpace === "clients" ? c.status === "Client" : c.status !== "Client";
+}
 function filteredClients() {
   const query = $("searchInput").value.toLowerCase().trim();
   const status = $("statusFilter").value;
   return clients.filter(c => {
     const matchesStatus = status==="all" || c.status===status;
+    const matchesSpace = inPeopleSpace(c);
     const nx = derivedNext(c);
     const matchesQuery = [c.name,c.company,c.status,nx?nx.title:"",c.notes]
       .join(" ").toLowerCase().includes(query);
-    return matchesStatus && matchesQuery;
+    return matchesStatus && matchesSpace && matchesQuery;
   });
 }
 function syncSelectionToFilter() {
@@ -1417,6 +1508,31 @@ function syncSelectionToFilter() {
     return;
   }
   if (!f.some(c => c.id === selectedId)) selectClient(f[0].id, { open: false });
+}
+function renderSpaceSwitch() {
+  const sw = $("spaceSwitch");
+  if (!sw) return;
+  const here = activeView === "clients";
+  sw.hidden = !here;
+  if (!here) return;
+  const nClients = clients.filter(c => c.status === "Client").length;
+  $("spaceCountClients").textContent = nClients;
+  $("spaceCountProspects").textContent = clients.length - nClients;
+  sw.querySelectorAll("[data-space]").forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.space === peopleSpace);
+    if (!tab.dataset.wired) {
+      tab.dataset.wired = "1";
+      tab.addEventListener("click", () => {
+        peopleSpace = tab.dataset.space;
+        renderRows();
+        syncSelectionToFilter();
+        renderDetail();
+      });
+    }
+  });
+  $("spaceNote").textContent = peopleSpace === "clients"
+    ? "Your clients \u2014 the people you do work for. Everyone still in conversation lives under Prospects."
+    : "Prospects \u2014 everyone you are talking with who is not a client yet. When one signs on, they move to Clients.";
 }
 function renderRows() {
   const filtered = filteredClients();
@@ -1434,8 +1550,16 @@ function renderRows() {
     </tr>`).join("");
 
   $("emptyState").hidden = filtered.length>0;
+  $("emptyState").textContent = activeView === "clients"
+    ? (peopleSpace === "clients"
+      ? "No clients yet. When a prospect signs on, they move into this space."
+      : "No prospects match. Try another search, or check the Clients space.")
+    : "No matching relationships. Try another search or create a new one.";
   $("listCount").textContent = String(filtered.length).padStart(2,"0");
-  $("showingCount").textContent = `Showing ${filtered.length} of ${clients.length} relationships`;
+  $("showingCount").textContent = activeView === "clients"
+    ? `Showing ${filtered.length} of ${peopleSpace === "clients" ? clients.filter(c => c.status === "Client").length : clients.filter(c => c.status !== "Client").length} ${peopleSpace}`
+    : `Showing ${filtered.length} of ${clients.length} relationships`;
+  renderSpaceSwitch();
 }
 
 function renderDetail() {
@@ -1491,8 +1615,8 @@ function renderDetail() {
       <div class="detail-kv">
         <div><small>Opportunity value</small><strong>${money(c.value||0)}</strong></div>
         <div><small>Relationship ID</small><strong>REL-${String(c.id).padStart(4,"0")}</strong></div>
-        <div><small>Email</small><strong>${escapeHTML(c.email||"Not added")}</strong></div>
-        <div><small>Phone</small><strong>${escapeHTML(c.phone||"Not added")}</strong></div>
+        <div><small>Email</small>${c.email && c.email !== "Not added" ? `<a class="contact-link" href="mailto:${escapeHTML(c.email)}">${escapeHTML(c.email)}</a>` : `<strong>Not added</strong>`}</div>
+        <div><small>Phone</small>${c.phone && c.phone !== "Not added" ? `<a class="contact-link" href="tel:${escapeHTML(String(c.phone).replace(/[^+0-9]/g,""))}">${escapeHTML(c.phone)}</a>` : `<strong>Not added</strong>`}</div>
       </div>
     </div>
 
@@ -1565,8 +1689,17 @@ function armOverlay(name) {
 }
 function disarmOverlay(fromPopstate) {
   if (!overlayOpen) return;
-  overlayOpen = null;
-  if (!fromPopstate) { overlayGuard = true; try { history.back(); } catch (e) { overlayGuard = false; } }
+  const name = overlayOpen; overlayOpen = null;
+  if (fromPopstate) return;
+  /* Travel back ONLY when the current history entry is this overlay's
+     own pushed state. Stacked transitions (detail pop -> edit modal)
+     can leave a different entry current; backing anyway walks past
+     the app's own history — in a fresh tab, clean out to about:blank
+     (browser-level finding, 2026-10-26: every overlay close called
+     history.back() unconditionally, and closes stack). */
+  let ours = false;
+  try { ours = !!(history.state && history.state.liaisonOverlay === name); } catch (e) {}
+  if (ours) { overlayGuard = true; try { history.back(); } catch (e) { overlayGuard = false; } }
 }
 window.addEventListener("popstate", () => {
   if (overlayGuard) { overlayGuard = false; return; }
@@ -1575,11 +1708,199 @@ window.addEventListener("popstate", () => {
   if (name === "detail") hideDetailPopUI();
   else if (name === "client") closeModal();
   else if (name === "commitment") closeCommitmentModal();
+  else if (name === "sheet") closeSheet(null);
 });
+/* — Item 3 (Package 2): while any overlay is open the page behind it is
+   scroll-locked; the overlay's own panel is the thing that scrolls. The
+   observer covers every open/close path, including Back-button closes. — */
+function syncScrollLock() {
+  const sheetEl = $("sheetBackdrop");
+  const locked = !$("modalBackdrop").hidden || !$("commitmentBackdrop").hidden
+    || (sheetEl && !sheetEl.hidden) || $("detailPanel").classList.contains("open");
+  document.body.classList.toggle("scroll-locked", locked);
+}
+const scrollLockObserver = new MutationObserver(syncScrollLock);
+for (const lockId of ["modalBackdrop", "commitmentBackdrop", "sheetBackdrop", "detailPanel"]) {
+  const lockEl = $(lockId);
+  if (lockEl) scrollLockObserver.observe(lockEl, { attributes: true, attributeFilter: ["hidden", "class"] });
+}
+/* — Item 16 (Package 2): in-app action sheets replace the browser's native
+   popups. One sheet, one action, one honest outcome: the sheet's confirm
+   handler returns true only after the change has been read back from this
+   browser's saved state; a string return is an error shown inside the
+   sheet, and nothing is presented as done. — */
+let sheetResolver = null;
+function sheetValues() {
+  const values = {};
+  $("sheetFields").querySelectorAll("[data-sheet-field]").forEach(el => { values[el.dataset.sheetField] = el.value; });
+  return values;
+}
+function closeSheet(result) {
+  $("sheetBackdrop").hidden = true;
+  disarmOverlay(false);
+  const resolve = sheetResolver; sheetResolver = null;
+  if (resolve) resolve(result);
+}
+function openSheet(config) {
+  return new Promise(resolve => {
+    sheetResolver = resolve;
+    $("sheetTitle").textContent = config.title;
+    $("sheetMessage").textContent = config.message || "";
+    $("sheetMessage").hidden = !config.message;
+    const fieldsEl = $("sheetFields");
+    fieldsEl.innerHTML = "";
+    for (const f of (config.fields || [])) {
+      const label = document.createElement("label");
+      label.textContent = f.label;
+      const input = document.createElement(f.type === "textarea" ? "textarea" : "input");
+      if (f.type !== "textarea") input.type = f.type || "text";
+      input.value = f.value || "";
+      if (f.placeholder) input.placeholder = f.placeholder;
+      input.dataset.sheetField = f.id;
+      label.appendChild(input);
+      fieldsEl.appendChild(label);
+    }
+    const err = $("sheetError"); err.hidden = true; err.textContent = "";
+    const confirmBtn = $("sheetConfirm");
+    confirmBtn.textContent = config.confirmLabel || "Confirm";
+    confirmBtn.className = config.danger ? "danger-button" : "primary-button";
+    confirmBtn.onclick = async () => {
+      const values = sheetValues();
+      if (config.validate) {
+        const problem = config.validate(values);
+        if (problem) { err.textContent = problem; err.hidden = false; return; }
+      }
+      let outcome;
+      try { outcome = await config.onConfirm(values); }
+      catch (e) { outcome = "That could not be done in this browser — nothing was changed."; }
+      if (outcome === true) closeSheet(values);
+      else { err.textContent = typeof outcome === "string" ? outcome : "That could not be saved — nothing was changed."; err.hidden = false; }
+    };
+    $("sheetCancel").onclick = () => closeSheet(null);
+    $("sheetBackdrop").hidden = false;
+    armOverlay("sheet");
+    const first = fieldsEl.querySelector("input, textarea");
+    if (first) first.focus(); else confirmBtn.focus();
+  });
+}
+function savedStateHas(check) {
+  const saved = readLocalState(currentKey);
+  return saved ? !!check(saved) : false;
+}
 function selectClient(id, opts = {}) {
   selectedId=Number(id);
   renderRows(); renderDetail();
   if (opts.open !== false) openDetailPop();
+}
+
+/* Items 14 + 15 (Package 1): the Requests view owns its load state.
+   Loading always ends in a defined state — success, empty, or a failure
+   that says what happened and offers a safe retry (Item 14) — and this
+   view's search box really filters these cards (Item 15). Rows are
+   fetched once per workspace; typing in search re-renders from the
+   cache, never refetches. */
+let requestsCache = null;
+let requestsCacheKey = null;
+let requestsLoadError = null;
+
+async function loadRequests() {
+  requestsCache = null;
+  requestsLoadError = null;
+  requestsCacheKey = currentKey;
+  const stateEl = $("reqState");
+  if (stateEl) stateEl.textContent = "Loading requests\u2026";
+  try {
+    const r = await fetch("data/requests-export.json", { cache: "no-store" });
+    if (!r.ok) throw { kind: "http", detail: "the requests file answered with error " + r.status };
+    let d = null;
+    try { d = await r.json(); } catch (e) { /* shape failure, handled below */ }
+    if (!d || !Array.isArray(d.requests)) throw { kind: "shape", detail: "the requests file came back in a shape we can't read" };
+    requestsCache = d.requests;
+  } catch (e) {
+    requestsLoadError = e && e.kind ? e : { kind: "network", detail: "the requests file could not be reached" };
+  }
+  renderRequests();
+}
+
+function renderRequests() {
+  const stateEl = $("reqState");
+  const cardsEl = $("reqCards");
+  if (!stateEl || !cardsEl) return; // navigated away mid-load — nothing to paint
+  if (requestsLoadError) {
+    stateEl.innerHTML = `Requests could not be loaded \u2014 ${escapeHTML(requestsLoadError.detail)}. Your records are fine; the list just didn't arrive. <button class="subtle-button" id="reqRetry" type="button">Try again</button>`;
+    cardsEl.innerHTML = "";
+    $("reqRetry").addEventListener("click", () => { requestsLoadError = null; loadRequests(); });
+    return;
+  }
+  if (!requestsCache) { stateEl.textContent = "Loading requests\u2026"; return; }
+  const q = $("searchInput").value.toLowerCase().trim();
+  const rows = q
+    ? requestsCache.filter(x => [x.name, x.request, x.type, x.reference, x.stage].map(v => String(v ?? "")).join(" ").toLowerCase().includes(q))
+    : requestsCache;
+  stateEl.textContent = !requestsCache.length
+    ? "No customer requests yet. When someone sends a request through your door, it appears here."
+    : (q && !rows.length) ? `No requests match "${q}".` : "";
+  const stageWord = st => st === "RECEIVED" ? "Recorded" : (st || "Recorded");
+  const receiptWord = r => r === "issued" ? "Sent to the customer" : r === "composed" ? "Written and on its way" : r === "held" ? "Held \u2014 nothing has been sent" : (r || "\u2014");
+  const trustWord = t => t === "OK" ? "Passed the office's checks" : (t || "\u2014");
+  const receiptStanding = r => r === "issued" ? "The customer got a receipt." : r === "composed" ? "Their receipt is written and on its way." : "";
+  const normName = s => String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  const contactFor = x => {
+    if (x.email || x.phone) {
+      const bits = [];
+      if (x.email) bits.push(`<a class="contact-link" href="mailto:${escapeHTML(x.email)}">\u2709 ${escapeHTML(x.email)}</a>`);
+      if (x.phone) bits.push(`<a class="contact-link" href="tel:${escapeHTML(String(x.phone).replace(/[^+\d]/g, ""))}">\u260e ${escapeHTML(x.phone)}</a>`);
+      return `<p class="req-contact">${bits.join(" \u00b7 ")}</p>`;
+    }
+    // Identity is never guessed (item 19's discipline): only an exact
+    // name match against the book earns a way to reach them. The book
+    // may not be loaded in every surface that renders a request — an
+    // absent book means no match, never a guess and never a crash.
+    const book = (typeof clients !== "undefined" && Array.isArray(clients)) ? clients : [];
+    const match = normName(x.name) ? book.find(c => normName(c.name) === normName(x.name)) : null;
+    if (match) return `<p class="req-contact"><button class="text-button" data-open-client="${match.id}" type="button">Reach them \u2014 open ${escapeHTML(match.name)}'s record \u2197</button></p>`;
+    return `<p class="req-contact-none">No contact details came in with this request.</p>`;
+  };
+  const dayWord = iso => { const dt = new Date(iso); return isNaN(dt) ? iso : dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + ", " + dt.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); };
+  cardsEl.innerHTML = rows.map(x => {
+    const held = x.receipt === "held" || !!x.duplicateOf;
+    const standing = held
+      ? `Looks like a repeat of ${escapeHTML(x.duplicateOf || "an earlier request")} \u2014 held for your eye before anything is sent.`
+      : `Recorded${receiptStanding(x.receipt) ? " \u00b7 " + receiptStanding(x.receipt) : ""}`;
+    const words = x.contentState === "cleared"
+      ? `<p class="req-words req-cleared">The office copy of this request has been cleared \u2014 the customer's words live in your inbox and theirs.</p>`
+      : `<p class="req-words">\u201c${escapeHTML(x.request)}\u201d</p>`;
+    const jobBits = [x.type, x.when].filter(Boolean).map(escapeHTML).join(" \u00b7 ");
+    const dayOr = iso => iso ? dayWord(iso) : "Not yet";
+    return `<article class="req-card">
+      <div class="req-top"><span class="req-name">${escapeHTML(x.name || "A customer")}</span><span class="req-when">${dayWord(x.received)}</span></div>
+      ${words}
+      ${jobBits ? `<p class="req-job"><strong>The job:</strong> ${jobBits}</p>` : ""}
+      <p class="req-standing">${standing}</p>
+      ${contactFor(x)}
+      <details class="req-trail"><summary>Trail</summary>
+        <dl>
+          <div><dt>Reference</dt><dd>${escapeHTML(x.reference)}</dd></div>
+          <div><dt>Received</dt><dd>${dayWord(x.received)}</dd></div>
+          <div><dt>Where it stands</dt><dd>${stageWord(x.stage)}</dd></div>
+          <div><dt>Sender check</dt><dd>${trustWord(x.trust)}</dd></div>
+          <div><dt>Receipt</dt><dd>${receiptWord(x.receipt)}</dd></div>
+          <div><dt>Repeat of</dt><dd>${escapeHTML(x.duplicateOf || "\u2014")}</dd></div>
+          <div><dt>Handed to the business</dt><dd>${dayOr(x.handedOff)}</dd></div>
+          <div><dt>Office copy cleared</dt><dd>${dayOr(x.cleared)}</dd></div>
+        </dl>
+        <details class="req-tech"><summary>Technical record</summary>
+          <dl>
+            <div><dt>Stage code</dt><dd>${escapeHTML(x.stage)}</dd></div>
+            <div><dt>Fingerprint</dt><dd>${escapeHTML(x.fingerprint)}</dd></div>
+          </dl>
+        </details>
+      </details>
+    </article>`;
+  }).join("");
+  if (cardsEl.querySelectorAll) cardsEl.querySelectorAll("[data-open-client]").forEach(button => {
+    button.addEventListener("click", () => { selectClient(Number(button.dataset.openClient)); setView("clients"); });
+  });
 }
 
 function renderAlternateView(view) {
@@ -1595,43 +1916,9 @@ function renderAlternateView(view) {
     .includes(query);
 
   if (view === "requests") {
-    target.innerHTML = `<section class="panel req-panel"><h3>Customer Requests</h3><p id="reqState" class="req-state">Loading requests…</p><div id="reqCards"></div><p class="req-foot">Every request that arrived through your customer door. The full record of each one also lives in your email inbox.</p></section>`;
-    fetch("data/requests-export.json").then(r => r.json()).then(d => {
-      const rows = d.requests || [];
-      $("reqState").textContent = rows.length ? "" : "No customer requests yet. When someone sends a request through your door, it appears here.";
-      if (!rows.length) return;
-      const stageWord = st => st === "RECEIVED" ? "Recorded" : st;
-      const dayWord = iso => { const dt = new Date(iso); return isNaN(dt) ? iso : dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + ", " + dt.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); };
-      $("reqCards").innerHTML = rows.map(x => {
-        const held = x.receipt === "held" || !!x.duplicateOf;
-        const standing = held
-          ? `Looks like a repeat of ${escapeHTML(x.duplicateOf || "an earlier request")} — held for your eye before anything is sent.`
-          : `${stageWord(escapeHTML(x.stage))} · ${x.receipt === "issued" ? "Receipt sent to the customer" : "Receipt ready, not sent yet"}`;
-        const words = x.contentState === "cleared"
-          ? `<p class="req-words req-cleared">The office copy of this request has been cleared — the customer's words live in your inbox and theirs.</p>`
-          : `<p class="req-words">“${escapeHTML(x.request)}”</p>`;
-        const meta = [x.type, x.when].filter(Boolean).map(escapeHTML).join(" · ");
-        return `<article class="req-card">
-          <div class="req-top"><span class="req-name">${escapeHTML(x.name || "A customer")}</span><span class="req-when">${dayWord(x.received)}</span></div>
-          ${words}
-          ${meta ? `<p class="req-meta">${meta}</p>` : ""}
-          <p class="req-standing">${standing}</p>
-          <details class="req-trail"><summary>Trail</summary>
-            <dl>
-              <div><dt>Reference</dt><dd>${escapeHTML(x.reference)}</dd></div>
-              <div><dt>Received</dt><dd>${escapeHTML(x.received)}</dd></div>
-              <div><dt>Stage</dt><dd>${escapeHTML(x.stage)}</dd></div>
-              <div><dt>Trust</dt><dd>${escapeHTML(x.trust)}</dd></div>
-              <div><dt>Receipt</dt><dd>${escapeHTML(x.receipt)}</dd></div>
-              <div><dt>Duplicate of</dt><dd>${escapeHTML(x.duplicateOf || "—")}</dd></div>
-              <div><dt>Handed off</dt><dd>${escapeHTML(x.handedOff || "—")}</dd></div>
-              <div><dt>Hallway cleared</dt><dd>${escapeHTML(x.cleared || "—")}</dd></div>
-              <div><dt>Fingerprint</dt><dd>${escapeHTML(x.fingerprint)}</dd></div>
-            </dl>
-          </details>
-        </article>`;
-      }).join("");
-    }).catch(() => { $("reqState").textContent = "Requests could not be loaded right now."; });
+    target.innerHTML = `<section class="panel req-panel"><h3>Customer Requests</h3><p id="reqState" class="req-state">Loading requests\u2026</p><div id="reqCards"></div><p class="req-foot">Every request that arrived through your customer door. The full record of each one also lives in your email inbox.</p></section>`;
+    if (requestsCacheKey === currentKey && (requestsCache || requestsLoadError)) renderRequests();
+    else loadRequests();
     return;
   }
 
@@ -1644,7 +1931,7 @@ function renderAlternateView(view) {
 
   if (view === "pipeline") {
     const stages = stageOrder.map(status => {
-      const items = clients.filter(c => c.status === status);
+      const items = clients.filter(c => c.status === status && matches([c.name, c.company, c.nextAction].join(" ")));
       const total = items.reduce(
         (sum, c) => sum + (Number(c.value) || 0), 0
       );
@@ -1861,15 +2148,7 @@ function renderAlternateView(view) {
         item => item.id === Number(input.dataset.completeCommitment)
       );
       if (!c || c.done) return;
-
-      if (!completeCommitment(c)) {
-        input.checked = false;
-        return;
-      }
-
-      renderAll();
-      setView("commitments");
-      showToast("Commitment marked complete.");
+      completeCommitment(c).then(ok => { if (!ok) input.checked = false; });
     });
   });
 }
@@ -1907,6 +2186,7 @@ const VIEWS = {
 
 function setView(view) {
   closeDetailPop();
+  const wsM = $("wsMenu"); if (wsM) wsM.hidden = true;
   if (!VIEWS[view]) { console.warn("Unknown view ignored:", view); return; }
 
   activeView = view;
@@ -1945,11 +2225,21 @@ function setView(view) {
     $("statusFilter").value = "all";
   }
 
-  $("searchInput").placeholder =
-    view === "activity" ? "Search events, people, details..." :
-    view === "commitments" ? "Search commitments and relationships..." :
-    view === "pipeline" ? "Search pipeline..." :
-    "Search names, companies...";
+  const searchEl = $("searchInput");
+  if (view === "liaison") {
+    // Item 15: search does not reach the conversation view. Say so on
+    // the box itself instead of letting it sit there pretending.
+    searchEl.disabled = true;
+    searchEl.placeholder = "Search doesn't reach this view \u2014 this is your conversation.";
+  } else {
+    searchEl.disabled = false;
+    searchEl.placeholder =
+      view === "activity" ? "Search events, people, details..." :
+      view === "commitments" ? "Search commitments and relationships..." :
+      view === "pipeline" ? "Search pipeline..." :
+      view === "requests" ? "Search requests by name, words, or reference..." :
+      "Search names, companies...";
+  }
 
   if (view === "overview" || view === "clients") {
     renderRows();
@@ -1987,38 +2277,89 @@ function addActivityRecord(clientId,title,detail,icon="≋") {
   const c=clientById(clientId);
   if(c) c.activities.unshift({title,date,detail});
 }
-function completeCommitment(c) {
+async function completeCommitment(c) {
   const person = clientById(c.clientId);
-  if (!window.confirm(`Mark "${c.title}" complete for ${person?.name || "this relationship"}?`)) return false;
-  const evidence = window.prompt("Completion evidence (optional — what proves this is done?):") || "";
-  c.done = true;
-  c.evidence = evidence.trim();
-  c.completedAt = day(0);
-  addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
+  const result = await openSheet({
+    title: "Mark complete",
+    message: `Mark "${c.title}" complete for ${person?.name || "this relationship"}?`,
+    fields: [{ id: "evidence", label: "Completion evidence (optional — what proves this is done?)", type: "text" }],
+    confirmLabel: "Mark complete",
+    onConfirm: (values) => {
+      const prior = { done: c.done, evidence: c.evidence, completedAt: c.completedAt };
+      c.done = true;
+      c.evidence = (values.evidence || "").trim();
+      c.completedAt = day(0);
+      addActivityRecord(c.clientId, "Commitment completed", c.title, "✓");
+      persistLocalState();
+      if (savedStateHas(saved => saved.commitments.some(item => item.id === c.id && item.done))) return true;
+      c.done = prior.done; c.evidence = prior.evidence; c.completedAt = prior.completedAt;
+      activities.shift();
+      if (person) person.activities.shift();
+      persistLocalState();
+      return "That couldn't be saved in this browser, so it hasn't been recorded — the commitment is still open.";
+    }
+  });
+  if (!result) return false;
+  renderAll();
+  if (activeView === "commitments") setView("commitments");
+  showToast("Commitment marked complete.");
   return true;
 }
-function rescheduleCommitment(c) {
-  const input = window.prompt(`Reschedule "${c.title}" — new due date (YYYY-MM-DD):`, c.dueDate || "");
-  if (input === null) return;
-  const value = input.trim();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) { showToast("Date not changed — use YYYY-MM-DD."); return; }
-  if (!c.originalDueDate) c.originalDueDate = c.dueDate || "";
-  const old = c.dueDate;
-  c.dueDate = value;
-  addActivityRecord(c.clientId, "Commitment rescheduled", `${c.title}: ${old || "no date"} → ${value}`, "↗");
+async function rescheduleCommitment(c) {
+  const result = await openSheet({
+    title: "Reschedule commitment",
+    message: `Reschedule "${c.title}".`,
+    fields: [{ id: "dueDate", label: "New due date", type: "date", value: c.dueDate || "" }],
+    confirmLabel: "Reschedule",
+    validate: (values) => /^\d{4}-\d{2}-\d{2}$/.test((values.dueDate || "").trim()) ? null : "Pick a date first — the due date hasn't been changed.",
+    onConfirm: (values) => {
+      const value = values.dueDate.trim();
+      const prior = { dueDate: c.dueDate, originalDueDate: c.originalDueDate };
+      if (!c.originalDueDate) c.originalDueDate = c.dueDate || "";
+      const old = c.dueDate;
+      c.dueDate = value;
+      addActivityRecord(c.clientId, "Commitment rescheduled", `${c.title}: ${old || "no date"} → ${value}`, "↗");
+      persistLocalState();
+      if (savedStateHas(saved => saved.commitments.some(item => item.id === c.id && item.dueDate === value))) return true;
+      c.dueDate = prior.dueDate; c.originalDueDate = prior.originalDueDate;
+      activities.shift();
+      const person = clientById(c.clientId); if (person) person.activities.shift();
+      persistLocalState();
+      return "That couldn't be saved in this browser, so it hasn't been recorded — the date is unchanged.";
+    }
+  });
+  if (!result) return;
   renderAll();
   if (activeView === "commitments") setView("commitments");
   showToast("Commitment rescheduled — still open.");
 }
-function logActivity(clientId) {
-  const c=clientById(clientId);
-  if(!c) return;
-  const title=window.prompt("What happened? (e.g. Follow-up email sent)");
-  if(!title?.trim()) return;
-  const detail=window.prompt("Add context (optional):")||"Activity recorded.";
-  addActivityRecord(clientId,title.trim(),detail.trim());
+async function logActivity(clientId) {
+  const c = clientById(clientId);
+  if (!c) return;
+  const result = await openSheet({
+    title: "Log activity",
+    message: `For ${c.name}.`,
+    fields: [
+      { id: "title", label: "What happened? (e.g. Follow-up email sent)", type: "text" },
+      { id: "detail", label: "Add context (optional)", type: "text" }
+    ],
+    confirmLabel: "Record activity",
+    validate: (values) => (values.title || "").trim() ? null : "Say what happened first — nothing has been recorded.",
+    onConfirm: (values) => {
+      const title = values.title.trim();
+      const detail = (values.detail || "").trim() || "Activity recorded.";
+      addActivityRecord(clientId, title, detail);
+      persistLocalState();
+      if (savedStateHas(saved => saved.activities.some(item => item.title === title))) return true;
+      activities.shift();
+      if (c.activities) c.activities.shift();
+      persistLocalState();
+      return "That couldn't be saved in this browser, so it hasn't been recorded.";
+    }
+  });
+  if (!result) return;
   renderAll();
-  showToast("Activity recorded for "+c.name+".");
+  showToast("Activity recorded for " + c.name + ".");
 }
 function openCommitmentModal(clientId=null) {
   closeDetailPop();
@@ -2084,10 +2425,19 @@ $("searchInput").addEventListener("input", () => {
   }
 });
 $("statusFilter").addEventListener("change", () => { renderRows(); syncSelectionToFilter(); });
-$("refreshWorkspace").addEventListener("click", () => {
+$("menuRefresh").addEventListener("click", () => {
   if (!currentKey) return;
+  $("wsMenu").hidden = true;
   hideRefreshPrompt();
   loadWorkspace(currentKey);
+});
+$("wsMenuButton").addEventListener("click", (e) => {
+  e.stopPropagation();
+  $("wsMenu").hidden = !$("wsMenu").hidden;
+});
+document.addEventListener("click", (e) => {
+  const m = $("wsMenu");
+  if (m && !m.hidden && !m.contains(e.target)) m.hidden = true;
 });
 function showRefreshPrompt() {
   let bar = $("refreshPrompt");
@@ -2105,11 +2455,24 @@ function hideRefreshPrompt() {
   const bar = $("refreshPrompt");
   if (bar) bar.hidden = true;
 }
-$("resetWorkspace").addEventListener("click", () => {
+$("menuReset").addEventListener("click", async () => {
   if (!currentKey) return;
-  if (!window.confirm("Remove the changes saved in this browser and reload the original workspace data?")) return;
-  try { localStorage.removeItem(localStoreKey(currentKey)); } catch (e) {}
-  location.reload();
+  $("wsMenu").hidden = true;
+  await openSheet({
+    title: "Reset workspace data",
+    message: "Remove the changes saved in this browser and reload the original workspace data?",
+    confirmLabel: "Reset workspace",
+    danger: true,
+    onConfirm: () => {
+      try { localStorage.removeItem(localStoreKey(currentKey)); }
+      catch (e) { return "The saved changes couldn't be removed in this browser — nothing was reset."; }
+      let stillThere = null;
+      try { stillThere = localStorage.getItem(localStoreKey(currentKey)); } catch (e) {}
+      if (stillThere !== null) return "The saved changes couldn't be removed in this browser — nothing was reset.";
+      location.reload();
+      return true;
+    }
+  });
 });
 $("viewActions").addEventListener("click",e=>{
   if(e.target.id==="headAddCommitment") openCommitmentModal(null);
@@ -2132,11 +2495,12 @@ $("closeDetailBottom").addEventListener("click", closeDetailPop);
 $("detailBackdrop").addEventListener("click", closeDetailPop);
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDetailPop(); });
 
-$("clientForm").addEventListener("submit",e=>{
+$("clientForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const data=Object.fromEntries(new FormData(e.currentTarget).entries());
   if(editingId) {
     const c=clientById(editingId);
+    if (storeOnline) { await saveRelationshipViaStore(c, data); return; }
     Object.assign(c,data,{value:Number(c.value)||0});
     addActivityRecord(c.id,"Relationship updated","Profile details were updated.","✓");
     selectedId=c.id;
@@ -2186,14 +2550,16 @@ $("cancelCommitmentBottom").addEventListener("click",closeCommitmentModal);
 $("commitmentBackdrop").addEventListener("click",e=>{
   if(e.target===$("commitmentBackdrop")) closeCommitmentModal();
 });
+$("sheetBackdrop").addEventListener("click",e=>{
+  if(e.target===$("sheetBackdrop")) closeSheet(null);
+});
 
 $("nextActions").addEventListener("click",e=>{
   const row=e.target.closest("[data-commitment]");
   if(!row) return;
   const c=commitments.find(x=>x.id===Number(row.dataset.commitment));
   if(!c || c.done) return;
-  if(!completeCommitment(c)) return;
-  renderAll(); showToast("Commitment marked complete.");
+  completeCommitment(c);
 });
 $("nextActions").addEventListener("keydown",e=>{
   if(e.key==="Enter"||e.key===" ") {
@@ -2206,7 +2572,7 @@ document.querySelectorAll("[data-view]").forEach(b=>{
   b.addEventListener("click",()=>setView(b.dataset.view));
 });
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") { closeModal(); closeCommitmentModal(); }
+  if(e.key==="Escape") { if (!$("sheetBackdrop").hidden) { closeSheet(null); return; } closeModal(); closeCommitmentModal(); }
   if(e.key==="/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)){
     e.preventDefault(); $("searchInput").focus();
   }
@@ -2234,6 +2600,95 @@ function persistLocalState() {
     if (el) el.textContent = "SAVING UNAVAILABLE IN THIS BROWSER";
   }
 }
+/* Item 10 (Package 1): the workspace is fetched through the authorized
+   endpoint, never by file name. The server derives which workspace the
+   key opens; this page cannot name another workspace into existence.
+   Local server first, then the demo doorman — the same order the package
+   intake uses. A 401/403 is the key's verdict and is NOT retried at the
+   other door; an unreachable door falls through to the next. */
+async function fetchWorkspaceData(key) {
+  const headers = { "Authorization": "Bearer " + key };
+  const base = DOORMAN_URL.replace(/\/api\/packages$/, "");
+  const urls = ["/api/workspace", base + "/api/workspace"];
+  let denied = null;
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { headers, cache: "no-store" });
+      if (res.status === 401 || res.status === 403) {
+        const body = await res.json().catch(() => ({}));
+        denied = new Error(body.detail || "That key does not open a workspace.");
+        break;
+      }
+      if (res.ok) return await res.json();
+    } catch (e) { /* this door unreachable — try the next */ }
+  }
+  if (denied) throw denied;
+  throw new Error("workspace not found");
+}
+/* Durable records (Slice 1): when the records server is present, the
+   store — not the book file — is the authority for relationship edits.
+   The overlay merges store records (and their versions) into the book
+   view at load; the edit save then goes through the store's write
+   path and only reports success on the store's verified outcome. */
+let storeOnline = false;
+async function overlayStoreRecords(key) {
+  storeOnline = false;
+  try {
+    const resp = await fetch("/api/records", { headers: { "X-Workspace-Key": String(key).toUpperCase() } });
+    if (!resp.ok) return;
+    const payload = await resp.json();
+    for (const rec of payload.records || []) {
+      const c = clients.find(x => String(x.id) === String(rec.id));
+      if (c) { Object.assign(c, rec.data); c._v = rec.version; }
+    }
+    storeOnline = true;
+  } catch (e) { /* no records server — browser mode, unchanged */ }
+}
+async function saveRelationshipViaStore(c, data) {
+  const opId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+    : "op-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+  let outcome = null;
+  try {
+    const resp = await fetch("/api/records/write", { method: "POST",
+      headers: { "Content-Type": "application/json", "X-Workspace-Key": String(currentKey).toUpperCase() },
+      body: JSON.stringify({ opId, recordId: c.id, baseVersion: c._v || 1, changes: { ...data } }) });
+    outcome = await resp.json();
+  } catch (e) { outcome = { state: "uncertain" }; }
+  if (outcome.state === "uncertain") {
+    showToast("We're checking whether that saved\u2026");
+    let resolved = "unknown";
+    try {
+      const r = await fetch("/api/records/op?opId=" + encodeURIComponent(opId),
+        { headers: { "X-Workspace-Key": String(currentKey).toUpperCase() } });
+      const p = await r.json();
+      if (p && p.reconciled && p.reconciled.state === "saved") resolved = "saved:" + p.reconciled.version;
+      else if (p && p.reconciled) resolved = "stale";
+    } catch (e) {}
+    if (resolved.startsWith("saved:")) outcome = { state: "saved", version: Number(resolved.split(":")[1]) };
+    else if (resolved === "stale") outcome = { state: "stale", current: null };
+    else {
+      showToast("Couldn't confirm \u2014 that change may or may not have landed. It's flagged for the operator to check.");
+      return;
+    }
+  }
+  if (outcome.state === "saved") {
+    Object.assign(c, data, { value: Number(c.value) || 0 });
+    c._v = outcome.version;
+    addActivityRecord(c.id, "Relationship updated", "Profile details were updated.", "\u2713");
+    selectedId = c.id;
+    persistLocalState();
+    closeModal(); renderAll();
+    showToast("Relationship updated \u2014 saved and verified.");
+  } else if (outcome.state === "stale") {
+    if (outcome.current) { Object.assign(c, outcome.current); c._v = outcome.currentVersion; renderAll(); }
+    showToast("Someone else changed this record first \u2014 you're looking at the newest version now. Your edit wasn't applied.");
+  } else if (outcome.state === "quarantined") {
+    showToast("That save was stopped \u2014 it clashed with an earlier attempt. Nothing was changed.");
+  } else {
+    showToast("That couldn't be saved \u2014 the record wasn't changed.");
+  }
+}
+
 async function loadWorkspace(rawKey) {
   const hadWorkspace = !!currentKey;
   const viewBefore = activeView;
@@ -2246,9 +2701,7 @@ async function loadWorkspace(rawKey) {
     return;
   }
   try {
-    const res = await fetch(`data/${encodeURIComponent(key)}.json`, { cache: "no-store" });
-    if (!res.ok) throw new Error("workspace not found");
-    const data = await res.json();
+    const data = await fetchWorkspaceData(key);
     if (!Array.isArray(data.clients) || !Array.isArray(data.commitments) || !Array.isArray(data.activities)) {
       throw new Error("workspace data incomplete");
     }
@@ -2262,6 +2715,7 @@ async function loadWorkspace(rawKey) {
     nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
     nextCommitmentId = commitments.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
     currentKey = key;
+    await overlayStoreRecords(key);
     const saved = null; // LIAISON DEMO: the view always comes from the database-generated file. Browser-local snapshots are disabled here — the database on file is the only truth.
     let loadedSaved = false;
     if (saved) {
@@ -2281,8 +2735,6 @@ async function loadWorkspace(rawKey) {
     document.querySelectorAll(".avatar-ben").forEach(a => { a.textContent = workspaceInfo.userInitial || "W"; });
     $("workspaceVersion").innerHTML = `PULSE HQ CRM <span>·</span> ${escapeHTML(business.toUpperCase())}`;
     $("dataLabel").firstChild.textContent = `${business.toUpperCase()} `;
-    $("resetWorkspace").hidden = false;
-    $("refreshWorkspace").hidden = false;
     $("keyGate").hidden = true;
     $("appShell").style.visibility = "visible";
     renderAll();
@@ -2553,7 +3005,7 @@ function liaisonHistoryHTML(p) {
     return '<div style="font-size:12.5px;color:var(--muted,#8fa1b8)">' +
       escapeHTML(label) + who + " · " + escapeHTML(when) + "</div>";
   }).join("");
-  return '<div style="margin-top:4px">' + rows + "</div>";
+  return '<details class="pkg-details"><summary>Step-by-step details</summary><div style="margin-top:4px">' + rows + "</div></details>";
 }
 
 function liaisonPackageHTML(p, nowMs) {
@@ -2634,65 +3086,76 @@ function liaisonHTML() {
     <div class="workspace-intro">
       <div class="eyebrow">PULSE HQ LIAISON</div>
       <h2>🕶 The Liaison</h2>
-      <p>Don't learn a CRM. Talk to your guy — a quick note, or the spreadsheet
-      you've already got — and watch it become records. Everything he saves goes
-      into your database at Pulse HQ first; this page only ever shows what's
+      <p>Talk to your guy — a quick note, or the spreadsheet you've already
+      got — and watch it become records. Nothing counts as saved until it
+      is in your database at Pulse HQ; this page only ever shows what's
       actually saved there.</p>
     </div>
-    <div style="padding:13px 16px;margin-bottom:18px;border:1px solid #2a3c5c;border-radius:12px;background:#0d1626;color:#c7d5ea;font-size:13.5px">
-      <strong style="color:#e8eef7">How tonight works, honestly:</strong>
-      you're talking to the Liaison, and a human concierge — Remmy at
-      Pulse HQ — interprets every note by hand; a small demo doorman carries
-      the packages (a demonstration bridge, not the production system, and it
-      only ever touches this demo book). Talk naturally — you don't need
-      forms or field names. If something important is unclear, she'll ask
-      right here. A received message isn't a saved record: the stamps under
-      Packages only move when the real database and this page say so.
+    <div class="liaison-honest">
+      <strong>How tonight works, honestly:</strong> a human concierge —
+      Remmy at Pulse HQ — reads every note by hand, and a small demo
+      doorman carries the packages. A received message isn't a saved
+      record yet: the Packages below only move when the real database
+      and this page agree.
+      <details class="liaison-more">
+        <summary>The full picture</summary>
+        <div class="liaison-more-body">
+          <p>You're talking to the Liaison, and Remmy interprets every note by hand. The doorman is a demonstration bridge, not the production system, and it only ever touches this demo book. Talk naturally — you don't need forms or field names. If something important is unclear, she'll ask right here.</p>
+        </div>
+      </details>
     </div>
-    <section class="panel" style="padding:22px;margin-bottom:18px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <span style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em">CONVERSATION</span>
-        <button id="liaisonReset" style="background:none;border:1px solid #22314a;border-radius:8px;color:#8fa1b8;padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer">↺ New conversation</button>
+    <section class="panel liaison-panel">
+      <div class="liaison-panel-head">
+        <span class="liaison-panel-label">CONVERSATION</span>
+        <button id="liaisonReset" class="liaison-quiet-button" type="button">↺ New conversation</button>
       </div>
-      <div id="liaisonThread" style="display:flex;flex-direction:column;gap:10px;max-height:430px;overflow-y:auto;padding:4px 2px 10px"></div>
-      <div style="border-top:1px solid #1b2942;padding-top:14px">
-        <textarea id="liaisonInput" rows="2" placeholder="Message the Liaison — talk like you'd talk to a person"
-          style="width:100%;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:12px;font:inherit"></textarea>
-        <div style="margin-top:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div id="liaisonThread"></div>
+      <div class="liaison-composer">
+        <textarea id="liaisonInput" rows="2" placeholder="Message the Liaison — talk like you'd talk to a person"></textarea>
+        <div class="liaison-composer-row">
           <button class="primary-button" id="liaisonSend">Send to the Liaison ↗</button>
-          <label style="color:var(--muted,#8fa1b8);font-size:13px;cursor:pointer">
-            📎 Attach a CSV batch
-            <input id="liaisonFile" type="file" accept=".csv,text/csv" style="display:none">
-          </label>
-          <span id="liaisonFileName" style="color:var(--muted,#8fa1b8);font-size:13px"></span>
-          <select id="liaisonListMode"
-            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px">
-            <option value="">CSV list: automatic</option>
-            <option value="new">New list</option>
-            <option value="update">Update of an existing list</option>
-          </select>
-          <input id="liaisonList" type="text" placeholder="List name (for New / Update)"
-            style="background:#0d1420;border:1px solid #22314a;border-radius:8px;color:#e8eef7;padding:6px 9px;font:inherit;font-size:13px;width:210px">
+          <span id="liaisonFileName"></span>
         </div>
-        <p style="margin:6px 0 0;color:var(--muted,#8fa1b8);font-size:12.5px">Automatic fits a first upload, or re-sending a file unchanged — it files itself and duplicates nothing. A second, genuinely separate list should use New list even if it looks similar: Automatic may hold and ask which list you mean rather than guess. Updating a list? Choose Update and reuse its exact name: unchanged rows carry over, changed rows are added as new, and rows that disappear are reported — never deleted.</p>
-        <p style="margin:10px 0 0;color:var(--muted,#8fa1b8);font-size:13px">CSV columns: name, company, email, phone, status, value, commitment, due_date, notes, priority. Possible duplicates are flagged for a human — never merged silently. On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
-        <div style="margin-top:14px;border-top:1px dashed #22314a;padding-top:12px">
-          <div style="color:var(--muted,#8fa1b8);font-size:12.5px;letter-spacing:.08em;margin-bottom:8px">ADD AN OPPORTUNITY</div>
-          <input id="oppNote" type="text" placeholder="Turn my conversation with ___ into an opportunity: ___"
-            style="width:100%;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:10px 12px;font:inherit">
-          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <input id="oppValue" type="text" inputmode="decimal" placeholder="Value in $ (optional)"
-              style="width:170px;box-sizing:border-box;background:#0d1420;border:1px solid #22314a;border-radius:10px;color:#e8eef7;padding:9px 12px;font:inherit">
-            <button id="oppAdd" style="background:none;border:1px solid #2b4a73;border-radius:8px;color:#cfe3ff;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer">Add opportunity</button>
-            <span style="color:var(--muted,#8fa1b8);font-size:12.5px">Travels the same road as a chat note — interpreted and verified before it's a record. Nothing you leave blank gets invented.</span>
+        <details class="liaison-more" id="liaisonCsvDetails">
+          <summary>📎 Send a spreadsheet (CSV) instead</summary>
+          <div class="liaison-more-body">
+            <label class="liaison-file-label">
+              Choose a CSV file
+              <input id="liaisonFile" type="file" accept=".csv,text/csv" style="display:none">
+            </label>
+            <select id="liaisonListMode">
+              <option value="">CSV list: automatic</option>
+              <option value="new">New list</option>
+              <option value="update">Update of an existing list</option>
+            </select>
+            <input id="liaisonList" type="text" placeholder="List name (for New / Update)">
+            <p>Automatic fits a first upload, or re-sending a file unchanged — it files itself and duplicates nothing. A second, genuinely separate list should use New list even if it looks similar: Automatic may hold and ask which list you mean rather than guess. Updating a list? Choose Update and reuse its exact name: unchanged rows carry over, changed rows are added as new, and rows that disappear are reported — never deleted.</p>
+            <p>CSV columns: name, company, email, phone, status, value, commitment, due_date, notes, priority. Possible duplicates are flagged for a human — never merged silently.</p>
           </div>
-        </div>
+        </details>
+        <details class="liaison-more" id="liaisonOppDetails">
+          <summary>Add an opportunity</summary>
+          <div class="liaison-more-body">
+            <input id="oppNote" type="text" placeholder="Turn my conversation with ___ into an opportunity: ___">
+            <div class="liaison-opp-row">
+              <input id="oppValue" type="text" inputmode="decimal" placeholder="Value in $ (optional)">
+              <button id="oppAdd" type="button">Add opportunity</button>
+            </div>
+            <p>Travels the same road as a chat note — interpreted and verified before it's a record. Nothing you leave blank gets invented.</p>
+          </div>
+        </details>
+        <p class="liaison-send-note">On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
       </div>
     </section>
-    <section class="panel" style="padding:22px">
-      <h3 style="margin:0 0 12px">Packages</h3>
-      <div id="liaisonTurnaround" style="margin-bottom:14px"></div>
+    <section class="panel liaison-panel">
+      <h3 class="liaison-packages-title">Packages</h3>
       <div id="liaisonPackages"><div class="workspace-empty">No packages yet this session.</div></div>
+      <details class="liaison-more" id="liaisonStatsDetails">
+        <summary>How fast packages usually move</summary>
+        <div class="liaison-more-body">
+          <div id="liaisonTurnaround"></div>
+        </div>
+      </details>
     </section>
   </div>`;
 }
@@ -2720,8 +3183,8 @@ function renderThread() {
     saveThread(turns);
   }
   box.innerHTML = turns.map(t => t.from === "client"
-    ? `<div style="align-self:flex-end;max-width:82%;background:#12314f;border:1px solid #23507c;border-radius:14px 14px 4px 14px;padding:10px 13px;color:#eaf4ff;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
-    : `<div style="align-self:flex-start;max-width:82%;background:#101c2e;border:1px solid #22314a;border-radius:14px 14px 14px 4px;padding:10px 13px;color:#dbe7f5;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+    ? `<div class="liaison-bubble" style="align-self:flex-end;max-width:82%;background:#12314f;border:1px solid #23507c;border-radius:14px 14px 4px 14px;padding:10px 13px;color:#eaf4ff;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+    : `<div class="liaison-bubble" style="align-self:flex-start;max-width:82%;background:#101c2e;border:1px solid #22314a;border-radius:14px 14px 14px 4px;padding:10px 13px;color:#dbe7f5;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
   ).join("");
   box.scrollTop = box.scrollHeight;
 }
