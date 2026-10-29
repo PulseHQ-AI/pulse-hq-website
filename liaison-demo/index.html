@@ -444,7 +444,7 @@ body.scroll-locked { overflow: hidden; }
 .kelvin .k-range button.active { background:#24435a; color:#fff; box-shadow:inset 0 0 0 1px rgba(81,201,232,.35); }
 .kelvin .k-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:14px; }
 .kelvin .k-card { background:linear-gradient(155deg,rgba(24,42,63,.92),rgba(13,22,34,.94) 82%); border:1px solid var(--kline); border-radius:14px; padding:17px; min-width:0; box-shadow:0 10px 30px rgba(0,0,0,.35); }
-.kelvin .s3 { grid-column:span 3; } .kelvin .s4 { grid-column:span 4; } .kelvin .s5 { grid-column:span 5; } .kelvin .s7 { grid-column:span 7; } .kelvin .s8 { grid-column:span 8; } .kelvin .s12 { grid-column:span 12; }
+.kelvin .s3 { grid-column:span 3; } .kelvin .s4 { grid-column:span 4; } .kelvin .s6 { grid-column:span 6; } .kelvin .s5 { grid-column:span 5; } .kelvin .s7 { grid-column:span 7; } .kelvin .s8 { grid-column:span 8; } .kelvin .s12 { grid-column:span 12; }
 .kelvin .k-title { font-size:11px; letter-spacing:.06em; font-weight:750; color:#c4d9ea; }
 .kelvin .k-head { margin-bottom:14px; }
 .kelvin .k-muted { font-size:11px; color:var(--kmuted); }
@@ -502,8 +502,8 @@ body.scroll-locked { overflow: hidden; }
 .kelvin .k-notice { margin-top:14px; padding:15px 17px; border:1px dashed #4c6478; border-radius:12px; color:#a8bbce; font-size:11.5px; line-height:1.65; background:rgba(13,22,34,.6); }
 .kelvin .k-notice b { color:var(--ktext); }
 .kelvin .k-notice ul { margin:8px 0 0; padding-left:18px; }
-@media (max-width: 1000px) { .kelvin .s3, .kelvin .s4 { grid-column:span 6; } .kelvin .s5, .kelvin .s7, .kelvin .s8 { grid-column:span 12; } }
-@media (max-width: 620px) { .kelvin { padding:14px; } .kelvin header, .kelvin .k-intro { align-items:flex-start; flex-direction:column; } .kelvin .s3, .kelvin .s4, .kelvin .s5, .kelvin .s7, .kelvin .s8, .kelvin .s12 { grid-column:span 12; } .kelvin .k-gauge { width:84px; height:84px; } .kelvin .k-bar-row { grid-template-columns:76px 1fr 84px; } }
+@media (max-width: 1000px) { .kelvin .s3, .kelvin .s4 { grid-column:span 6; } .kelvin .s5, .kelvin .s6, .kelvin .s7, .kelvin .s8 { grid-column:span 12; } }
+@media (max-width: 620px) { .kelvin { padding:14px; } .kelvin header, .kelvin .k-intro { align-items:flex-start; flex-direction:column; } .kelvin .s3, .kelvin .s4, .kelvin .s5, .kelvin .s6, .kelvin .s7, .kelvin .s8, .kelvin .s12 { grid-column:span 12; } .kelvin .k-gauge { width:84px; height:84px; } .kelvin .k-bar-row { grid-template-columns:76px 1fr 84px; } }
 .desk-score { border: 1px solid #22314a; border-radius: 12px; padding: 13px 15px; background: #0d1626; }
 .desk-score-head { display: flex; justify-content: space-between; align-items: baseline; color: #c7d5ea; font-size: 13.5px; letter-spacing: .04em; }
 .desk-score-head strong { font-size: 26px; color: #eaf4ff; }
@@ -3404,12 +3404,11 @@ function renderKelvinHealth() {
   const moved = openOpps.filter(o => MOVED.indexOf(o.stage) !== -1);
   const oppValue = openOpps.reduce((s, o) => s + (Number(o.value) || 0), 0);
   const pHealth = openOpps.length ? Math.round(100 * moved.length / openOpps.length) : null;
-  const overall = (cHealth !== null && pHealth !== null) ? Math.round((cHealth + pHealth) / 2) : (cHealth !== null ? cHealth : pHealth);
 
   const statusOf = (s) => s === null ? { word: "No data", cls: "watch" } : s >= 75 ? { word: "Steady", cls: "good" } : s >= 50 ? { word: "Watch", cls: "watch" } : { word: "Needs attention", cls: "bad" };
   const pill = (s) => { const st = statusOf(s); return '<span class="k-status ' + st.cls + '">● ' + st.word + '</span>'; };
   const gauge = (s, cls) => '<div class="k-gauge ' + cls + '" style="--v:' + (s === null ? 0 : Math.round(s / 100 * 251)) + '"><svg viewBox="0 0 100 100"><circle class="k-track" cx="50" cy="50" r="40"/><circle class="k-arc" cx="50" cy="50" r="40"/></svg><div class="k-center"><span class="k-num">' + (s === null ? "—" : s) + '</span><span class="k-unit">/ 100</span></div></div>';
-  const gaugeCls = (s, overallGauge) => s === null ? "" : overallGauge ? (s >= 50 ? "" : "k-amber") : (s < 75 ? "k-amber" : "k-green");
+  const gaugeCls = (s) => s === null ? "" : (s < 75 ? "k-amber" : "k-green");
 
   /* Records breakdown by relationship status. */
   const statusCounts = {};
@@ -3492,11 +3491,9 @@ function renderKelvinHealth() {
     '<section class="k-intro"><div><h2>How the business is running</h2><p>Every number on this page is counted from the book itself. The formulas are printed at the bottom — argue with them there.</p></div>' +
     '<div class="k-range"><button class="active" data-krange="7">7D</button><button data-krange="30">30D</button></div></section>' +
     '<main class="k-grid">' +
-    '<section class="k-card s4"><div class="k-head"><span class="k-title">OVERALL HEALTH</span>' + pill(overall) + '</div><div class="k-metric">' + gauge(overall, gaugeCls(overall, true)) +
-      '<div><h3>The whole picture, one number</h3><p>The average of the two gauges beside it. A draft definition — the real one is for Ben and Alex to rule on.</p><div class="k-trend warn">' + overdue.length + " commitments overdue right now</div></div></div></section>" +
-    '<section class="k-card s4"><div class="k-head"><span class="k-title">COMMITMENT HEALTH</span>' + pill(cHealth) + '</div><div class="k-metric">' + gauge(cHealth, gaugeCls(cHealth, false)) +
+    '<section class="k-card s6"><div class="k-head"><span class="k-title">COMMITMENT HEALTH</span>' + pill(cHealth) + '</div><div class="k-metric">' + gauge(cHealth, gaugeCls(cHealth)) +
       '<div><h3>Promises kept vs promises slipping</h3><p>Of the ' + total + " commitments on the book, the share done on time or still open and not overdue — " + healthy + " of " + total + '.</p><div class="k-trend warn">' + overdue.length + " commitments overdue · " + doneOnTime + " completed on time</div></div></div></section>" +
-    '<section class="k-card s4"><div class="k-head"><span class="k-title">PIPELINE HEALTH</span>' + pill(pHealth) + '</div><div class="k-metric">' + gauge(pHealth, gaugeCls(pHealth, false)) +
+    '<section class="k-card s6"><div class="k-head"><span class="k-title">PIPELINE HEALTH</span>' + pill(pHealth) + '</div><div class="k-metric">' + gauge(pHealth, gaugeCls(pHealth)) +
       '<div><h3>Opportunities actually moving</h3><p>Of the ' + openOpps.length + " open opportunities, the share that have moved past first contact (Contacted, Qualified or Proposal) — " + moved.length + " of " + openOpps.length + '.</p><div class="k-trend">' + openOpps.length + " open opportunities · " + moneyK(oppValue) + " in play</div></div></div></section>" +
     '<section class="k-card s3"><div class="k-head"><span class="k-title">ACTIVE RECORDS</span><span class="k-muted">THE BOOK</span></div><div class="k-big">' + clients.length + "</div><p>" + (statusCounts["Client"] || 0) + " clients · " + (statusCounts["Lead"] || 0) + " leads · " + inConv + " in conversation</p></section>" +
     '<section class="k-card s3"><div class="k-head"><span class="k-title">OPEN OPPORTUNITIES</span><span class="k-muted">PIPELINE</span></div><div class="k-big">' + openOpps.length + "</div><p>" + moneyK(oppValue) + " across active stages</p></section>" +
@@ -3516,7 +3513,6 @@ function renderKelvinHealth() {
     '<div class="k-notice"><b>How these numbers are made — read this before trusting them.</b><ul>' +
     "<li><b>Commitment health</b> = the share of all commitments on the book that are completed on time or open and not overdue. Overdue is judged against the <b>original</b> due date.</li>" +
     "<li><b>Pipeline health</b> = the share of open opportunities at Contacted, Qualified or Proposal — stages past first contact.</li>" +
-    "<li><b>Overall</b> = the plain average of those two. Bands: 75 and up “Steady”, 50–74 “Watch”, under 50 “Needs attention”.</li>" +
     "<li>These formulas are a <b>first draft</b>. They are printed here so they can be argued with — production scoring is Ben's and Alex's to rule on.</li>" +
     "<li>The book records activity by the day (“2 days ago”), not the hour — so this page shows 7 and 30 day windows and no 24-hour view. A finer chart would be pretending.</li>" +
     "<li>This page reads the book and writes nothing back.</li></ul></div>" +
