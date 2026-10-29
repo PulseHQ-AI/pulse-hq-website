@@ -421,6 +421,89 @@ body.scroll-locked { overflow: hidden; }
 .chat-panel .liaison-composer textarea:focus { outline: none; border-color: rgba(34,200,255,.75); box-shadow: 0 0 0 3px rgba(34,200,255,.18); }
 .desk-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 780px) { .desk-scores { grid-template-columns: 1fr; } }
+/* ---- Business Health — Kelvin page (Ben's design of 2026-10-26, Alex's
+   Kelvin-style template, ported into the portal tab 2026-10-29). Scoped
+   under .kelvin so the design's class names never collide with the
+   portal's own. The cards keep the design's dark monitor finish in both
+   portal themes, like the hardware monitor it is modelled on. */
+.kelvin { --kbg:#070d16; --kpanel:rgba(17,28,40,.88); --kline:#24405a; --ktext:#eaf4ff; --kmuted:#8fb0c9; --kblue:#51c9e8; --kcyan:#39d5e8; --kgreen:#49d5a0; --kamber:#f3c36d; --kred:#ff777e; color:var(--ktext); font-size:14px; }
+.kelvin * { box-sizing:border-box; }
+.kelvin header, .kelvin .k-intro, .kelvin .k-head, .kelvin .k-row, .kelvin .k-foot { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.kelvin header { padding-bottom:18px; border-bottom:1px solid var(--kline); }
+.kelvin .k-brand { display:flex; gap:12px; align-items:center; }
+.kelvin .k-mark { border:1px solid #427b98; color:var(--kcyan); border-radius:10px; padding:11px; font-weight:900; box-shadow:0 0 18px rgba(57,213,232,.25); text-shadow:0 0 12px rgba(57,213,232,.7); }
+.kelvin .k-eyebrow, .kelvin .k-label { font-size:10px; letter-spacing:.16em; color:var(--kmuted); font-weight:700; text-transform:uppercase; }
+.kelvin h1 { font-size:23px; margin:4px 0 0; letter-spacing:-.03em; color:var(--ktext); }
+.kelvin h2 { font-size:17px; margin:0 0 5px; color:var(--ktext); }
+.kelvin p { color:var(--kmuted); font-size:12px; line-height:1.5; margin:0; }
+.kelvin .k-pill { border:1px solid var(--kline); border-radius:9px; padding:9px 12px; background:var(--kpanel); font-size:11px; color:var(--kmuted); }
+.kelvin .k-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--kamber); margin-right:7px; box-shadow:0 0 8px var(--kamber); }
+.kelvin .k-intro { margin:24px 0 18px; }
+.kelvin .k-range { display:flex; gap:4px; padding:4px; background:#0c1620; border:1px solid var(--kline); border-radius:9px; }
+.kelvin .k-range button { background:none; border:0; color:var(--kmuted); padding:7px 12px; border-radius:6px; cursor:pointer; font:inherit; font-size:12px; }
+.kelvin .k-range button.active { background:#24435a; color:#fff; box-shadow:inset 0 0 0 1px rgba(81,201,232,.35); }
+.kelvin .k-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:14px; }
+.kelvin .k-card { background:linear-gradient(155deg,rgba(24,42,63,.92),rgba(13,22,34,.94) 82%); border:1px solid var(--kline); border-radius:14px; padding:17px; min-width:0; box-shadow:0 10px 30px rgba(0,0,0,.35); }
+.kelvin .s3 { grid-column:span 3; } .kelvin .s4 { grid-column:span 4; } .kelvin .s5 { grid-column:span 5; } .kelvin .s7 { grid-column:span 7; } .kelvin .s8 { grid-column:span 8; } .kelvin .s12 { grid-column:span 12; }
+.kelvin .k-title { font-size:11px; letter-spacing:.06em; font-weight:750; color:#c4d9ea; }
+.kelvin .k-head { margin-bottom:14px; }
+.kelvin .k-muted { font-size:11px; color:var(--kmuted); }
+.kelvin .k-status { font-size:10px; font-weight:750; letter-spacing:.04em; text-transform:uppercase; border:1px solid; border-radius:20px; padding:5px 8px; white-space:nowrap; }
+.kelvin .k-status.good { color:var(--kgreen); border-color:#49d5a055; background:#49d5a014; }
+.kelvin .k-status.watch { color:var(--kamber); border-color:#f3c36d55; background:#f3c36d14; }
+.kelvin .k-status.bad { color:var(--kred); border-color:#ff777e55; background:#ff777e14; }
+.kelvin .k-metric { display:flex; align-items:center; gap:15px; }
+.kelvin .k-gauge { width:94px; height:94px; position:relative; flex:none; filter:drop-shadow(0 0 10px rgba(81,201,232,.18)); }
+.kelvin .k-gauge svg { width:100%; height:100%; transform:rotate(-90deg); }
+.kelvin .k-track { fill:none; stroke:#22374d; stroke-width:8; }
+.kelvin .k-arc { fill:none; stroke:var(--kblue); stroke-width:8; stroke-linecap:round; stroke-dasharray:var(--v) 251; }
+.kelvin .k-gauge.green .k-arc { stroke:var(--kgreen); } .kelvin .k-gauge.amber .k-arc { stroke:var(--kamber); }
+.kelvin .k-center { position:absolute; inset:0; display:grid; place-content:center; text-align:center; }
+.kelvin .k-num { font-size:27px; font-weight:800; letter-spacing:-.05em; }
+.kelvin .k-unit { font-size:10px; color:var(--kmuted); }
+.kelvin h3 { font-size:13px; margin:0 0 6px; color:var(--ktext); }
+.kelvin .k-trend { color:var(--kgreen); font-size:11px; margin-top:9px; }
+.kelvin .k-trend.warn { color:var(--kamber); } .kelvin .k-trend.flat { color:var(--kmuted); }
+.kelvin .k-big { font-size:31px; font-weight:800; letter-spacing:-.05em; margin:5px 0; }
+.kelvin .k-age-bars { display:grid; gap:3px; margin-top:10px; }
+.kelvin .k-age-row { height:5px; background:#1b2c40; border-radius:3px; overflow:hidden; }
+.kelvin .k-age-fill { display:block; height:100%; background:linear-gradient(90deg,#b34a52,var(--kred)); border-radius:3px; }
+.kelvin .k-chart { width:100%; height:180px; display:block; }
+.kelvin .k-chart text { fill:var(--kmuted); font-size:10px; }
+.kelvin .k-gridline { stroke:#22394f; stroke-dasharray:3 5; }
+.kelvin .k-line { fill:none; stroke:var(--kblue); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+.kelvin .k-line2 { fill:none; stroke:var(--kgreen); stroke-width:2; stroke-dasharray:5 4; }
+.kelvin .k-legend { display:flex; gap:20px; color:var(--kmuted); font-size:10px; margin-top:6px; }
+.kelvin .k-key { display:inline-block; width:7px; height:7px; border-radius:2px; margin-right:6px; }
+.kelvin .k-split { display:flex; align-items:center; gap:16px; }
+.kelvin .k-donut { width:88px; height:88px; border-radius:50%; position:relative; flex:none; display:grid; place-items:center; font-weight:800; font-size:20px; }
+.kelvin .k-donut:before { content:""; position:absolute; inset:11px; border-radius:50%; background:#101b29; }
+.kelvin .k-donut span { z-index:1; } .kelvin .k-donut small { position:absolute; bottom:16px; font-size:8.5px; color:var(--kmuted); letter-spacing:.12em; z-index:1; }
+.kelvin .k-legendlist { display:grid; gap:10px; flex:1; }
+.kelvin .k-legendrow { display:flex; justify-content:space-between; gap:8px; color:var(--kmuted); font-size:11px; }
+.kelvin .k-legendrow b { color:var(--ktext); }
+.kelvin .k-bar-row { display:grid; grid-template-columns:86px 1fr 92px; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #1d3049; }
+.kelvin .k-bar-row:last-child { border:0; }
+.kelvin .k-bar-name { font-size:11.5px; font-weight:650; color:#c4d9ea; }
+.kelvin .k-bar-track { height:9px; background:#16263a; border-radius:5px; overflow:hidden; }
+.kelvin .k-bar-fill { display:block; height:100%; background:linear-gradient(90deg,#2b7ea8,var(--kcyan)); border-radius:5px; box-shadow:0 0 10px rgba(57,213,232,.35); }
+.kelvin .k-bar-val { font-size:11px; color:var(--kmuted); text-align:right; }
+.kelvin .k-issues { display:grid; }
+.kelvin .k-issue { display:flex; gap:11px; padding:12px 0; border-bottom:1px solid var(--kline); }
+.kelvin .k-issue:last-child { border:0; padding-bottom:0; }
+.kelvin .k-icon { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:#f3c36d18; color:var(--kamber); flex:none; }
+.kelvin .k-icon.red { background:#ff777e18; color:var(--kred); }
+.kelvin .k-issue strong { display:block; font-size:12.5px; margin:2px 0 4px; color:var(--ktext); }
+.kelvin .k-table { border-collapse:collapse; width:100%; font-size:11.5px; color:var(--ktext); }
+.kelvin .k-table th { text-align:left; color:var(--kmuted); font-weight:600; padding:9px 6px; border-bottom:1px solid var(--kline); }
+.kelvin .k-table td { padding:11px 6px; border-bottom:1px solid #1d3049; }
+.kelvin .k-table tr:last-child td { border:0; } .kelvin .k-table td:first-child { font-weight:600; }
+.kelvin .k-foot { margin-top:12px; padding-top:11px; border-top:1px solid var(--kline); color:var(--kmuted); font-size:10px; }
+.kelvin .k-notice { margin-top:14px; padding:15px 17px; border:1px dashed #4c6478; border-radius:12px; color:#a8bbce; font-size:11.5px; line-height:1.65; background:rgba(13,22,34,.6); }
+.kelvin .k-notice b { color:var(--ktext); }
+.kelvin .k-notice ul { margin:8px 0 0; padding-left:18px; }
+@media (max-width: 1000px) { .kelvin .s3, .kelvin .s4 { grid-column:span 6; } .kelvin .s5, .kelvin .s7, .kelvin .s8 { grid-column:span 12; } }
+@media (max-width: 620px) { .kelvin header, .kelvin .k-intro { align-items:flex-start; flex-direction:column; } .kelvin .s3, .kelvin .s4, .kelvin .s5, .kelvin .s7, .kelvin .s8, .kelvin .s12 { grid-column:span 12; } .kelvin .k-gauge { width:84px; height:84px; } .kelvin .k-bar-row { grid-template-columns:76px 1fr 84px; } }
 .desk-score { border: 1px solid #22314a; border-radius: 12px; padding: 13px 15px; background: #0d1626; }
 .desk-score-head { display: flex; justify-content: space-between; align-items: baseline; color: #c7d5ea; font-size: 13.5px; letter-spacing: .04em; }
 .desk-score-head strong { font-size: 26px; color: #eaf4ff; }
@@ -1967,7 +2050,7 @@ function renderAlternateView(view) {
 
   if (view === "health") {
     target.innerHTML = healthHTML();
-    renderDeskHealth();
+    renderKelvinHealth();
     return;
   }
 
@@ -3224,15 +3307,15 @@ function liaisonHTML() {
 }
 
 
-/* ---- The Desk: business health + verified-completed actions + packages ----
-   Health is the Business Health engine's arithmetic — commitments
-   classified by originalDueDate (never a moved date), Nc = Do + 0.5*Dl +
-   (O - Lo), pipeline as the moved share of open opportunities — computed
-   here from the same workspace records this page already holds, scores
-   displayed rounded half-up exactly as the engine displays them. The
-   engine's ranked recommendations are NOT reproduced: they require
+/* ---- Business Health: the Kelvin page (Ben's design of 2026-10-26,
+   Alex's Kelvin-style template) ported into the portal tab 2026-10-29.
+   Every number is counted here from the same workspace records this page
+   already holds, with the arithmetic printed on the page itself: the
+   formulas are a first draft for Ben and Alex to rule on. The engine's
+   ranked recommendations are NOT part of this page: they require
    human-confirmed effort values held at HQ, and inventing them would
-   break the engine's own rule. */
+   break the engine's own rule. The Desk below keeps the verified-
+   completed actions and the packages. */
 function deskDateParse(s) {
   if (typeof s !== "string") return null;
   const t = s.trim();
@@ -3251,57 +3334,201 @@ function deskToday() {
     return new Date().toISOString().slice(0, 10);
   }
 }
-function deskClassify(commitmentsIn, today) {
-  let Do = 0, Dl = 0, O = 0, Lo = 0, excluded = 0;
-  const overdue = [], coming = [];
-  for (const c of commitmentsIn) {
-    const orig = deskDateParse(c.originalDueDate);
-    if (!orig) { excluded++; continue; }
-    if (c.done) {
-      const comp = deskDateParse(c.completedAt);
-      if (!comp) { excluded++; continue; }
-      if (comp <= orig) Do++; else Dl++;
-    } else if (orig < today) { O++; Lo++; overdue.push({ c, orig }); }
-    else { O++; coming.push({ c, orig }); }
-  }
-  const T = Do + Dl + O;
-  const nc = Do + 0.5 * Dl + (O - Lo);
-  const score = T ? Math.floor((100 * nc / T) + 0.5) : null;
-  const byDate = (a, b) => a.orig.localeCompare(b.orig) || ((a.c.id || 0) - (b.c.id || 0));
-  overdue.sort(byDate); coming.sort(byDate);
-  return { Do, Dl, O, Lo, excluded, score, overdue, coming };
-}
-function deskPipeline(opportunitiesIn) {
-  const MOVED = ["Contacted", "Qualified", "Proposal"];
-  const open = (opportunitiesIn || []).filter(o => !o.outcome);
-  const moved = open.filter(o => MOVED.indexOf(o.stage) !== -1);
-  const score = open.length ? Math.floor((100 * moved.length / open.length) + 0.5) : null;
-  return { open: open.length, moved: moved.length, score };
-}
-function renderDeskHealth() {
-  const box = $("deskHealth");
-  if (!box) return;
-  const cl = deskClassify(commitments, deskToday());
-  const ps = deskPipeline(opportunities);
-  const nameFor = (c) => { const r = clients.find(x => x.id === c.clientId); return r ? (r.company || r.name || "") : ""; };
-  const row = (item) => {
-    const who = nameFor(item.c);
-    return '<div class="desk-health-row"><strong>' + escapeHTML(item.c.title || "Untitled commitment") + '</strong>' +
-      '<span>' + (who ? escapeHTML(who) + " · " : "") + "due " + escapeHTML(dateLabel(item.orig)) + '</span></div>';
+/* Kelvin chart state for the current render (series are recomputed from
+   the book on every render; the range toggle only re-slices them). */
+let kelvinSeries = null;
+function kelvinDraw(n) {
+  const svgEl = $("kelvinChart"), capEl = $("kelvinCaption");
+  if (!svgEl || !kelvinSeries) return;
+  const base = new Date(deskToday() + "T12:00:00");
+  const act = kelvinSeries.activity.slice(-n), due = kelvinSeries.due.slice(-n);
+  const max = Math.max(4, Math.max.apply(null, act.concat(due)));
+  const pts = (series) => {
+    const w = 585, x0 = 40, y0 = 160, h = 140;
+    return series.map((v, i) => {
+      const x = x0 + (series.length === 1 ? w : (i / (series.length - 1)) * w);
+      const y = y0 - (max ? (v / max) * h : 0);
+      return x.toFixed(1) + " " + y.toFixed(1);
+    }).join("L");
   };
-  const scoreLine = (label, score, counts) =>
-    '<div class="desk-score"><div class="desk-score-head"><span>' + label + '</span><strong>' + (score === null ? "—" : score) + '</strong></div><div class="desk-score-counts">' + counts + '</div></div>';
-  let html = '<div class="desk-scores">' +
-    scoreLine("Commitments", cl.score, cl.Do + " on time · " + cl.Dl + " late · " + cl.O + " open · " + cl.Lo + " overdue") +
-    scoreLine("Opportunities", ps.score, ps.moved + " of " + ps.open + " open opportunities moving") +
-    '</div>';
-  if (cl.excluded)
-    html += '<p class="desk-note">' + cl.excluded + ' commitment(s) left out of the score — the original due date is missing or unreadable, and a later date is never substituted.</p>';
-  html += '<h4 class="desk-sub">Overdue — oldest first</h4>' + (cl.overdue.length ? cl.overdue.map(row).join("") : '<p class="desk-note">Nothing overdue.</p>');
-  html += '<h4 class="desk-sub">Coming due</h4>' + (cl.coming.length ? cl.coming.slice(0, 5).map(row).join("") : '<p class="desk-note">Nothing coming due.</p>');
-  html += '<p class="desk-note">Pilot readout — provisional while the pilot runs. Commitments are judged against the date first promised, never a moved date.</p>';
-  box.innerHTML = html;
+  const fmt = (dt) => dt.toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+  let svg = "";
+  [0.25, 0.5, 0.75, 1].forEach((f) => {
+    const y = 160 - 140 * f;
+    svg += '<path class="k-gridline" d="M40 ' + y + 'H625"/>';
+    svg += '<text x="3" y="' + (y + 4) + '">' + Math.round(max * f) + "</text>";
+  });
+  svg += '<path d="M' + pts(act) + 'L625 160L40 160Z" fill="rgba(81,201,232,.13)"/>';
+  svg += '<path class="k-line" d="M' + pts(act) + '"/>';
+  svg += '<path class="k-line2" d="M' + pts(due) + '"/>';
+  const first = new Date(base); first.setDate(first.getDate() - (n - 1));
+  const mid = new Date(base); mid.setDate(mid.getDate() - Math.floor((n - 1) / 2));
+  svg += '<text x="40" y="180">' + fmt(first) + '</text><text x="320" y="180">' + fmt(mid) + '</text><text x="592" y="180">Today</text>';
+  svgEl.innerHTML = svg;
+  if (capEl) capEl.textContent = "LAST " + n + " DAYS · FROM THE BOOK";
 }
+function renderKelvinHealth() {
+  const root = $("kelvinRoot");
+  if (!root) return;
+  const today = deskToday();
+  const dayMs = 86400000;
+  const toUTC = (s) => { const p = deskDateParse(s); return p ? Date.UTC(+p.slice(0, 4), +p.slice(5, 7) - 1, +p.slice(8, 10)) : null; };
+  const todayUTC = toUTC(today);
+  const cDate = (c) => deskDateParse(c.originalDueDate) || deskDateParse(c.dueDate);
+  const nameFor = (id) => { const r = clients.find(x => x.id === id); return r ? (r.name || r.company || "") : ""; };
+  const moneyK = (v) => "$" + Math.round(Number(v) || 0).toLocaleString("en-US");
+
+  /* Commitments — the page's printed definition: completed on time or
+     open and not overdue, judged against the original due date. */
+  const total = commitments.length;
+  const openC = commitments.filter(c => !c.done);
+  const doneOnTime = commitments.filter(c => {
+    if (!c.done) return false;
+    const comp = deskDateParse(c.completedAt), due = cDate(c);
+    return !!(comp && due && comp <= due);
+  }).length;
+  const overdue = openC.filter(c => { const d = cDate(c); return d && d < today; })
+    .sort((a, b) => cDate(a).localeCompare(cDate(b)) || ((a.id || 0) - (b.id || 0)));
+  const overdueAges = overdue.map(c => ({ c, days: Math.round((todayUTC - toUTC(cDate(c))) / dayMs) }));
+  const maxAge = overdueAges.length ? Math.max.apply(null, overdueAges.map(x => x.days)) : 0;
+  const dueSoon = openC.filter(c => { const d = cDate(c); return d && d >= today && (toUTC(d) - todayUTC) / dayMs <= 7; }).length;
+  const onTrack = openC.filter(c => { const d = cDate(c); return d && (toUTC(d) - todayUTC) / dayMs > 7; }).length;
+  const noDate = openC.filter(c => !cDate(c)).length;
+  const healthy = doneOnTime + openC.length - overdue.length;
+  const cHealth = total ? Math.round(100 * healthy / total) : null;
+
+  /* Pipeline — share of open opportunities past first contact. */
+  const MOVED = ["Contacted", "Qualified", "Proposal"];
+  const openOpps = opportunities.filter(o => !o.outcome);
+  const moved = openOpps.filter(o => MOVED.indexOf(o.stage) !== -1);
+  const oppValue = openOpps.reduce((s, o) => s + (Number(o.value) || 0), 0);
+  const pHealth = openOpps.length ? Math.round(100 * moved.length / openOpps.length) : null;
+  const overall = (cHealth !== null && pHealth !== null) ? Math.round((cHealth + pHealth) / 2) : (cHealth !== null ? cHealth : pHealth);
+
+  const statusOf = (s) => s === null ? { word: "No data", cls: "watch" } : s >= 75 ? { word: "Steady", cls: "good" } : s >= 50 ? { word: "Watch", cls: "watch" } : { word: "Needs attention", cls: "bad" };
+  const pill = (s) => { const st = statusOf(s); return '<span class="k-status ' + st.cls + '">● ' + st.word + '</span>'; };
+  const gauge = (s, cls) => '<div class="k-gauge ' + cls + '" style="--v:' + (s === null ? 0 : Math.round(s / 100 * 251)) + '"><svg viewBox="0 0 100 100"><circle class="k-track" cx="50" cy="50" r="40"/><circle class="k-arc" cx="50" cy="50" r="40"/></svg><div class="k-center"><span class="k-num">' + (s === null ? "—" : s) + '</span><span class="k-unit">/ 100</span></div></div>';
+  const gaugeCls = (s, overallGauge) => s === null ? "" : overallGauge ? (s >= 50 ? "" : "amber") : (s < 75 ? "amber" : "green");
+
+  /* Records breakdown by relationship status. */
+  const statusCounts = {};
+  for (const c of clients) statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
+  const inConv = ["Contacted", "Qualified", "Proposal"].reduce((s, k) => s + (statusCounts[k] || 0), 0);
+
+  /* Activity series — the book records activity by relative day labels. */
+  const offsetOf = (label) => {
+    const t = String(label || "").trim().toLowerCase();
+    if (t === "today") return 0;
+    if (t === "yesterday") return 1;
+    const m = /^(\d+) days? ago$/.exec(t);
+    if (m) return parseInt(m[1], 10);
+    if (t === "last week") return 7;
+    const iso = deskDateParse(t);
+    if (iso) return Math.round((todayUTC - toUTC(iso)) / dayMs);
+    return null;
+  };
+  const actSeries = new Array(30).fill(0), dueSeries = new Array(30).fill(0);
+  for (const a of activities) { const off = offsetOf(a.date); if (off !== null && off >= 0 && off < 30) actSeries[29 - off]++; }
+  for (let i = 0; i < 30; i++) {
+    const dayStr = new Date(todayUTC - (29 - i) * dayMs).toISOString().slice(0, 10);
+    dueSeries[i] = commitments.filter(c => cDate(c) === dayStr).length;
+  }
+  kelvinSeries = { activity: actSeries, due: dueSeries };
+  const latest = activities.map((a, i) => ({ a, i, off: offsetOf(a.date) }))
+    .sort((x, y) => (x.off === null ? 99 : x.off) - (y.off === null ? 99 : y.off) || x.i - y.i).slice(0, 5);
+  const freshness = latest.length ? String(latest[0].a.date || "—") : "—";
+
+  /* Commitment distribution donut. */
+  const openTotal = openC.length || 1;
+  const segs = [["var(--kgreen)", onTrack], ["var(--kamber)", dueSoon], ["var(--kred)", overdue.length], ["#314457", noDate]];
+  let acc = 0; const gradParts = [];
+  for (const [color, n] of segs) { if (n) { gradParts.push(color + " " + acc.toFixed(1) + "% " + (acc + 100 * n / openTotal).toFixed(1) + "%"); acc += 100 * n / openTotal; } }
+  const donutBg = gradParts.length ? "conic-gradient(" + gradParts.join(", ") + ")" : "#314457";
+
+  /* Pipeline load by stage. */
+  const STAGE_ORDER = ["New", "Lead", "Contacted", "Qualified", "Proposal"];
+  const stageRows = STAGE_ORDER.map(s => {
+    const so = openOpps.filter(o => o.stage === s);
+    return { stage: s, count: so.length, value: so.reduce((sum, o) => sum + (Number(o.value) || 0), 0) };
+  });
+  const maxStage = Math.max(1, Math.max.apply(null, stageRows.map(r => r.count)));
+
+  /* Attention signals — counted from the book, in the design's order. */
+  const oppName = (o) => o.client || nameFor(o.clientId) || o.service || "Opportunity";
+  const signals = [];
+  if (overdue.length) {
+    const o = overdue[0];
+    signals.push({ cls: "red", icon: "!", title: overdue.length + " commitments are overdue",
+      body: "Oldest: “" + escapeHTML(o.title || "Untitled commitment") + "” for " + escapeHTML(nameFor(o.clientId)) + " — due " + cDate(o) + ", " + overdueAges[0].days + " days ago. Deadlines are never moved silently to make this page look healthier." });
+  }
+  const newOpps = openOpps.filter(o => o.stage === "New");
+  if (newOpps.length) {
+    signals.push({ cls: "", icon: "↗", title: newOpps.length + " opportunities are still at “New”",
+      body: "No first contact recorded yet: " + newOpps.map(o => escapeHTML(oppName(o)) + " (" + moneyK(o.value) + ")").join(", ") + "." });
+  }
+  if (openOpps.length) {
+    const biggest = openOpps.slice().sort((a, b) => (Number(b.value) || 0) - (Number(a.value) || 0))[0];
+    signals.push({ cls: "", icon: "◉", title: "Largest opportunity sits at " + escapeHTML(biggest.stage || "—"),
+      body: escapeHTML(oppName(biggest)) + " — " + moneyK(biggest.value) + ". It is the closest money on the book, and no next step is recorded for it." });
+  }
+
+  const biz = (workspaceInfo && workspaceInfo.business) || "Client workspace";
+  const user = (workspaceInfo && workspaceInfo.userName) || "";
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const builtLabel = MONTHS[+today.slice(5, 7) - 1] + " " + (+today.slice(8, 10)) + ", " + today.slice(0, 4);
+  const ageBars = overdueAges.map(x => '<div class="k-age-row"><span class="k-age-fill" style="width:' + (maxAge ? Math.round(100 * x.days / maxAge) : 0) + '%"></span></div>').join("");
+  const stageHTML = stageRows.map(r =>
+    '<div class="k-bar-row"><span class="k-bar-name">' + r.stage + '</span><span class="k-bar-track"><span class="k-bar-fill" style="width:' + (r.count ? Math.max(4, Math.round(100 * r.count / maxStage)) : 0) + '%"></span></span><span class="k-bar-val">' + r.count + " · " + moneyK(r.value) + "</span></div>").join("");
+  const signalsHTML = signals.length ? signals.map(s =>
+    '<div class="k-issue"><div class="k-icon ' + s.cls + '">' + s.icon + "</div><div><strong>" + s.title + "</strong><p>" + s.body + "</p></div></div>").join("")
+    : '<p style="padding:10px 0">No signals from the book right now.</p>';
+  const signalsRows = latest.map(({ a }) =>
+    "<tr><td>" + escapeHTML(a.title || "Entry") + (nameFor(a.clientId) ? " — " + escapeHTML(nameFor(a.clientId)) : "") + '</td><td><span class="k-status good">Recorded</span></td><td>' + escapeHTML(a.date || "") + "</td></tr>").join("");
+
+  root.innerHTML =
+    '<header><div class="k-brand"><div class="k-mark">P·</div><div><div class="k-eyebrow">Pulse HQ / Business Health</div><h1>' + escapeHTML(biz) + '</h1></div></div>' +
+    '<div class="k-row"><span class="k-pill"><i class="k-dot"></i>DEMO BOOK — SYNTHETIC DATA</span><span class="k-pill">Built from the book · ' + builtLabel + (user ? " · for " + escapeHTML(user) : "") + "</span></div></header>" +
+    '<section class="k-intro"><div><h2>How the business is running</h2><p>Every number on this page is counted from the book itself. The formulas are printed at the bottom — argue with them there.</p></div>' +
+    '<div class="k-range"><button class="active" data-krange="7">7D</button><button data-krange="30">30D</button></div></section>' +
+    '<main class="k-grid">' +
+    '<section class="k-card s4"><div class="k-head"><span class="k-title">OVERALL HEALTH</span>' + pill(overall) + '</div><div class="k-metric">' + gauge(overall, gaugeCls(overall, true)) +
+      '<div><h3>The whole picture, one number</h3><p>The average of the two gauges beside it. A draft definition — the real one is for Ben and Alex to rule on.</p><div class="k-trend warn">' + overdue.length + " commitments overdue right now</div></div></div></section>" +
+    '<section class="k-card s4"><div class="k-head"><span class="k-title">COMMITMENT HEALTH</span>' + pill(cHealth) + '</div><div class="k-metric">' + gauge(cHealth, gaugeCls(cHealth, false)) +
+      '<div><h3>Promises kept vs promises slipping</h3><p>Of the ' + total + " commitments on the book, the share done on time or still open and not overdue — " + healthy + " of " + total + '.</p><div class="k-trend warn">' + overdue.length + " commitments overdue · " + doneOnTime + " completed on time</div></div></div></section>" +
+    '<section class="k-card s4"><div class="k-head"><span class="k-title">PIPELINE HEALTH</span>' + pill(pHealth) + '</div><div class="k-metric">' + gauge(pHealth, gaugeCls(pHealth, false)) +
+      '<div><h3>Opportunities actually moving</h3><p>Of the ' + openOpps.length + " open opportunities, the share that have moved past first contact (Contacted, Qualified or Proposal) — " + moved.length + " of " + openOpps.length + '.</p><div class="k-trend">' + openOpps.length + " open opportunities · " + moneyK(oppValue) + " in play</div></div></div></section>" +
+    '<section class="k-card s3"><div class="k-head"><span class="k-title">ACTIVE RECORDS</span><span class="k-muted">THE BOOK</span></div><div class="k-big">' + clients.length + "</div><p>" + (statusCounts["Client"] || 0) + " clients · " + (statusCounts["Lead"] || 0) + " leads · " + inConv + " in conversation</p></section>" +
+    '<section class="k-card s3"><div class="k-head"><span class="k-title">OPEN OPPORTUNITIES</span><span class="k-muted">PIPELINE</span></div><div class="k-big">' + openOpps.length + "</div><p>" + moneyK(oppValue) + " across active stages</p></section>" +
+    '<section class="k-card s3"><div class="k-head"><span class="k-title">OVERDUE COMMITMENTS</span><span class="k-muted">FOLLOW-THROUGH</span></div><div class="k-big">' + overdue.length + "</div><p>" + (overdue.length ? "Oldest is " + maxAge + " days past due. One bar per overdue promise, sized by days late:" : "Nothing overdue.") + '</p><div class="k-age-bars">' + ageBars + "</div></section>" +
+    '<section class="k-card s3"><div class="k-head"><span class="k-title">BOOK FRESHNESS</span><span class="k-muted">AS RECORDED</span></div><div class="k-big">' + escapeHTML(freshness) + '</div><p>The newest entry on the book carries this date — shown exactly as the book records it.</p></section>' +
+    '<section class="k-card s8"><div class="k-head"><span class="k-title">BUSINESS ACTIVITY</span><span class="k-muted" id="kelvinCaption">LAST 7 DAYS · FROM THE BOOK</span></div><svg class="k-chart" id="kelvinChart" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Activity recorded on the book, and commitments falling due, per day"></svg><div class="k-legend"><span><i class="k-key" style="background:var(--kblue)"></i>Activity recorded</span><span><i class="k-key" style="background:var(--kgreen)"></i>Commitments falling due</span></div><div class="k-foot"><span>Counted from the book\'s own entries and due dates</span><span>Day-grained — the book keeps no hours</span></div></section>' +
+    '<section class="k-card s4"><div class="k-head"><span class="k-title">COMMITMENT DISTRIBUTION</span><span class="k-muted">OPEN ITEMS</span></div><div class="k-split"><div class="k-donut" style="background:' + donutBg + '"><span>' + openC.length + '</span><small>OPEN</small></div><div class="k-legendlist">' +
+      '<div class="k-legendrow"><span><i class="k-key" style="background:var(--kgreen)"></i>On track</span><b>' + onTrack + "</b></div>" +
+      '<div class="k-legendrow"><span><i class="k-key" style="background:var(--kamber)"></i>Due within 7 days</span><b>' + dueSoon + "</b></div>" +
+      '<div class="k-legendrow"><span><i class="k-key" style="background:var(--kred)"></i>Overdue</span><b>' + overdue.length + "</b></div>" +
+      '<div class="k-legendrow"><span><i class="k-key" style="background:#314457"></i>No date set</span><b>' + noDate + "</b></div>" +
+      '</div></div><div class="k-foot"><span>Judged against original due dates</span><span>Dates are never quietly moved</span></div></section>' +
+    '<section class="k-card s5"><div class="k-head"><span class="k-title">PIPELINE LOAD</span><span class="k-muted">BY STAGE</span></div>' + stageHTML + '<div class="k-foot"><span>Open opportunities at each stage</span><span>Count · value</span></div></section>' +
+    '<section class="k-card s7"><div class="k-head"><span class="k-title">ATTENTION REQUIRED</span><span class="k-status watch">' + signals.length + ' signals</span></div><div class="k-issues">' + signalsHTML + "</div></section>" +
+    '<section class="k-card s12"><div class="k-head"><span class="k-title">RECENT BUSINESS SIGNALS</span><span class="k-muted">LATEST ENTRIES ON THE BOOK</span></div><table class="k-table"><thead><tr><th>EVENT</th><th>STATE</th><th>WHEN — AS RECORDED</th></tr></thead><tbody>' + signalsRows + "</tbody></table></section>" +
+    "</main>" +
+    '<div class="k-notice"><b>How these numbers are made — read this before trusting them.</b><ul>' +
+    "<li><b>Commitment health</b> = the share of all commitments on the book that are completed on time or open and not overdue. Overdue is judged against the <b>original</b> due date.</li>" +
+    "<li><b>Pipeline health</b> = the share of open opportunities at Contacted, Qualified or Proposal — stages past first contact.</li>" +
+    "<li><b>Overall</b> = the plain average of those two. Bands: 75 and up “Steady”, 50–74 “Watch”, under 50 “Needs attention”.</li>" +
+    "<li>These formulas are a <b>first draft</b>. They are printed here so they can be argued with — production scoring is Ben's and Alex's to rule on.</li>" +
+    "<li>The book records activity by the day (“2 days ago”), not the hour — so this page shows 7 and 30 day windows and no 24-hour view. A finer chart would be pretending.</li>" +
+    "<li>This page reads the book and writes nothing back.</li></ul></div>" +
+    '<div class="k-foot"><span>Business Health — counted from the book itself</span><span>Pulse HQ</span></div>';
+  root.querySelectorAll("[data-krange]").forEach((b) => {
+    b.addEventListener("click", () => {
+      root.querySelectorAll("[data-krange]").forEach((x) => x.classList.toggle("active", x === b));
+      kelvinDraw(parseInt(b.dataset.krange, 10));
+    });
+  });
+  kelvinDraw(7);
+}
+
 function deskCompletedHTML(pkgs) {
   const done = (pkgs || []).filter(p => !p.auditAmbiguous && !p.ledgerPending &&
     ((p.status === "live" && p.publicationVerifiedAt) || p.status === "recovered_live"));
@@ -3324,14 +3551,7 @@ function deskCompletedHTML(pkgs) {
 function healthHTML() {
   return `
   <div class="workspace-view">
-    <div class="workspace-intro">
-      <div class="eyebrow">PULSE HQ BUSINESS HEALTH</div>
-      <h2>\u2665 Business Health</h2>
-      <p>Are you keeping your promises? Scored against the date first promised \u2014 never a moved date.</p>
-    </div>
-    <section class="panel">
-      <div id="deskHealth"><div class="workspace-empty">Reading your book…</div></div>
-    </section>
+    <div class="kelvin" id="kelvinRoot"><div class="workspace-empty">Reading your book…</div></div>
   </div>`;
 }
 function deskHTML() {
