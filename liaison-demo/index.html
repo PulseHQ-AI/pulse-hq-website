@@ -401,6 +401,24 @@ body.scroll-locked { overflow: hidden; }
 .pkg-details { margin-top: 6px; }
 .pkg-details > summary { cursor: pointer; color: #9db8d9; font-size: 12.5px; padding: 4px 0; }
 .liaison-bubble { line-height: 1.5; }
+/* Liaison declutter + Paul chat refinement (2026-10-29) */
+.liaison-other-ways { border: 1px solid #22314a; border-radius: 14px; background: #0b1524; padding: 2px 16px 8px; margin: 0 0 18px; }
+.liaison-other-ways > summary { cursor: pointer; color: #e8eef7; font-size: 15px; font-weight: 600; padding: 13px 2px; min-height: 44px; }
+.liaison-other-ways .liaison-panel { margin-bottom: 8px; }
+.liaison-other-note { margin: 0; color: #c7d5ea; font-size: 13.5px; line-height: 1.6; }
+.liaison-other-note strong { color: #e8eef7; }
+.liaison-panel.chat-panel { position: relative; border: 1px solid rgba(64,200,255,.38); border-radius: 18px; background: linear-gradient(165deg, #0e1e36 0%, #0a1424 55%, #0a1020 100%); box-shadow: 0 0 0 1px rgba(64,200,255,.07), 0 14px 38px rgba(0,150,255,.13), inset 0 1px 0 rgba(170,230,255,.14); overflow: hidden; }
+.liaison-panel.chat-panel::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, rgba(0,0,0,0), #22c8ff 30%, #8b5cf6 70%, rgba(0,0,0,0)); opacity: .85; }
+.chat-live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2ee6a8; box-shadow: 0 0 8px #2ee6a8; margin-right: 7px; vertical-align: 1px; animation: chatPulse 2.2s ease-in-out infinite; }
+@keyframes chatPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .chat-live-dot { animation: none; } }
+.chat-panel #chatThread { background: radial-gradient(130% 95% at 50% 0%, rgba(0,140,255,.08), rgba(0,0,0,0) 62%); border-radius: 12px; padding: 12px 8px; }
+.chat-bubble { max-width: 84%; padding: 11px 14px; font-size: 14.5px; white-space: pre-wrap; }
+.chat-bubble-paul { align-self: flex-start; background: linear-gradient(155deg, #13263f, #0b1626); border: 1px solid rgba(110,185,255,.25); border-radius: 16px 16px 16px 5px; color: #e3effc; box-shadow: inset 2px 0 0 rgba(34,200,255,.55), 0 4px 14px rgba(0,0,0,.25); }
+.chat-bubble-client { align-self: flex-end; background: linear-gradient(135deg, #0aa2e8, #0b62c4); border: 1px solid rgba(140,220,255,.45); border-radius: 16px 16px 5px 16px; color: #f4faff; box-shadow: 0 4px 16px rgba(0,120,255,.28); }
+.chat-panel .liaison-composer { border-top: 1px solid rgba(110,185,255,.18); }
+.chat-panel .liaison-composer textarea { background: rgba(8,17,31,.85); border: 1px solid rgba(110,185,255,.30); border-radius: 14px; }
+.chat-panel .liaison-composer textarea:focus { outline: none; border-color: rgba(34,200,255,.75); box-shadow: 0 0 0 3px rgba(34,200,255,.18); }
 .top-actions .theme-toggle { width: auto; margin: 0; padding: 7px 11px; font-size: 12.5px; white-space: nowrap; }
 @media (max-width: 780px) {
   .top-actions { gap: 9px; }
@@ -3090,30 +3108,14 @@ function liaisonHTML() {
     <div class="workspace-intro">
       <div class="eyebrow">PULSE HQ LIAISON</div>
       <h2>🕶 The Liaison</h2>
-      <p>Talk to your guy — a quick note, or the spreadsheet you've already
-      got — and watch it become records. Nothing counts as saved until it
-      is in your database at Pulse HQ; this page only ever shows what's
-      actually saved there.</p>
+      <p>Talk to your guy, in your own words — nothing counts as saved until it's in your database at Pulse HQ.</p>
     </div>
-    <div class="liaison-honest">
-      <strong>How tonight works, honestly:</strong> a human concierge —
-      Remmy at Pulse HQ — reads every note by hand, and a small demo
-      doorman carries the packages. A received message isn't a saved
-      record yet: the Packages below only move when the real database
-      and this page agree.
-      <details class="liaison-more">
-        <summary>The full picture</summary>
-        <div class="liaison-more-body">
-          <p>You're talking to the Liaison, and Remmy interprets every note by hand. The doorman is a demonstration bridge, not the production system, and it only ever touches this demo book. Talk naturally — you don't need forms or field names. If something important is unclear, she'll ask right here.</p>
-        </div>
-      </details>
-    </div>
-    <section class="panel liaison-panel">
+    <section class="panel liaison-panel chat-panel">
       <div class="liaison-panel-head">
-        <span class="liaison-panel-label">LIVE CHAT — PAUL, YOUR LIAISON</span>
+        <span class="liaison-panel-label"><span class="chat-live-dot" aria-hidden="true"></span>LIVE CHAT — PAUL, YOUR LIAISON</span>
         <span class="liaison-panel-label" style="letter-spacing:0;text-transform:none">test mode</span>
       </div>
-      <p class="liaison-send-note" style="margin:0 0 10px">Talk to Paul live, in your own words. In this test, a finished chat is passed to Pulse HQ's test inbox <strong>exactly as you wrote it</strong> — Paul can't book, change, or confirm anything himself; the office reviews everything. When you're done, tap <strong>Send to the office</strong>: Paul confirms only once it's actually recorded.</p>
+      <p class="liaison-send-note" style="margin:0 0 10px">Talk to Paul in your own words — a finished chat goes to the office <strong>exactly as you wrote it</strong>. When you're done, tap <strong>Send to the office</strong>: Paul confirms only once it's actually recorded.</p>
       <div id="chatThread"></div>
       <div class="liaison-composer">
         <textarea id="chatInput" rows="2" placeholder="Talk to Paul — like you'd talk to a person"></textarea>
@@ -3124,6 +3126,10 @@ function liaisonHTML() {
         </div>
       </div>
     </section>
+    <details class="liaison-more liaison-other-ways">
+      <summary>Other ways to reach the office</summary>
+      <div class="liaison-more-body">
+      <p class="liaison-other-note"><strong>How the notes side works, honestly:</strong> a human concierge — Remmy at Pulse HQ — reads every note by hand, and a small demo doorman carries the packages. A received message isn't a saved record yet: the Packages below only move when the real database and this page agree.</p>
     <section class="panel liaison-panel">
       <div class="liaison-panel-head">
         <span class="liaison-panel-label">CONVERSATION</span>
@@ -3167,6 +3173,14 @@ function liaisonHTML() {
         <p class="liaison-send-note">On this public demo page, Send travels to Pulse HQ through the demo doorman; if it can't be reached, Send packages your message as a file instead — nothing is ever lost silently.</p>
       </div>
     </section>
+      <details class="liaison-more">
+        <summary>The full picture</summary>
+        <div class="liaison-more-body">
+          <p>You're talking to the Liaison, and Remmy interprets every note by hand. The doorman is a demonstration bridge, not the production system, and it only ever touches this demo book. Talk naturally — you don't need forms or field names. If something important is unclear, she'll ask right here.</p>
+        </div>
+      </details>
+      </div>
+    </details>
     <section class="panel liaison-panel">
       <h3 class="liaison-packages-title">Packages</h3>
       <div id="liaisonPackages"><div class="workspace-empty">No packages yet this session.</div></div>
@@ -3252,8 +3266,8 @@ function renderChatThread() {
     saveChatTurns(turns);
   }
   box.innerHTML = turns.map(t => t.from === "client"
-    ? `<div class="liaison-bubble" style="align-self:flex-end;max-width:82%;background:#12314f;border:1px solid #23507c;border-radius:14px 14px 4px 14px;padding:10px 13px;color:#eaf4ff;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
-    : `<div class="liaison-bubble" style="align-self:flex-start;max-width:82%;background:#101c2e;border:1px solid #22314a;border-radius:14px 14px 14px 4px;padding:10px 13px;color:#dbe7f5;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+    ? `<div class="liaison-bubble chat-bubble chat-bubble-client">${escapeHTML(t.text)}</div>`
+    : `<div class="liaison-bubble chat-bubble chat-bubble-paul">${escapeHTML(t.text)}</div>`
   ).join("");
   box.scrollTop = box.scrollHeight;
 }
