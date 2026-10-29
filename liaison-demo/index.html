@@ -1146,6 +1146,10 @@ html[data-theme="light"] .brand-mark {
   @media (max-width: 780px) {
     #liaisonThread { height: 54dvh; }
   }
+  #chatThread { display: flex; flex-direction: column; gap: 10px; height: min(430px, 60dvh); overflow-y: auto; overscroll-behavior: auto; scrollbar-gutter: stable; padding: 4px 2px 10px; }
+  @media (max-width: 780px) {
+    #chatThread { height: 54dvh; }
+  }
 @media (max-width: 480px) {
   #pageTitle { font-size: 25px; }
   .main { padding-left: 11px; padding-right: 11px; }
@@ -3106,6 +3110,22 @@ function liaisonHTML() {
     </div>
     <section class="panel liaison-panel">
       <div class="liaison-panel-head">
+        <span class="liaison-panel-label">LIVE CHAT — PAUL, YOUR LIAISON</span>
+        <span class="liaison-panel-label" style="letter-spacing:0;text-transform:none">test mode</span>
+      </div>
+      <p class="liaison-send-note" style="margin:0 0 10px">Talk to Paul live, in your own words. In this test, a finished chat is passed to Pulse HQ's test inbox <strong>exactly as you wrote it</strong> — Paul can't book, change, or confirm anything himself; the office reviews everything. When you're done, tap <strong>Send to the office</strong>: Paul confirms only once it's actually recorded.</p>
+      <div id="chatThread"></div>
+      <div class="liaison-composer">
+        <textarea id="chatInput" rows="2" placeholder="Talk to Paul — like you'd talk to a person"></textarea>
+        <div class="liaison-composer-row">
+          <button class="primary-button" id="chatSend">Send</button>
+          <button class="liaison-quiet-button" id="chatFinish" type="button">✓ Send to the office</button>
+          <span id="chatStatus" style="color:var(--muted, #8fa1b8); font-size:13px"></span>
+        </div>
+      </div>
+    </section>
+    <section class="panel liaison-panel">
+      <div class="liaison-panel-head">
         <span class="liaison-panel-label">CONVERSATION</span>
         <button id="liaisonReset" class="liaison-quiet-button" type="button">↺ New conversation</button>
       </div>
@@ -3189,8 +3209,122 @@ function renderThread() {
   box.scrollTop = box.scrollHeight;
 }
 
+/* ---- Live chat with Paul (relay Worker; test phase) ----
+   The chat talks to the liaison-chat relay, which holds the office's
+   key server-side; this page holds no credential for it beyond the
+   workspace key the client already signed in with. A finished chat's
+   package lands in a sealed test inbox at Pulse HQ — never in this
+   workspace's book — and the relay confirms "recorded" only after the
+   package is actually stored. */
+const CHAT_RELAY_URL = "https://liaison-chat.getpulsehq-1c7.workers.dev";
+function chatTurnsKey() { return `liaison-livechat-turns:${(currentKey || "").toUpperCase()}`; }
+function chatSessionKey() { return `liaison-livechat-session:${(currentKey || "").toUpperCase()}`; }
+function loadChatTurns() {
+  try { return JSON.parse(localStorage.getItem(chatTurnsKey()) || "[]"); } catch (e) { return []; }
+}
+function saveChatTurns(turns) {
+  try { localStorage.setItem(chatTurnsKey(), JSON.stringify(turns.slice(-200))); } catch (e) {}
+}
+function chatSession() {
+  let s = null;
+  try { s = localStorage.getItem(chatSessionKey()); } catch (e) {}
+  if (!s) {
+    s = "sess-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+    try { localStorage.setItem(chatSessionKey(), s); } catch (e) {}
+  }
+  return s;
+}
+function clearChatSession() {
+  try { localStorage.removeItem(chatSessionKey()); } catch (e) {}
+}
+function appendChatTurn(from, text) {
+  const turns = loadChatTurns();
+  turns.push({ from, text, at: new Date().toISOString() });
+  saveChatTurns(turns);
+  renderChatThread();
+}
+function renderChatThread() {
+  const box = $("chatThread");
+  if (!box) return;
+  let turns = loadChatTurns();
+  if (!turns.length) {
+    turns = [{ from: "liaison", text: "🕶 Hey — I'm Paul, your Liaison, live. Tell me what you need done and I'll pass it to the office exactly as you say it. I can't book or change anything myself — the office reviews everything.", at: new Date().toISOString() }];
+    saveChatTurns(turns);
+  }
+  box.innerHTML = turns.map(t => t.from === "client"
+    ? `<div class="liaison-bubble" style="align-self:flex-end;max-width:82%;background:#12314f;border:1px solid #23507c;border-radius:14px 14px 4px 14px;padding:10px 13px;color:#eaf4ff;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+    : `<div class="liaison-bubble" style="align-self:flex-start;max-width:82%;background:#101c2e;border:1px solid #22314a;border-radius:14px 14px 14px 4px;padding:10px 13px;color:#dbe7f5;font-size:14.5px;white-space:pre-wrap">${escapeHTML(t.text)}</div>`
+  ).join("");
+  box.scrollTop = box.scrollHeight;
+}
+function setChatStatus(text) {
+  const el = $("chatStatus");
+  if (el) el.textContent = text || "";
+}
+async function chatRelay(path, payload) {
+  const res = await fetch(CHAT_RELAY_URL + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Workspace-Key": (currentKey || "").toUpperCase() },
+    body: JSON.stringify(payload)
+  });
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(out.detail || out.error || ("error " + res.status));
+  return out;
+}
+async function sendLiveChat() {
+  const input = $("chatInput");
+  const text = input ? input.value.trim() : "";
+  if (!text) { showToast("Say something to Paul first."); return; }
+  appendChatTurn("client", text);
+  if (input) input.value = "";
+  setChatStatus("Paul is listening…");
+  try {
+    const out = await chatRelay("/chat", { session: chatSession(), message: text });
+    if (out.reply) appendChatTurn("liaison", out.reply);
+    setChatStatus(out.failed ? "Paul's connection is down — nothing was recorded." : "");
+  } catch (e) {
+    appendChatTurn("liaison", "I can't reach Paul just now — nothing you said was recorded. Please try again in a little while.");
+    setChatStatus("");
+  }
+}
+async function finishLiveChat() {
+  setChatStatus("Passing this to the office…");
+  try {
+    const out = await chatRelay("/finish", { session: chatSession() });
+    if (out.reply) appendChatTurn("liaison", out.reply);
+    if (out.recorded) {
+      setChatStatus("Recorded for the office ✓ — start a new chat any time.");
+      clearChatSession();
+    } else {
+      setChatStatus("Not recorded — please try again.");
+    }
+  } catch (e) {
+    appendChatTurn("liaison", "I couldn't pass that to the office just now — nothing was recorded. Please try again in a little while.");
+    setChatStatus("");
+  }
+}
+function wireLiveChat() {
+  renderChatThread();
+  const send = $("chatSend");
+  if (send) send.addEventListener("click", sendLiveChat);
+  const fin = $("chatFinish");
+  if (fin) fin.addEventListener("click", finishLiveChat);
+  const input = $("chatInput");
+  if (input) input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendLiveChat(); }
+  });
+  const reset = $("liaisonReset");
+  if (reset) reset.addEventListener("click", () => {
+    try { localStorage.removeItem(chatTurnsKey()); } catch (e) {}
+    clearChatSession();
+    setChatStatus("");
+    renderChatThread();
+  });
+}
+
 function wireLiaison() {
   renderThread();
+  wireLiveChat();
   const file = $("liaisonFile");
   if (file) file.addEventListener("change", () => {
     $("liaisonFileName").textContent = file.files.length ? file.files[0].name : "";
