@@ -426,7 +426,7 @@ body.scroll-locked { overflow: hidden; }
    under .kelvin so the design's class names never collide with the
    portal's own. The cards keep the design's dark monitor finish in both
    portal themes, like the hardware monitor it is modelled on. */
-.kelvin { --kbg:#070d16; --kpanel:rgba(17,28,40,.88); --kline:#24405a; --ktext:#eaf4ff; --kmuted:#8fb0c9; --kblue:#51c9e8; --kcyan:#39d5e8; --kgreen:#49d5a0; --kamber:#f3c36d; --kred:#ff777e; color:var(--ktext); font-size:14px; }
+.kelvin { --kbg:#070d16; --kpanel:rgba(17,28,40,.88); --kline:#24405a; --ktext:#eaf4ff; --kmuted:#8fb0c9; --kblue:#51c9e8; --kcyan:#39d5e8; --kgreen:#49d5a0; --kamber:#f3c36d; --kred:#ff777e; color:var(--ktext); font-size:14px; max-width:1400px; margin:0 auto; padding:24px; background:radial-gradient(ellipse 60% 40% at 12% 0%,rgba(57,213,232,.14),transparent 60%),radial-gradient(ellipse 50% 35% at 95% 100%,rgba(154,123,255,.10),transparent 60%),var(--kbg); }
 .kelvin * { box-sizing:border-box; }
 .kelvin header, .kelvin .k-intro, .kelvin .k-head, .kelvin .k-row, .kelvin .k-foot { display:flex; align-items:center; justify-content:space-between; gap:14px; }
 .kelvin header { padding-bottom:18px; border-bottom:1px solid var(--kline); }
@@ -503,7 +503,7 @@ body.scroll-locked { overflow: hidden; }
 .kelvin .k-notice b { color:var(--ktext); }
 .kelvin .k-notice ul { margin:8px 0 0; padding-left:18px; }
 @media (max-width: 1000px) { .kelvin .s3, .kelvin .s4 { grid-column:span 6; } .kelvin .s5, .kelvin .s7, .kelvin .s8 { grid-column:span 12; } }
-@media (max-width: 620px) { .kelvin header, .kelvin .k-intro { align-items:flex-start; flex-direction:column; } .kelvin .s3, .kelvin .s4, .kelvin .s5, .kelvin .s7, .kelvin .s8, .kelvin .s12 { grid-column:span 12; } .kelvin .k-gauge { width:84px; height:84px; } .kelvin .k-bar-row { grid-template-columns:76px 1fr 84px; } }
+@media (max-width: 620px) { .kelvin { padding:14px; } .kelvin header, .kelvin .k-intro { align-items:flex-start; flex-direction:column; } .kelvin .s3, .kelvin .s4, .kelvin .s5, .kelvin .s7, .kelvin .s8, .kelvin .s12 { grid-column:span 12; } .kelvin .k-gauge { width:84px; height:84px; } .kelvin .k-bar-row { grid-template-columns:76px 1fr 84px; } }
 .desk-score { border: 1px solid #22314a; border-radius: 12px; padding: 13px 15px; background: #0d1626; }
 .desk-score-head { display: flex; justify-content: space-between; align-items: baseline; color: #c7d5ea; font-size: 13.5px; letter-spacing: .04em; }
 .desk-score-head strong { font-size: 26px; color: #eaf4ff; }
@@ -2353,6 +2353,7 @@ function setView(view) {
   document.querySelector(".content-grid").hidden = !overview && !clientsView;
   document.querySelector(".bottom-grid").hidden = !overview;
   $("alternateView").hidden = overview || clientsView;
+  document.querySelector(".page-heading").style.display = view === "health" ? "none" : "";
   $("newClient").hidden = !overview && !clientsView;
   $("viewActions").innerHTML =
     activeView === "commitments" ? `<button class="subtle-button" id="headExportCommitments">↓ Export CSV</button><button class="primary-button" id="headAddCommitment">＋ Add commitment</button>` :
