@@ -1088,6 +1088,7 @@ html[data-theme="light"] .brand-mark {
   }
   .nav-item.active { box-shadow: inset 0 2px var(--blue); }
   .nav-item[data-view="overview"] { order: 1; }
+  .nav-item[data-view="health"] { order: 2; }
   .nav-item[data-view="commitments"] { order: 2; }
   .nav-item[data-view="pipeline"] { order: 3; }
   .nav-item[data-view="clients"] { order: 4; }
@@ -1221,6 +1222,7 @@ html[data-theme="light"] .brand-mark {
     <div class="workspace-label">WORKSPACE</div>
     <nav class="nav">
       <button class="nav-item active" data-view="overview">◈ <span>Overview</span></button>
+      <button class="nav-item" data-view="health">♥ <span>Business Health</span></button>
       <button class="nav-item" data-view="clients">▤ <span>Clients & Prospects</span></button>
       <button class="nav-item" data-view="pipeline">⌁ <span>Opportunity Pipeline</span></button>
       <button class="nav-item" data-view="commitments">◷ <span>Commitments</span></button>
@@ -1963,9 +1965,14 @@ function renderAlternateView(view) {
     return;
   }
 
+  if (view === "health") {
+    target.innerHTML = healthHTML();
+    renderDeskHealth();
+    return;
+  }
+
   if (view === "desk") {
     target.innerHTML = deskHTML();
-    renderDeskHealth();
     pollLiaisonStatus();
     return;
   }
@@ -2199,6 +2206,10 @@ const VIEWS = {
       "Overview", "Your business, ", "in motion.",
       "Every relationship has a status. Every opportunity has a next step."
     ],
+    health: [
+      "Business Health", "Keeping your ", "promises.",
+      "Your health scores, what's overdue, and what's coming due \u2014 judged against the date first promised, never a quietly moved one."
+    ],
     clients: [
       "Clients & Prospects", "Know every ", "relationship.",
       "One record for every contact, client, and prospect."
@@ -2225,7 +2236,7 @@ const VIEWS = {
     ],
     desk: [
       "Desk", "Finished work, ", "proven done.",
-      "Your business health, the actions verified complete, and the packages behind them."
+      "The actions verified complete, and the packages behind them."
     ]
 };
 
@@ -2271,12 +2282,14 @@ function setView(view) {
   }
 
   const searchEl = $("searchInput");
-  if (view === "liaison" || view === "desk") {
+  if (view === "liaison" || view === "desk" || view === "health") {
     // Item 15: search does not reach the conversation view. Say so on
     // the box itself instead of letting it sit there pretending.
     searchEl.disabled = true;
     searchEl.placeholder = view === "desk"
       ? "Search doesn't reach this view \u2014 this is your desk."
+      : view === "health"
+      ? "Search doesn't reach this view \u2014 this is your business health."
       : "Search doesn't reach this view \u2014 this is your conversation.";
   } else {
     searchEl.disabled = false;
@@ -3308,6 +3321,19 @@ function deskCompletedHTML(pkgs) {
     html += '<p class="desk-note">Showing the latest ' + shown.length + ' of ' + done.length + ' completed actions — the full record sits in Packages below.</p>';
   return html;
 }
+function healthHTML() {
+  return `
+  <div class="workspace-view">
+    <div class="workspace-intro">
+      <div class="eyebrow">PULSE HQ BUSINESS HEALTH</div>
+      <h2>\u2665 Business Health</h2>
+      <p>Are you keeping your promises? Scored against the date first promised \u2014 never a moved date.</p>
+    </div>
+    <section class="panel">
+      <div id="deskHealth"><div class="workspace-empty">Reading your book…</div></div>
+    </section>
+  </div>`;
+}
 function deskHTML() {
   return `
   <div class="workspace-view">
@@ -3316,10 +3342,6 @@ function deskHTML() {
       <h2>🗂 The Desk</h2>
       <p>Finished work lands here — proven done, never just promised.</p>
     </div>
-    <section class="panel">
-      <h3 style="margin:0 0 12px">Business health</h3>
-      <div id="deskHealth"><div class="workspace-empty">Reading your book…</div></div>
-    </section>
     <section class="panel">
       <h3 style="margin:0 0 12px">Completed actions</h3>
       <div id="deskCompleted"><div class="workspace-empty">Nothing verified complete yet — an action appears here only once it is saved to your database and verified live on this page.</div></div>
