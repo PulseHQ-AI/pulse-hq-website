@@ -1921,23 +1921,96 @@ function selectClient(id, opts = {}) {
 let requestsCache = null;
 let requestsCacheKey = null;
 let requestsLoadError = null;
+let requestsStale = false;
+let requestsLoading = false;
+let requestsSyncStale = false;
+let requestsGeneratedAt = null;
+
+/* r1-L1 step 5 (Alex's Option A ruling, 2026-10-29): the two scoped
+   reads — /api/requests and /api/liaison/status — resolve through the
+   relative-then-Doorman pattern the workspace fetch already uses:
+   same-origin first (local behaviour intact), then the verified
+   production Worker base. A 401/403 is the key's verdict and is NOT
+   retried at the other door; any other failure falls through, and if
+   every door fails an HTTP answer stands over a transport failure.
+   No other fallback
+   exists — never a static export, a demo server, or another
+   workspace's data. Synced payloads carry generatedAt (when the
+   authoritative source generated them) — the freshness threshold is
+   explicit: 900s = 3x the payload sync's 300s reconciliation
+   interval (doorman/payload_sync.py --interval default), so one
+   missed reconcile never marks fresh data stale, and anything older
+   is honestly marked as possibly out of date. A payload with no
+   generatedAt was produced on the spot by the answering server and
+   is not stale-marked; an unparseable stamp cannot prove freshness
+   and IS stale-marked. */
+const SYNC_FRESHNESS_THRESHOLD_MS = 900000;
+function syncIsStale(generatedAt) {
+  if (generatedAt == null) return false;
+  const t = Date.parse(generatedAt);
+  if (Number.isNaN(t)) return true;
+  return (Date.now() - t) > SYNC_FRESHNESS_THRESHOLD_MS;
+}
+async function fetchScopedEndpoint(path, key) {
+  const headers = { "Authorization": "Bearer " + String(key).toUpperCase(), "X-Workspace-Key": String(key).toUpperCase() };
+  const base = (typeof DOORMAN_URL !== "undefined" && DOORMAN_URL) ? DOORMAN_URL.replace(/\/api\/packages$/, "") : "";
+  const urls = base ? [path, base + path] : [path];
+  let lastRes = null, lastErr = null;
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { cache: "no-store", headers });
+      if (res.status === 401 || res.status === 403) return res; // the key's verdict — never retried elsewhere
+      if (res.ok) return res;
+      lastRes = res;
+    } catch (e) { lastErr = e; }
+  }
+  // An HTTP answer from any door stands over a later door's transport
+  // failure (an unreached door gives no answer at all); only when no
+  // door answered does the transport failure surface.
+  if (lastRes) return lastRes;
+  throw lastErr || new Error("unreachable");
+}
 
 async function loadRequests() {
-  requestsCache = null;
+  // Item 14 (Alex ruling 2026-10-29): preserve a prior successful list
+  // for THIS workspace only, so a failed refresh can show it clearly
+  // marked as possibly out of date instead of an empty list. A
+  // different workspace's list is never carried over.
+  const sameKey = requestsCacheKey === currentKey;
+  if (!sameKey) { requestsCache = null; requestsStale = false; requestsSyncStale = false; }
   requestsLoadError = null;
+  requestsLoading = true;
   requestsCacheKey = currentKey;
-  const stateEl = $("reqState");
-  if (stateEl) stateEl.textContent = "Loading requests\u2026";
+  renderRequests();
+  // Package 4 f3 (Alex's ruling, 2026-10-29): requests come ONLY from
+  // the authenticated, workspace-scoped /api/requests endpoint — the
+  // workspace is derived server-side from this key. The shared static
+  // export is never fetched, and there is NO fallback to it on any
+  // failure. A response for a different scope, or one that arrives
+  // after the workspace switched, is discarded, never folded in.
+  const keyAtStart = currentKey;
   try {
-    const r = await fetch("data/requests-export.json", { cache: "no-store" });
-    if (!r.ok) throw { kind: "http", detail: "the requests file answered with error " + r.status };
+    if (!keyAtStart) throw { kind: "auth", detail: "you are not signed in" };
+    const r = await fetchScopedEndpoint("/api/requests", keyAtStart);
+    if (currentKey !== keyAtStart) { requestsLoading = false; return; } // switched mid-flight: discard
+    if (!r.ok) throw { kind: "http", detail: "the requests service answered with error " + r.status };
     let d = null;
     try { d = await r.json(); } catch (e) { /* shape failure, handled below */ }
-    if (!d || !Array.isArray(d.requests)) throw { kind: "shape", detail: "the requests file came back in a shape we can't read" };
+    if (!d || !Array.isArray(d.requests) || d.workspace !== String(keyAtStart).toLowerCase()) throw { kind: "shape", detail: "the requests service came back in a shape we can't read" };
+    if (currentKey !== keyAtStart) { requestsLoading = false; return; } // switched mid-flight: discard
     requestsCache = d.requests;
+    requestsStale = false;
+    requestsSyncStale = syncIsStale(d.generatedAt);
+    requestsGeneratedAt = d.generatedAt || null;
   } catch (e) {
-    requestsLoadError = e && e.kind ? e : { kind: "network", detail: "the requests file could not be reached" };
+    if (currentKey !== keyAtStart) { requestsLoading = false; return; } // switched mid-flight: discard
+    requestsLoadError = e && e.kind ? e : { kind: "network", detail: "the requests service could not be reached" };
+    // Only a prior non-empty list from this same workspace may be
+    // preserved, and only as stale — never as freshly loaded.
+    requestsStale = !!(sameKey && requestsCache && requestsCache.length);
+    if (!requestsStale) requestsCache = null;
   }
+  requestsLoading = false;
   renderRequests();
 }
 
@@ -1945,10 +2018,13 @@ function renderRequests() {
   const stateEl = $("reqState");
   const cardsEl = $("reqCards");
   if (!stateEl || !cardsEl) return; // navigated away mid-load — nothing to paint
-  if (requestsLoadError) {
-    stateEl.innerHTML = `Requests could not be loaded \u2014 ${escapeHTML(requestsLoadError.detail)}. Your records are fine; the list just didn't arrive. <button class="subtle-button" id="reqRetry" type="button">Try again</button>`;
+  const hasPrior = !!(requestsCache && requestsCache.length);
+  const staleFailure = !!(requestsLoadError && requestsStale && hasPrior);
+  if (requestsLoadError && !staleFailure) {
+    stateEl.innerHTML = `Couldn't load requests. ${escapeHTML(requestsLoadError.detail)}. Your records are fine; the list just didn't arrive. <button class="subtle-button" id="reqRetry" type="button">Try again</button>`;
     cardsEl.innerHTML = "";
-    $("reqRetry").addEventListener("click", () => { requestsLoadError = null; loadRequests(); });
+    const retryEl = $("reqRetry");
+    if (retryEl) retryEl.addEventListener("click", () => { loadRequests(); });
     return;
   }
   if (!requestsCache) { stateEl.textContent = "Loading requests\u2026"; return; }
@@ -1956,9 +2032,24 @@ function renderRequests() {
   const rows = q
     ? requestsCache.filter(x => [x.name, x.request, x.type, x.reference, x.stage].map(v => String(v ?? "")).join(" ").toLowerCase().includes(q))
     : requestsCache;
-  stateEl.textContent = !requestsCache.length
-    ? "No customer requests yet. When someone sends a request through your door, it appears here."
-    : (q && !rows.length) ? `No requests match "${q}".` : "";
+  if (staleFailure) {
+    stateEl.innerHTML = `Couldn't load requests. ${escapeHTML(requestsLoadError.detail)}. The list below may be out of date \u2014 it hasn't been refreshed. <button class="subtle-button" id="reqRetry" type="button">Try again</button>`;
+    const retryEl2 = $("reqRetry");
+    if (retryEl2) retryEl2.addEventListener("click", () => { loadRequests(); });
+  } else if (requestsLoading) {
+    stateEl.textContent = "Loading requests\u2026";
+  } else if (q && !rows.length && requestsCache.length) {
+    stateEl.textContent = `No requests match "${q}".`;
+  } else if (requestsSyncStale && requestsCache.length) {
+    const when = requestsGeneratedAt && !Number.isNaN(Date.parse(requestsGeneratedAt))
+      ? new Date(requestsGeneratedAt).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+      : "an unknown time";
+    stateEl.textContent = `The list below may be out of date \u2014 it was last synced at ${when} and hasn't been refreshed since.`;
+  } else {
+    stateEl.textContent = !requestsCache.length
+      ? "No customer requests yet. When someone sends a request through your door, it appears here."
+      : "";
+  }
   const stageWord = st => st === "RECEIVED" ? "Recorded" : (st || "Recorded");
   const receiptWord = r => r === "issued" ? "Sent to the customer" : r === "composed" ? "Written and on its way" : r === "held" ? "Held \u2014 nothing has been sent" : (r || "\u2014");
   const trustWord = t => t === "OK" ? "Passed the office's checks" : (t || "\u2014");
@@ -3866,16 +3957,50 @@ async function sendChatTurn() {
 }
 
 async function pollLiaisonStatus() {
+  // Item 10 fix (Alex's ruling, 2026-10-29): status/replies come ONLY
+  // from the authenticated, workspace-scoped endpoint — the workspace
+  // is derived server-side from this key. The shared status file is
+  // never fetched. No key, a failed auth, or any fetch failure means
+  // NO status is shown (fail closed): scoped panels are cleared and
+  // nothing from another workspace — or a previous workspace on this
+  // page — is folded, cached, or left rendered.
+  const keyAtStart = currentKey;
+  if (!keyAtStart) return;
+  if (window.__liaisonStatusKey !== keyAtStart) {
+    window.__liaisonStatusKey = keyAtStart;
+    window.__liaisonReloaded = {};
+    window.__openClarify = null;
+  }
   try {
-    const res = await fetch("data/liaison-status.json", { cache: "no-store" });
-    if (!res.ok) return;
+    const res = await fetchScopedEndpoint("/api/liaison/status", keyAtStart);
+    if (currentKey !== keyAtStart) return; // workspace switched mid-flight: discard
+    if (!res.ok) {
+      window.__openClarify = null;
+      const box0 = $("liaisonPackages");
+      if (box0) box0.innerHTML = `<div class="workspace-empty">Package status isn't available right now.</div>`;
+      const cbox0 = $("deskCompleted");
+      if (cbox0) cbox0.innerHTML = deskCompletedHTML([]);
+      const tbox0 = $("liaisonTurnaround");
+      if (tbox0) tbox0.innerHTML = liaisonTurnaroundHTML({});
+      return;
+    }
     const data = await res.json();
+    if (currentKey !== keyAtStart) return; // workspace switched mid-flight: discard
+    if (!data || data.workspace !== String(keyAtStart).toLowerCase()) return; // scope mismatch: discard, never fold
     const pkgs = data.packages || [];
     const tbox = $("liaisonTurnaround");
     if (tbox) tbox.innerHTML = liaisonTurnaroundHTML(data);
     const box = $("liaisonPackages");
     if (box) {
       box.innerHTML = pkgs.length ? pkgs.map(p => liaisonPackageHTML(p)).join("") : `<div class="workspace-empty">No packages yet this session.</div>`;
+      // A3 honest stale marking: a synced payload older than the
+      // freshness threshold is shown, but never passed off as current.
+      if (syncIsStale(data.generatedAt)) {
+        const when = data.generatedAt && !Number.isNaN(Date.parse(data.generatedAt))
+          ? new Date(data.generatedAt).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+          : "an unknown time";
+        box.innerHTML += `<div class="workspace-empty">Package status may be out of date \u2014 it was last synced at ${when} and hasn't been refreshed since.</div>`;
+      }
     }
     const cbox = $("deskCompleted");
     if (cbox) cbox.innerHTML = deskCompletedHTML(pkgs);
@@ -3901,7 +4026,20 @@ async function pollLiaisonStatus() {
         showRefreshPrompt();
       }
     }
-  } catch (e) { /* status file not there yet */ }
+  } catch (e) {
+    // Network rejection / any fetch failure: fail closed exactly like
+    // the non-OK branch above — clear the same scoped panels to the
+    // same unavailable states; no stale status left looking current,
+    // no unscoped fallback.
+    if (currentKey !== keyAtStart) return; // workspace switched mid-flight: discard
+    window.__openClarify = null;
+    const box0 = $("liaisonPackages");
+    if (box0) box0.innerHTML = `<div class="workspace-empty">Package status isn't available right now.</div>`;
+    const cbox0 = $("deskCompleted");
+    if (cbox0) cbox0.innerHTML = deskCompletedHTML([]);
+    const tbox0 = $("liaisonTurnaround");
+    if (tbox0) tbox0.innerHTML = liaisonTurnaroundHTML({});
+  }
 }
 setInterval(pollLiaisonStatus, 3000);
 
