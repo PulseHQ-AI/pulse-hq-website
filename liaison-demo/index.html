@@ -114,6 +114,40 @@ textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 .nav-item.active:first-letter { color: var(--cyan); }
 
 .sidebar-bottom { margin-top: auto; }
+
+/* Glass Desk board (portal completion step 2, 2026-10-30): the approved
+   desk-glass.html prototype (bfad53e1…) wired into the real Desk — ONE
+   glass panel, segmented tabs Waiting / In flight / Done with count
+   badges, records shown only under their tab. Material adapted to the
+   portal palette: translucent glass, hairline light border, gradient
+   pill for the active tab (amber for Waiting, green→cyan for Done). */
+.desk-board {
+  background: linear-gradient(160deg, rgba(160,210,255,.075), rgba(140,120,255,.035) 55%, rgba(255,255,255,.015));
+  border: 1px solid rgba(150,200,255,.18);
+  border-radius: 18px;
+  box-shadow: 0 22px 44px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.10), 0 0 34px rgba(64,140,255,.07);
+  padding: 12px;
+}
+.desk-tabbar {
+  display: flex; gap: 3px; padding: 4px; border-radius: 999px;
+  background: rgba(6,10,24,.55); border: 1px solid rgba(150,200,255,.10);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,.55); margin-bottom: 4px;
+}
+.desk-tab {
+  flex: 1; appearance: none; background: none; border: none; cursor: pointer; font: inherit;
+  font-size: 13px; font-weight: 600; color: var(--muted); padding: 9px 2px; border-radius: 999px; text-align: center;
+}
+.desk-tab .desk-badge {
+  display: inline-block; min-width: 19px; padding: 1px 5px; margin-left: 4px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; background: rgba(255,255,255,.09); color: var(--muted); vertical-align: 1px;
+}
+.desk-tab.active { color: #fff; background: linear-gradient(92deg, #23c8ef 0%, #7a5cff 100%); box-shadow: 0 4px 16px rgba(90,110,255,.45), inset 0 1px 0 rgba(255,255,255,.35); }
+.desk-tab.active .desk-badge { background: rgba(255,255,255,.25); color: #fff; }
+.desk-tab[data-desk-tab="wait"].active { background: linear-gradient(92deg, #f5a83d, #ff7a59); box-shadow: 0 4px 16px rgba(245,140,61,.4), inset 0 1px 0 rgba(255,255,255,.35); }
+.desk-tab[data-desk-tab="done"].active { background: linear-gradient(92deg, #1fc98b, #23c8ef); box-shadow: 0 4px 16px rgba(35,200,180,.38), inset 0 1px 0 rgba(255,255,255,.35); }
+.desk-panel { display: none; padding: 2px 6px; }
+.desk-panel.active { display: block; }
+.desk-empty-line { padding: 13px 4px 11px; font-size: 13.5px; color: var(--muted); }
 .system-status {
   padding: 13px 8px;
   color: #90a0b7;
@@ -3656,7 +3690,7 @@ function deskHTML() {
     </section>
 <section class="panel liaison-panel">
       <h3 class="liaison-packages-title">Packages</h3>
-      <div id="liaisonPackages"><div class="workspace-empty">No packages yet this session.</div></div>
+      <div id="liaisonPackages"><div class="desk-board"><div class="desk-tabbar" role="tablist"><button class="desk-tab" data-desk-tab="wait" role="tab">Waiting<span class="desk-badge">–</span></button><button class="desk-tab" data-desk-tab="flight" role="tab">In flight<span class="desk-badge">–</span></button><button class="desk-tab active" data-desk-tab="done" role="tab">Done<span class="desk-badge">–</span></button></div><div class="desk-panel active"><div class="desk-empty-line">Loading package status…</div></div></div></div>
       <details class="liaison-more" id="liaisonStatsDetails">
         <summary>How fast packages usually move</summary>
         <div class="liaison-more-body">
@@ -3863,6 +3897,19 @@ document.addEventListener("click", (e) => {
 });
 /* LIAISON-OPP-END */
 
+/* Glass Desk board tab clicks (portal completion step 2): delegated,
+   same pattern as the opportunity handler above — the poll re-renders
+   the board every 3 seconds, so the tabs themselves carry no listeners.
+   This handler deliberately lives HERE, not beside deskBoardHTML: the
+   r1-L1 portal-paths test slices the region between pollLiaisonStatus
+   and its setInterval and evals it against a minimal DOM stub with no
+   document.addEventListener (its run exposed exactly that, preserved
+   in the step-2 evidence). */
+document.addEventListener("click", (e) => {
+  const t = e.target && e.target.closest ? e.target.closest("[data-desk-tab]") : null;
+  if (t) activateDeskTab(t.dataset.deskTab);
+});
+
 /* The demo doorman's intake endpoint. This page holds NO credential in any
    mode — the doorman's secret stays on the server side. */
 const DOORMAN_URL = "https://liaison-doorman.getpulsehq-1c7.workers.dev/api/packages";
@@ -3992,7 +4039,7 @@ async function pollLiaisonStatus() {
     if (tbox) tbox.innerHTML = liaisonTurnaroundHTML(data);
     const box = $("liaisonPackages");
     if (box) {
-      box.innerHTML = pkgs.length ? pkgs.map(p => liaisonPackageHTML(p)).join("") : `<div class="workspace-empty">No packages yet this session.</div>`;
+      box.innerHTML = deskBoardHTML(pkgs);
       // A3 honest stale marking: a synced payload older than the
       // freshness threshold is shown, but never passed off as current.
       if (syncIsStale(data.generatedAt)) {
@@ -4040,6 +4087,67 @@ async function pollLiaisonStatus() {
     const tbox0 = $("liaisonTurnaround");
     if (tbox0) tbox0.innerHTML = liaisonTurnaroundHTML({});
   }
+}
+/* ---- Glass Desk board (portal completion step 2, 2026-10-30) ----
+   Tab membership is derived ONLY from each package's recorded state,
+   using the portal's existing semantics — no new status is invented:
+   - Waiting: status "clarification" — the package is held and a
+     question is waiting on the client (liaisonStateLabel: "Needs a
+     detail — waiting on you").
+   - Done: verified complete, exactly the deskCompletedHTML predicate —
+     (live with publicationVerifiedAt) or recovered_live, and never an
+     audit-ambiguous or ledger-pending entry.
+   - In flight: everything else (received, formatting, checked,
+     interpreting queue / interpreting, saved, live-but-unverified,
+     failed, unresolved) — the card itself keeps its exact state label,
+     so grouping never upgrades or hides a package's real state.
+   Counts are the lengths of the groups actually rendered below, so a
+   badge can never disagree with the records under its tab. An empty
+   group shows an explicit empty line; a board whose every group is
+   empty shows the session empty line — a successful empty state,
+   visibly different from the failure state, which replaces the board
+   entirely with "Package status isn't available right now." */
+function deskPackageGroup(p) {
+  if (p && p.status === "clarification") return "wait";
+  if (p && !p.auditAmbiguous && !p.ledgerPending &&
+      ((p.status === "live" && p.publicationVerifiedAt) || p.status === "recovered_live"))
+    return "done";
+  return "flight";
+}
+function deskBoardHTML(pkgs) {
+  const groups = { wait: [], flight: [], done: [] };
+  for (const p of (pkgs || [])) groups[deskPackageGroup(p)].push(p);
+  const total = groups.wait.length + groups.flight.length + groups.done.length;
+  let active = window.__deskTab;
+  if (active !== "wait" && active !== "flight" && active !== "done")
+    active = groups.wait.length ? "wait" : groups.flight.length ? "flight" : "done";
+  const tab = (name, label) =>
+    '<button class="desk-tab' + (active === name ? " active" : "") + '" data-desk-tab="' + name + '" role="tab">' +
+    label + '<span class="desk-badge">' + groups[name].length + "</span></button>";
+  const panel = (name, emptyLine) =>
+    '<div class="desk-panel' + (active === name ? " active" : "") + '" data-desk-panel="' + name + '">' +
+    (groups[name].length ? groups[name].map(p => liaisonPackageHTML(p)).join("") : emptyLine) + "</div>";
+  let body;
+  if (!total) {
+    body = '<div class="desk-panel active"><div class="desk-empty-line">No packages yet this session.</div>' +
+      '<div class="desk-empty-line" style="padding-top:0">Nothing is waiting on you, nothing is in flight, and nothing is verified complete yet — finished work will land here.</div></div>';
+  } else {
+    body =
+      panel("wait", '<div class="desk-empty-line">Nothing is waiting on you right now — when the office needs a detail from you, it lands here.</div>') +
+      panel("flight", '<div class="desk-empty-line">Nothing in flight right now.</div>') +
+      panel("done", '<div class="desk-empty-line">Nothing verified complete yet — finished work lands here once it is saved to your database and verified live on this page.</div>');
+  }
+  return '<div class="desk-board"><div class="desk-tabbar" role="tablist">' +
+    tab("wait", "Waiting") + tab("flight", "In flight") + tab("done", "Done") +
+    "</div>" + body + "</div>";
+}
+function activateDeskTab(name) {
+  if (name !== "wait" && name !== "flight" && name !== "done") return;
+  window.__deskTab = name;
+  document.querySelectorAll("#liaisonPackages .desk-tab").forEach(t =>
+    t.classList.toggle("active", t.dataset.deskTab === name));
+  document.querySelectorAll("#liaisonPackages .desk-panel").forEach(pn =>
+    pn.classList.toggle("active", pn.dataset.deskPanel === name));
 }
 setInterval(pollLiaisonStatus, 3000);
 
