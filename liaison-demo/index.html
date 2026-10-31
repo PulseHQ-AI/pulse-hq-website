@@ -147,6 +147,21 @@ textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 .desk-tab[data-desk-tab="done"].active { background: linear-gradient(92deg, #1fc98b, #23c8ef); box-shadow: 0 4px 16px rgba(35,200,180,.38), inset 0 1px 0 rgba(255,255,255,.35); }
 .desk-panel { display: none; padding: 2px 6px; }
 .desk-panel.active { display: block; }
+/* Entry 2 (fixes-for-alex; Alex approved 2026-10-30): 2a — the Completed
+   actions panel carried no padding, so its headline sat flush against
+   the panel edge while the Packages panel beside it (.liaison-panel)
+   insets its headline and content by 22px. Give this panel the same
+   22px inset so its headline aligns with its card content.
+   2b — LIGHT mode only: the Packages tab track takes Palette B's
+   #332C5E and unselected tab labels (and their count badges) take
+   #EFEDFF, replacing the washed-out blue-grey. The selected tab keeps
+   its gradient and #fff label; dark mode is untouched by these rules. */
+.desk-completed-panel { padding: 22px; }
+html[data-theme="light"] .desk-tabbar { background: #332C5E; }
+html[data-theme="light"] .desk-tab { color: #EFEDFF; }
+html[data-theme="light"] .desk-tab .desk-badge { color: #EFEDFF; }
+html[data-theme="light"] .desk-tab.active { color: #fff; }
+html[data-theme="light"] .desk-tab.active .desk-badge { color: #fff; }
 .desk-empty-line { padding: 13px 4px 11px; font-size: 13.5px; color: var(--muted); }
 .system-status {
   padding: 13px 8px;
@@ -3684,7 +3699,7 @@ function deskHTML() {
       <h2>🗂 The Desk</h2>
       <p>Finished work lands here — proven done, never just promised.</p>
     </div>
-    <section class="panel">
+    <section class="panel desk-completed-panel">
       <h3 style="margin:0 0 12px">Completed actions</h3>
       <div id="deskCompleted"><div class="workspace-empty">Nothing verified complete yet — an action appears here only once it is saved to your database and verified live on this page.</div></div>
     </section>
