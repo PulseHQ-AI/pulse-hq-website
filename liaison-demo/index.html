@@ -113,6 +113,43 @@ textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 }
 .nav-item.active:first-letter { color: var(--cyan); }
 
+/* Entry 2d — phone nav: five primaries + More sheet (prototype v3,
+   Palette B; Ben-approved 2026-10-30, Alex build ruling 2026-10-30).
+   The More button lives only in the phone bottom bar (shown in the
+   <=780px app layer below); the desktop sidebar keeps all nine
+   destinations, so the sheet is inert on desktop. */
+.nav-more { display: none; }
+.more-scrim {
+  position: fixed; inset: 0; background: rgba(20,32,52,.38);
+  opacity: 0; pointer-events: none; visibility: hidden;
+  transition: opacity .18s, visibility 0s .18s; z-index: 40;
+}
+.more-scrim.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity .18s; }
+.more-sheet {
+  position: fixed; left: 50%; bottom: 0; width: 100%; max-width: 430px;
+  transform: translate(-50%, 105%); visibility: hidden;
+  transition: transform .22s ease, visibility 0s .22s;
+  background: var(--panel); color: var(--text);
+  border-top: 1px solid var(--line); border-radius: 24px 24px 0 0; z-index: 41;
+  padding: 14px 18px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -12px 40px rgba(0,0,0,.35);
+  max-height: calc(100dvh - 120px); overflow-y: auto;
+}
+.more-sheet.open { transform: translate(-50%, 0); visibility: visible; transition: transform .22s ease; }
+.more-grab { width: 44px; height: 5px; border-radius: 99px; background: var(--line); margin: 2px auto 14px; }
+.more-sheet h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: #8c9bb2; margin: 0 0 8px; padding: 0 4px; }
+html[data-theme="light"] .more-sheet h2 { color: #8B87B8; }
+.more-item {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  border: 0; border-bottom: 1px solid var(--line); background: transparent;
+  cursor: pointer; text-align: left; font-family: inherit;
+  padding: 15px 6px; font-size: 16px; font-weight: 600; color: var(--text);
+}
+.more-item:last-child { border-bottom: 0; }
+.more-item .more-ic { font-size: 20px; width: 28px; text-align: center; }
+.more-item .more-chev { margin-left: auto; color: #8c9bb2; font-weight: 400; }
+.more-item.active { color: var(--blue); }
+
 .sidebar-bottom { margin-top: auto; }
 
 /* Glass Desk board (portal completion step 2, 2026-10-30): the approved
@@ -1213,10 +1250,12 @@ html[data-theme="light"] .brand-mark {
     padding: 7px 2px 6px; font-size: 16px; text-align: center;
     border-radius: 10px;
   }
-  .nav-item span {
+  .nav-item span { display: none; }
+  .nav-item::after {
+    content: attr(data-short);
     display: block;
-    font-size: 8.5px; line-height: 1.2; letter-spacing: 0;
-    white-space: normal; overflow-wrap: break-word; max-width: 100%;
+    font-size: 11.5px; line-height: 1.2; letter-spacing: 0;
+    white-space: nowrap; font-weight: 600;
   }
   .nav-item.active { box-shadow: inset 0 2px var(--blue); }
   .nav-item[data-view="overview"] { order: 1; }
@@ -1228,6 +1267,13 @@ html[data-theme="light"] .brand-mark {
   .nav-item[data-view="liaison"] { order: 6; }
   .nav-item[data-view="desk"] { order: 7; }
   .nav-item[data-view="requests"] { order: 3; }
+  /* Entry 2d: the four secondaries leave the phone bar for the More
+     sheet; five primaries + More remain (prototype v3 order). */
+  .nav-item[data-view="health"],
+  .nav-item[data-view="pipeline"],
+  .nav-item[data-view="commitments"],
+  .nav-item[data-view="activity"] { display: none; }
+  .nav-more { display: flex; order: 8; }
 
   /* — main column — */
   .main { padding: 0 14px calc(98px + env(safe-area-inset-bottom)); width: 100%; }
@@ -1353,15 +1399,16 @@ html[data-theme="light"] .brand-mark {
 
     <div class="workspace-label">WORKSPACE</div>
     <nav class="nav">
-      <button class="nav-item active" data-view="overview">◈ <span>Overview</span></button>
+      <button class="nav-item active" data-view="overview" data-short="Overview">◈ <span>Overview</span></button>
       <button class="nav-item" data-view="health">♥ <span>Business Health</span></button>
-      <button class="nav-item" data-view="clients">▤ <span>Clients & Prospects</span></button>
+      <button class="nav-item" data-view="clients" data-short="Clients">▤ <span>Clients & Prospects</span></button>
       <button class="nav-item" data-view="pipeline">⌁ <span>Opportunity Pipeline</span></button>
       <button class="nav-item" data-view="commitments">◷ <span>Commitments</span></button>
-      <button class="nav-item" data-view="requests">✉ <span>Customer Requests</span></button>
+      <button class="nav-item" data-view="requests" data-short="Requests">✉ <span>Customer Requests</span></button>
       <button class="nav-item" data-view="activity">≋ <span>Activity Log</span></button>
-      <button class="nav-item" data-view="liaison">🕶 <span>Liaison</span></button>
-      <button class="nav-item" data-view="desk">🗂 <span>Desk</span></button>
+      <button class="nav-item" data-view="liaison" data-short="Liaison">🕶 <span>Liaison</span></button>
+      <button class="nav-item" data-view="desk" data-short="Desk">🗂 <span>Desk</span></button>
+      <button class="nav-item nav-more" id="moreBtn" data-short="More" aria-haspopup="dialog" aria-expanded="false">••• <span>More</span></button>
     </nav>
 
     <div class="sidebar-bottom">
@@ -1562,6 +1609,16 @@ html[data-theme="light"] .brand-mark {
     <div class="key-error" id="cmError" hidden></div>
     <div class="modal-actions"><button type="button" class="subtle-button" id="cancelCommitmentBottom">Cancel</button><button type="submit" class="primary-button">Add commitment ↗</button></div>
   </form>
+</div>
+
+<div class="more-scrim" id="moreScrim"></div>
+<div class="more-sheet" id="moreSheet" role="dialog" aria-modal="true" aria-label="More views" aria-hidden="true">
+  <div class="more-grab"></div>
+  <h2>More views</h2>
+  <button class="more-item" data-view="health"><span class="more-ic">♥</span>Business Health<span class="more-chev">›</span></button>
+  <button class="more-item" data-view="commitments"><span class="more-ic">◷</span>Commitments<span class="more-chev">›</span></button>
+  <button class="more-item" data-view="pipeline"><span class="more-ic">⌁</span>Opportunity Pipeline<span class="more-chev">›</span></button>
+  <button class="more-item" data-view="activity"><span class="more-ic">≋</span>Activity Log<span class="more-chev">›</span></button>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2484,6 +2541,15 @@ function setView(view) {
   document.querySelectorAll(".nav-item").forEach(button => {
     button.classList.toggle("active", button.dataset.view === view);
   });
+  // Entry 2d: a secondary view reached via the More sheet marks its
+  // sheet row active and lights More itself — never a primary.
+  document.querySelectorAll(".more-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+  const moreBtnEl = $("moreBtn");
+  if (moreBtnEl) moreBtnEl.classList.toggle("active",
+    ["health", "pipeline", "commitments", "activity"].includes(view));
+  closeMoreSheet();
 
   const overview = view === "overview";
   const clientsView = view === "clients";
@@ -2855,8 +2921,31 @@ $("nextActions").addEventListener("keydown",e=>{
 document.querySelectorAll("[data-view]").forEach(b=>{
   b.addEventListener("click",()=>setView(b.dataset.view));
 });
+
+/* Entry 2d — More sheet open/close. Selection routes through the
+   [data-view] listener above (setView also closes the sheet); the
+   scrim and Escape dismiss without changing the view. */
+function openMoreSheet() {
+  const sheet = $("moreSheet"), scrim = $("moreScrim"), btn = $("moreBtn");
+  if (!sheet || !scrim) return;
+  sheet.classList.add("open"); scrim.classList.add("open");
+  sheet.setAttribute("aria-hidden", "false");
+  if (btn) btn.setAttribute("aria-expanded", "true");
+}
+function closeMoreSheet() {
+  const sheet = $("moreSheet"), scrim = $("moreScrim"), btn = $("moreBtn");
+  if (!sheet || !scrim) return;
+  sheet.classList.remove("open"); scrim.classList.remove("open");
+  sheet.setAttribute("aria-hidden", "true");
+  if (btn) btn.setAttribute("aria-expanded", "false");
+}
+if ($("moreBtn")) $("moreBtn").addEventListener("click", openMoreSheet);
+if ($("moreScrim")) $("moreScrim").addEventListener("click", closeMoreSheet);
+document.querySelectorAll(".more-item").forEach(b=>{
+  b.addEventListener("click", closeMoreSheet);
+});
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") { if (!$("sheetBackdrop").hidden) { closeSheet(null); return; } closeModal(); closeCommitmentModal(); }
+  if(e.key==="Escape") { if (document.querySelector(".more-sheet.open")) { closeMoreSheet(); return; } if (!$("sheetBackdrop").hidden) { closeSheet(null); return; } closeModal(); closeCommitmentModal(); }
   if(e.key==="/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)){
     e.preventDefault(); $("searchInput").focus();
   }
