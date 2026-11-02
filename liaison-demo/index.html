@@ -1578,7 +1578,13 @@ html[data-theme="light"] h3, html[data-theme="light"] h4{ color: #262157; }
    .phq-stats rules below keep it a Tabler row, not a legacy grid.
    ============================================================ */
 [hidden]{ display: none !important; }
-.stats-grid.phq-stats{ display: flex; flex-wrap: wrap; grid-template-columns: none; }
+.stats-grid.phq-stats{ display: flex; flex-wrap: wrap; grid-template-columns: none; gap: 0; }
+/* The portal's own dialogs share the class name .modal with Tabler's modal
+   component, whose inlined CSS sets .modal{display:none!important;position:fixed}.
+   Without this rule every portal dialog (relationship, commitment, sheet) is
+   painted never — the buttons changed state but nothing appeared (Ben's walk,
+   2026-11-02). The backdrop-scoped selector restores the portal's panel. */
+.modal-backdrop .modal{ display: block !important; position: static; width: min(480px,100%); height: auto; }
 
 /* — shared controls — */
 .subtle-button{
@@ -1898,7 +1904,7 @@ html[data-theme="light"] .primary-button{
       <div class="breadcrumb">PULSE HQ <span>/</span> <strong id="crumb">Overview</strong></div>
       <div class="top-actions">
         <span class="live-label" id="workspaceLabel"><span class="pulse-dot"></span> AWAITING KEY</span>
-        <button class="icon-button" id="activityQuick" title="Log activity">＋</button>
+        <button class="subtle-button" id="activityQuick" type="button" aria-label="Log activity">＋ Log activity</button>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Light mode</span></button>
         <button class="icon-button" id="wsMenuButton" type="button" title="Workspace menu" aria-label="Workspace menu">⋯</button>
         <div class="ws-menu" id="wsMenu" hidden role="menu" aria-label="Workspace">
