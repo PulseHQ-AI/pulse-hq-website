@@ -4422,6 +4422,8 @@ async function finishLiveChat() {
     if (out.recorded) {
       setChatStatus("Recorded for the office ✓ — start a new chat any time.");
       clearChatSession();
+      setTimeout(refreshBookQuiet, 30000);
+      setTimeout(refreshBookQuiet, 80000);
     } else {
       setChatStatus("Not recorded — please try again.");
     }
@@ -4430,6 +4432,39 @@ async function finishLiveChat() {
     setChatStatus("");
   }
 }
+/* Chat-to-book landing (2026-11-02): a finished chat's package is
+   committed into this workspace's book by the office pipeline. Refresh
+   the book quietly so a landed customer or job appears without a
+   re-sign-in. Data-only swap: no view change, no toast, and never
+   while a form or sheet is open or the user is typing. */
+let bookRefreshBusy = false;
+async function refreshBookQuiet() {
+  if (!currentKey || bookRefreshBusy) return;
+  if (document.querySelector(".modal-backdrop:not([hidden])")) return;
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.tagName === "SELECT")
+      && !ae.closest("[hidden]") && ae.value && String(ae.value).trim()) return;
+  bookRefreshBusy = true;
+  try {
+    const data = await fetchWorkspaceData(currentKey);
+    if (!data || !Array.isArray(data.clients) || !Array.isArray(data.commitments)) return;
+    const before = JSON.stringify([clients, commitments, activities, opportunities]);
+    const after = JSON.stringify([data.clients, data.commitments, data.activities, data.opportunities || []]);
+    if (before === after) return;
+    clients = data.clients;
+    commitments = data.commitments;
+    activities = data.activities;
+    opportunities = data.opportunities || [];
+    nextClientId = clients.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    nextActivityId = activities.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
+    nextCommitmentId = commitments.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+    if (!clients.some(c => c.id === selectedId)) selectedId = clients.length ? clients[0].id : null;
+    renderAll();
+  } catch (e) { /* a failed refresh changes nothing */ }
+  finally { bookRefreshBusy = false; }
+}
+setInterval(refreshBookQuiet, 20000);
+
 function wireLiveChat() {
   renderChatThread();
   const send = $("chatSend");
