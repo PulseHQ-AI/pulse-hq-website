@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrenhaven — A Living Town</title>
+<style>
+  :root { --paper:#f6efdd; --ink:#26221a; --accent:#1f4d4a; --rule:#b9a97f; --soft:#5a5342; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:#e9e0c8; color:var(--ink); font-family: Georgia, 'Times New Roman', serif; line-height:1.6; }
+  .page { max-width: 48rem; margin: 0 auto; background: var(--paper); padding: 1.4rem 1.2rem 3rem; box-shadow: 0 0 24px rgba(60,50,20,.25); }
+  header.town { text-align:center; border-bottom: 4px double var(--ink); padding-bottom:.8rem; }
+  header.town h1 { font-size:2.4rem; margin:.2rem 0 .1rem; letter-spacing:.04em; }
+  header.town .sub { font-style: italic; color: var(--soft); }
+  nav.chips { display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin:.9rem 0 0; }
+  nav.chips a { border:1px solid var(--rule); background:#fbf6e9; color:var(--accent); text-decoration:none; padding:.25rem .7rem; font-size:.85rem; border-radius: 999px; }
+  h2.sec { font-size:1.35rem; margin:2rem 0 .5rem; border-bottom:1px solid var(--rule); padding-bottom:.3rem; }
+  h3 { font-size:1.08rem; margin:.4rem 0 .2rem; }
+  p { margin:.45rem 0; }
+  img.art { width:100%; height:auto; display:block; border:1px solid var(--rule); }
+  .mapwrap { position:relative; border:1px solid var(--rule); line-height:0; }
+  .mapwrap img { width:100%; height:auto; display:block; }
+  .spot { position:absolute; transform:translate(-50%,-50%); text-decoration:none; z-index:2; line-height:1; }
+  .spot .dot { display:block; width:16px; height:16px; margin:0 auto; border-radius:50%; background:#fdf8ea; border:2px solid var(--accent); box-shadow:0 0 0 3px rgba(31,77,74,.25); }
+  .spot .lbl { display:block; margin-top:3px; font-size:.62rem; letter-spacing:.04em; background:rgba(253,248,234,.92); color:var(--ink); border:1px solid var(--rule); padding:.12rem .35rem; border-radius:999px; white-space:nowrap; font-family: Georgia, serif; }
+  .spot:hover .dot, .spot:active .dot { background: var(--accent); }
+  @media (max-width:520px){ .spot .lbl { font-size:.54rem; padding:.08rem .25rem; } .spot .dot { width:13px; height:13px; } }
+  .place { margin:1.6rem 0; }
+  .place .who { font-size:.93rem; }
+  .place .who b { color: var(--accent); }
+  .place .live { font-size:.93rem; font-style: italic; color: var(--soft); }
+  .paperbox { border:1px solid var(--rule); background:#fbf6e9; padding:1rem 1.1rem; margin-top:.6rem; }
+  .paperbox .mast { text-align:center; border-bottom:3px double var(--ink); padding-bottom:.5rem; margin-bottom:.7rem; }
+  .paperbox .mast .t { font-size:1.5rem; }
+  .paperbox .mast .m { font-size:.75rem; text-transform:uppercase; letter-spacing:.12em; color:var(--soft); }
+  .paperbox h3 { margin-top:1rem; }
+  .notice { border:1px solid var(--rule); padding:.55rem .8rem; margin:.6rem 0; background:var(--paper); font-size:.93rem; }
+  .notice .nh { font-variant: small-caps; letter-spacing:.08em; font-weight:bold; }
+  .editor { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:.4rem 0; font-size:.95rem; }
+  .residents { display:grid; grid-template-columns:1fr; gap:.7rem; }
+  @media (min-width: 560px){ .residents { grid-template-columns:1fr 1fr; } }
+  .card { border:1px solid var(--rule); background:#fbf6e9; padding:.7rem .85rem; }
+  .card .nm { font-weight:bold; font-size:1.05rem; }
+  .card .role { font-variant: small-caps; letter-spacing:.06em; color:var(--accent); font-size:.85rem; }
+  .card p { font-size:.93rem; margin:.3rem 0 0; }
+  .week { display:flex; flex-wrap:wrap; gap:.45rem; margin:.6rem 0; }
+  .week span { border:1px solid var(--rule); background:#fbf6e9; padding:.25rem .6rem; font-size:.85rem; }
+  .howto { background:#efe6cd; border:1px solid var(--rule); padding:.8rem 1rem; margin-top:1.8rem; }
+  .fine { font-size:.85rem; color:var(--soft); text-align:center; margin-top:2.2rem; }
+  em.q { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="town">
+    <h1>WRENHAVEN</h1>
+    <div class="sub">A harbour town on the BC coast · Population 94 · Est. in story, 2026</div>
+    <nav class="chips">
+      <a href="#map">The Map</a><a href="#weekly">The Weekly</a><a href="#places">Places</a><a href="#residents">Residents</a><a href="#arrival">Your Arrival</a>
+    </nav>
+  </header>
+
+  <h2 class="sec" id="map">The Town</h2>
+  <p>Tap a marker to go there. The town is small enough to cross in ten minutes and large enough to keep secrets for ninety-four people.</p>
+  <div class="mapwrap">
+    <img src="wrenhaven-art-map.webp" alt="Illustrated map of Wrenhaven">
+    <a class="spot" style="left:36%;top:80%" href="#harbour"><span class="dot"></span><span class="lbl">The Harbour</span></a>
+    <a class="spot" style="left:15%;top:60%" href="#dock"><span class="dot"></span><span class="lbl">Western Dock</span></a>
+    <a class="spot" style="left:55%;top:57%" href="#store"><span class="dot"></span><span class="lbl">General Store</span></a>
+    <a class="spot" style="left:49%;top:44%" href="#pub"><span class="dot"></span><span class="lbl">Gull &amp; Lantern</span></a>
+    <a class="spot" style="left:61%;top:42%" href="#postoffice"><span class="dot"></span><span class="lbl">Post Office</span></a>
+    <a class="spot" style="left:33%;top:32%" href="#hall"><span class="dot"></span><span class="lbl">Harbour Hall</span></a>
+    <a class="spot" style="left:29%;top:41%" href="#garden"><span class="dot"></span><span class="lbl">The Garden</span></a>
+    <a class="spot" style="left:26%;top:19%" href="#school"><span class="dot"></span><span class="lbl">The School</span></a>
+    <a class="spot" style="left:79%;top:41%" href="#lantern"><span class="dot"></span><span class="lbl">Lantern Road</span></a>
+    <a class="spot" style="left:90%;top:54%" href="#ramp"><span class="dot"></span><span class="lbl">Eastern Ramp</span></a>
+  </div>
+
+  <h2 class="sec" id="places">Places</h2>
+
+  <div class="place" id="harbour">
+    <img class="art" src="wrenhaven-art-harbour.webp" alt="The harbour and pier, the June Bell coming in">
+    <h3>The Harbour &amp; the Pier</h3>
+    <p>Where the M.V. <i>June Bell</i> lands and the town begins. Crates, nets, gulls, and somebody always waiting who swears they weren't.</p>
+    <p class="who"><b>You'll find:</b> Mara Venn, when the ferry's in · Owen Shaw, photographing the light · whoever the ferry brings.</p>
+    <p class="live">This is where you arrived. It is still the town's front door — everything and everyone comes through here.</p>
+  </div>
+
+  <div class="place" id="dock">
+    <img class="art" src="wrenhaven-art-dock.webp" alt="The western dock and repair sheds">
+    <h3>The Western Dock &amp; Mercer Marine Repairs</h3>
+    <p>The old working dock — Arthur Pike's moorage, June Mercer's repair sheds, and a workshop June wants to buy outright. The dock itself is tired, and what to do about it is the town's loudest argument.</p>
+    <p class="who"><b>You'll find:</b> Arthur Pike · June Mercer · the <i>Second Chance</i>, riding at her mooring.</p>
+    <p class="live">Council hears the dock question on Tuesday. Arthur wants it open, Mara wants it closed, June wants its workshop — and nobody's position is the whole story.</p>
+  </div>
+
+  <div class="place" id="store">
+    <img class="art" src="wrenhaven-art-store.webp" alt="Inside the general store, Elsie at the counter">
+    <h3>The General Store</h3>
+    <p>Elsie Bell's counter: groceries, tea, twine, and the town's memory, itemised. If it happened in Wrenhaven, something about it was once bought here.</p>
+    <p class="who"><b>You'll find:</b> Elsie Bell, most hours the town is awake.</p>
+    <p class="live">Your house key is here, when you're ready to collect it.</p>
+  </div>
+
+  <div class="place" id="pub">
+    <img class="art" src="wrenhaven-art-pub.webp" alt="The Gull and Lantern at dusk">
+    <h3>The Gull &amp; Lantern</h3>
+    <p>Daniel Venn's pub, under the sign of the gull and the lantern. Warm windows, generous credit, and an upstairs room that's been asleep for years, with a piano in it nobody can vouch for.</p>
+    <p class="who"><b>You'll find:</b> Daniel Venn · half the town, by closing.</p>
+    <p class="live">Thursday: the music-night planning meeting. The piano's condition is the town's smallest standing wager.</p>
+  </div>
+
+  <div class="place" id="postoffice">
+    <img class="art" src="wrenhaven-art-mainstreet.webp" alt="Main street, Wrenhaven">
+    <h3>The Post Office</h3>
+    <p>Ruth Calder's counter on the main street — stamps, parcels, and behind it, in labelled boxes, the paper memory of the town going back generations.</p>
+    <p class="who"><b>You'll find:</b> Ruth Calder · the archive boxes · a volunteers' sign-up sheet with very few names on it.</p>
+    <p class="live">Ruth is looking for help cataloguing the Harbour Hall archive. Some of the records, she says, don't reconcile.</p>
+  </div>
+
+  <div class="place" id="hall">
+    <img class="art" src="wrenhaven-art-hall.webp" alt="Supper night at Harbour Hall">
+    <h3>Harbour Hall</h3>
+    <p>Suppers, meetings, weddings, arguments with minutes taken. Long tables, a wood stove, the old piano — and one plain wooden chair that nobody sits in, moved slightly away from the table, the way it has always been done. Ask anyone why and you'll get a different answer. Ask Elsie and you'll get a change of subject.</p>
+    <p class="who"><b>You'll find:</b> everyone, Sundays at six · council, Tuesdays · the chair, always.</p>
+    <p class="live">Sunday: community supper. Bring something to share.</p>
+  </div>
+
+  <div class="place" id="garden">
+    <img class="art" src="wrenhaven-art-garden.webp" alt="The community garden">
+    <h3>The Community Garden</h3>
+    <p>Agnes Vale's fenced kingdom behind the hall: bean beds under strict law, early planting underway, and the best family histories in town, with the dates only slightly wrong.</p>
+    <p class="who"><b>You'll find:</b> Agnes Vale · Elsie, on Sundays, leaving by the same gate at the same time, as always.</p>
+    <p class="live">Wednesday: working afternoon. Walk around the bean beds. She knows who you are.</p>
+  </div>
+
+  <div class="place" id="school">
+    <img class="art" src="wrenhaven-art-school.webp" alt="The schoolhouse above the town">
+    <h3>The School</h3>
+    <p>The little schoolhouse with the bell tower, up the hill where the road bends. One class, one teacher, and a new arts programme looking for allies.</p>
+    <p class="who"><b>You'll find:</b> Clara Finch · the children of Wrenhaven · a noticeboard of ambitious plans.</p>
+    <p class="live">Clara is asking around about old photographs of the town. For the children, she says.</p>
+  </div>
+
+  <div class="place" id="lantern">
+    <img class="art" src="wrenhaven-art-lantern.webp" alt="Lantern Road and its cottages">
+    <h3>Lantern Road</h3>
+    <p>The lane curving east out of the harbour: small cottages, lit windows, woodsmoke. Yours is the rented house partway up — furnished, quiet, waiting. At the far end stands one more cottage, empty, its TO LET notice long faded, waiting for nobody in particular.</p>
+    <p class="who"><b>You'll find:</b> your house · your neighbours · the empty cottage, minding its own business.</p>
+    <p class="live">Home. Whatever that turns out to mean here.</p>
+  </div>
+
+  <div class="place" id="ramp">
+    <img class="art" src="wrenhaven-art-ramp.webp" alt="The eastern boat ramp">
+    <h3>The Eastern Boat Ramp</h3>
+    <p>Rowboats pulled up on the shingle at the quiet end of town. A brass key was found here recently, unclaimed. The water is cold and the view is all inlet.</p>
+    <p class="who"><b>You'll find:</b> Owen Shaw, some mornings · gulls · whoever walks out this far to think.</p>
+    <p class="live">The found key is being kept at Mercer Marine Repairs, if it's yours.</p>
+  </div>
+
+  <h2 class="sec" id="weekly">The Wrenhaven Weekly — Edition No. 1</h2>
+  <div class="paperbox">
+    <div class="mast"><div class="t">The Wrenhaven Weekly</div><div class="m">Volume 1 · Issue 1 · Friday Edition · Price 75¢</div></div>
+    <h3>The Western Dock Dispute Continues</h3>
+    <p>Arthur Pike and ferry captain Mara Venn remain divided over the future of the western dock. Council will hear public submissions Tuesday evening. <em class="q">"We're not waiting for somebody to fall through it before we do something,"</em> Venn told the Weekly. Local mechanic June Mercer has expressed interest in acquiring the adjoining workshop, provided the matter can be resolved.</p>
+    <h3>Gull &amp; Lantern Plans Live Music Nights</h3>
+    <p>Daniel Venn has announced preliminary plans to reopen the pub's upstairs room for community music events. The room contains an old upright piano. Schoolteacher Clara Finch has expressed interest in helping organise an opening evening. Whether the piano works remains a matter of some debate.</p>
+    <h3>Local Photographer Announces Archive Project</h3>
+    <p>Owen Shaw is collecting photographs documenting the town's history and welcomes contributions from residents. One recent submission has raised questions about the date and location of a community gathering. Shaw declined to elaborate.</p>
+    <h3>Post Office Seeks Historical Records Volunteers</h3>
+    <p>Postmistress Ruth Calder is seeking volunteers to assist with the Harbour Hall archive restoration. Several documents have proved difficult to reconcile with existing town records. <em class="q">"Somebody ought to make sense of them before the mice do."</em></p>
+    <h3>Former Resident Returns</h3>
+    <p>A former Wrenhaven resident has returned to the community after several years away. Friends and acquaintances are reportedly delighted to see them back.</p>
+    <div class="notice"><span class="nh">Community Supper — Sunday</span> — Six o'clock at Harbour Hall. All residents welcome. Please bring something to share. Seating arrangements will be made by the volunteers.</div>
+    <div class="notice"><span class="nh">Small Notices</span> — <b>Found:</b> a brass key, near the eastern boat ramp; claim from Owen at Mercer Marine Repairs. <b>Lost:</b> Daniel's patience with the weather, last seen sometime in November.</div>
+    <div class="editor"><h3 style="margin-top:.2rem;">A Note from the Editor</h3><p>The Weekly has received several enquiries concerning rumours circulating about residents returning to Wrenhaven after extended absences. We have no evidence of anything unusual occurring. People change. Memories fade. Small communities sometimes make more of things than they should. We would ask residents to exercise consideration before repeating stories about their neighbours.</p></div>
+    <h3>New Arrival at Wrenhaven Harbour</h3>
+    <p>The M.V. <i>June Bell</i> arrived shortly after eleven on Friday morning. A little rain. Some wind through the inlet. Among the passengers was a newcomer carrying a suitcase and a few personal belongings. Nobody in Wrenhaven knew him. He checked the address written on a folded piece of paper. <i>Lantern Road.</i> He had somewhere to stay. He had no idea what sort of place he'd arrived in. And Wrenhaven, for its part, had no idea what to make of him. <b>Welcome to town.</b></p>
+  </div>
+
+  <h2 class="sec" id="residents">The Residents</h2>
+  <div class="residents">
+    <div class="card"><div class="nm">Elsie Bell</div><div class="role">General store · 68</div><p>Born here. Knows what everyone buys and what everyone owes. If you need anything in Wrenhaven, you start at her counter.</p></div>
+    <div class="card"><div class="nm">Arthur Pike</div><div class="role">Fisherman · 63</div><p>Owns the <i>Second Chance</i>. Stubborn, practical, and in a long dispute with the ferry over the western dock. Not a man who suffers advice gladly.</p></div>
+    <div class="card"><div class="nm">Mara Venn</div><div class="role">Ferry captain · 46</div><p>Captain of the M.V. <i>June Bell</i>. Dry-witted, exact, and protective of her crew. She brought you here.</p></div>
+    <div class="card"><div class="nm">Daniel Venn</div><div class="role">The Gull &amp; Lantern · 43</div><p>Mara's brother. Sociable, funny, generous to a fault with credit. Dreams of music upstairs in the pub.</p></div>
+    <div class="card"><div class="nm">Ruth Calder</div><div class="role">Postmistress · 59</div><p>Quiet and observant. Keeps the town's old papers in labelled boxes and would like help making sense of them.</p></div>
+    <div class="card"><div class="nm">June Mercer</div><div class="role">Mechanic · 29</div><p>Runs Mercer Marine Repairs. Clever, impatient, ambitious — she wants the old dock workshop for her own.</p></div>
+    <div class="card"><div class="nm">Owen Shaw</div><div class="role">Photographer · 32</div><p>Here for the season, photographing birds, boats, and ordinary things — and building a picture history of the town.</p></div>
+    <div class="card"><div class="nm">Agnes Vale</div><div class="role">Community garden · 74</div><p>Warm, mischievous, formidable. Knows every family in town, though the dates wander a little in the telling.</p></div>
+    <div class="card"><div class="nm">Clara Finch</div><div class="role">Schoolteacher · 35</div><p>Back after eight years away. Bright, direct, full of plans for the children's arts programme.</p></div>
+  </div>
+
+  <div class="howto" id="arrival">
+    <h2 style="margin-top:.2rem; border:none;">Your Arrival — How to Live Here</h2>
+    <p><b>You are the newcomer.</b> You have a suitcase, a folded piece of paper with an address on it, and a house waiting on Lantern Road. The key is at the general store, with Elsie.</p>
+    <p><b>First, give him a name.</b> Your character is yours — name him, and tell the town where he's from as you meet people. What you say about him becomes true here.</p>
+    <p><b>To do anything,</b> just say it in our chat, the way you'd say it at a table: <i>"I head up to the general store and introduce myself to Elsie."</i> Residents answer in character, out of their own lives — and they remember what you say. Promises count. So do accusations.</p>
+    <p><b>The town lives in weeks.</b> Each new edition of the Weekly reports what actually happened — your doings, and everyone else's. Quiet weeks happen. Real towns have them.</p>
+    <div class="week">
+      <span><b>Tue</b> — Council: the western dock</span>
+      <span><b>Wed</b> — Garden working afternoon</span>
+      <span><b>Thu</b> — Music night planning, Gull &amp; Lantern</span>
+      <span><b>Sun</b> — Community supper, Harbour Hall, 6 p.m.</span>
+    </div>
+    <p><b>Your first afternoon is waiting:</b> the pier, the rain letting up, and a short walk to the general store, where a woman who has seen a thousand arrivals is watching you come up the road.</p>
+  </div>
+
+  <p class="fine">Wrenhaven · A living town, founded 2026 · The town continues.</p>
+
+</div>
+</body>
+</html>
