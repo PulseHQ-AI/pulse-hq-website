@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montague Bakery — Montague, Prince Edward Island</title>
+<meta name="description" content="Montague Bakery in Montague, PEI. Fresh bread, muffins, cinnamon rolls, pies, sandwiches and subs. 520 Main St. Call 902-838-4170 to order.">
+<style>
+  :root{
+    --cream:#fdf6e9;
+    --wheat:#f3e3c3;
+    --wheat-dark:#d9b878;
+    --berry:#a61e2e;
+    --berry-dark:#7d1421;
+    --berry-light:#fdf0f0;
+    --brown:#5a3d24;
+    --ink:#3d2c1c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI",Verdana,Geneva,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.65;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- Hero ---------- */
+  header{
+    background:linear-gradient(180deg,var(--wheat) 0%,var(--cream) 100%);
+    text-align:center;
+    padding:52px 20px 44px;
+    border-bottom:6px solid var(--berry);
+    border-radius:0 0 42px 42px;
+  }
+  .badge{
+    width:104px;height:104px;margin:0 auto 16px;
+    background:#fff;
+    border:3px solid var(--berry);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 12px rgba(125,20,33,.18);
+  }
+  .badge svg{width:62px;height:auto;}
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:clamp(2.3rem,7vw,3.6rem);
+    color:var(--berry-dark);
+    line-height:1.15;
+  }
+  .tagline{
+    margin-top:10px;
+    font-size:clamp(1rem,3vw,1.2rem);
+    color:var(--brown);
+  }
+  .town{
+    margin-top:8px;
+    font-weight:bold;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.85rem;
+    color:var(--berry);
+  }
+  .call-btn{
+    display:inline-block;
+    margin-top:26px;
+    background:var(--berry);
+    color:#fff;
+    font-weight:bold;
+    font-size:1.12rem;
+    text-decoration:none;
+    padding:15px 36px;
+    border-radius:999px;
+    box-shadow:0 4px 12px rgba(125,20,33,.3);
+  }
+  .call-btn:hover{background:var(--berry-dark);}
+  .call-note{margin-top:12px;font-size:.92rem;color:var(--brown);}
+
+  /* ---------- Sections ---------- */
+  section{padding:48px 0;}
+  h2{
+    font-family:Georgia,"Times New Roman",serif;
+    text-align:center;
+    font-size:clamp(1.6rem,4.5vw,2.1rem);
+    color:var(--berry-dark);
+    margin-bottom:8px;
+  }
+  .h2-sub{text-align:center;color:var(--brown);margin-bottom:30px;}
+  .wheat-divider{text-align:center;color:var(--wheat-dark);font-size:1.3rem;letter-spacing:.5em;margin-bottom:26px;}
+
+  .goods{
+    background:#fff;
+    border:2px solid var(--wheat);
+    border-radius:26px;
+    padding:34px 30px;
+    box-shadow:0 3px 10px rgba(90,61,36,.08);
+  }
+  .goods-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:8px 34px;
+  }
+  .goods h3{
+    color:var(--berry);
+    font-size:1.05rem;
+    margin:16px 0 8px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .goods h3:first-child{margin-top:0;}
+  .goods ul{list-style:none;}
+  .goods li{
+    padding:7px 0 7px 26px;
+    position:relative;
+    border-bottom:1px dashed var(--wheat);
+    font-size:1rem;
+  }
+  .goods li:last-child{border-bottom:none;}
+  .goods li::before{
+    content:"";
+    position:absolute;left:2px;top:15px;
+    width:9px;height:9px;border-radius:50%;
+    background:var(--berry);
+  }
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:18px;
+  }
+  .card{
+    background:var(--berry-light);
+    border:2px solid var(--wheat);
+    border-radius:22px;
+    padding:26px 22px;
+    text-align:center;
+  }
+  .card .icon{font-size:2rem;display:block;margin-bottom:8px;}
+  .card h3{color:var(--berry-dark);margin-bottom:6px;font-size:1.1rem;}
+  .card p{font-size:.95rem;color:var(--brown);}
+
+  .about-box{
+    max-width:720px;margin:0 auto;
+    background:#fff;
+    border:2px solid var(--wheat);
+    border-radius:26px;
+    padding:30px 32px;
+    box-shadow:0 3px 10px rgba(90,61,36,.08);
+  }
+  .about-box p + p{margin-top:14px;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:18px;
+    max-width:760px;margin:0 auto;
+  }
+  .contact-card{
+    background:var(--berry);
+    color:#fff;
+    border-radius:22px;
+    padding:26px 22px;
+    text-align:center;
+  }
+  .contact-card h3{text-transform:uppercase;letter-spacing:.08em;font-size:.95rem;margin-bottom:10px;color:var(--wheat);}
+  .contact-card a{color:#fff;font-weight:bold;text-decoration:none;font-size:1.1rem;}
+  .contact-card a:hover{text-decoration:underline;}
+  .contact-card p{font-size:1rem;}
+
+  footer{
+    background:var(--berry-dark);
+    color:#f6dcd9;
+    text-align:center;
+    padding:28px 20px;
+    border-radius:42px 42px 0 0;
+    font-size:.92rem;
+  }
+  footer .f-name{
+    font-family:Georgia,"Times New Roman",serif;
+    color:#fff;font-size:1.1rem;margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">
+    <svg viewBox="0 0 64 48" aria-hidden="true">
+      <ellipse cx="32" cy="30" rx="26" ry="13" fill="#d9b878"/>
+      <path d="M10 26 Q32 8 54 26" fill="#e8c98d"/>
+      <path d="M20 22 l6 5 M30 18 l6 5 M40 20 l6 5" stroke="#a61e2e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M14 6 q3 -4 6 0 M28 3 q3 -4 6 0 M42 6 q3 -4 6 0" stroke="#a61e2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <h1>Montague Bakery</h1>
+  <p class="tagline">Freshly baked goods, sandwiches &amp; subs — good to go</p>
+  <p class="town">Montague, Prince Edward Island</p>
+  <a class="call-btn" href="tel:+19028384170">&#128222; Call 902-838-4170 to Order</a>
+  <p class="call-note">Come in or call ahead — 520 Main St, Montague, PE</p>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>From the Ovens</h2>
+    <p class="h2-sub">Baked fresh at the bakery on Main Street.</p>
+    <div class="wheat-divider" aria-hidden="true">&#10047; &#10047; &#10047;</div>
+    <div class="goods">
+      <div class="goods-grid">
+        <div>
+          <h3>Breads &amp; Rolls</h3>
+          <ul>
+            <li>Bread, including sourdough</li>
+            <li>Cinnamon rolls</li>
+            <li>Muffins</li>
+          </ul>
+          <h3>Sweets &amp; Treats</h3>
+          <ul>
+            <li>Brownies</li>
+            <li>Chocolate macaroon cookies</li>
+            <li>Cupcakes</li>
+            <li>Carrot square</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Savoury &amp; Meals</h3>
+          <ul>
+            <li>Chicken pot pies</li>
+            <li>Meat pies</li>
+            <li>Fresh sandwiches</li>
+            <li>Subs</li>
+          </ul>
+          <h3>For Events &amp; Gifts</h3>
+          <ul>
+            <li>Sweet trays for events</li>
+            <li>Gift certificates</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="cards">
+      <div class="card">
+        <span class="icon">&#127838;</span>
+        <h3>Retail Counter</h3>
+        <p>Fresh baking to take home, from everyday bread to a box of treats.</p>
+      </div>
+      <div class="card">
+        <span class="icon">&#129386;</span>
+        <h3>Sandwiches &amp; Subs</h3>
+        <p>Fresh sandwiches and subs, made at the bakery and good to go.</p>
+      </div>
+      <div class="card">
+        <span class="icon">&#127873;</span>
+        <h3>Gift Certificates</h3>
+        <p>Gift certificates available — an easy gift for anyone who loves fresh baking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <h2>About the Bakery</h2>
+    <p class="h2-sub">A local bakery and cafe in the heart of Montague.</p>
+    <div class="about-box">
+      <p>Montague Bakery is an independent bakery and cafe at 520 Main St in Montague, Prince Edward Island, serving the community with retail and wholesale baking.</p>
+      <p>From sourdough loaves and cinnamon rolls to chicken pot pies and sweet trays for events, everything on the counter is freshly baked. Follow the bakery on Facebook for the latest specials and fresh-out-of-the-oven posts.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <h2>Come In or Call</h2>
+    <p class="h2-sub">Orders and questions — just give us a call.</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3>Phone</h3>
+        <p><a href="tel:+19028384170">902-838-4170</a></p>
+      </div>
+      <div class="contact-card">
+        <h3>Address</h3>
+        <p>520 Main St<br>Montague, PE C0A 1R0</p>
+      </div>
+      <div class="contact-card">
+        <h3>Facebook</h3>
+        <p><a href="https://www.facebook.com/montaguebakery/" target="_blank" rel="noopener">Montague Bakery on Facebook</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="f-name">Montague Bakery</p>
+  <p>520 Main St, Montague, PE C0A 1R0 &middot; 902-838-4170</p>
+</footer>
+
+</body>
+</html>

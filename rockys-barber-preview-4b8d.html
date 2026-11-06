@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barbarians — Rocky's Barber Shop — Weyburn, Saskatchewan</title>
+<meta name="description" content="Barbarians — Rocky's Barber Shop in Weyburn, SK. Sole owner/operator Rocky Sidloski. Men's and women's haircuts by appointment. Call or text (306) 861-3320.">
+<style>
+  :root{
+    --leather:#3b2417;
+    --leather-dark:#241509;
+    --leather-light:#5a3a24;
+    --steel:#4a4f55;
+    --steel-dark:#2e3236;
+    --steel-light:#8b9299;
+    --cream:#f4ead8;
+    --cream-dim:#d8c9ae;
+    --red:#9c2b1e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"Arial Narrow",Arial,Helvetica,sans-serif;
+    background:var(--steel-dark);
+    color:var(--cream);
+    line-height:1.6;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- Hero ---------- */
+  header{
+    background:linear-gradient(180deg,var(--leather-dark) 0%,var(--leather) 100%);
+    border-bottom:8px solid var(--steel);
+    text-align:center;
+    padding:54px 20px 46px;
+  }
+  .pole{
+    width:34px;height:110px;margin:0 auto 20px;
+    border:3px solid var(--steel-light);
+    border-radius:17px;
+    background:repeating-linear-gradient(45deg,var(--red) 0 12px,var(--cream) 12px 24px,#33526b 24px 36px,var(--cream) 36px 48px);
+    box-shadow:0 4px 10px rgba(0,0,0,.5);
+  }
+  .kicker{
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    font-size:.85rem;
+    color:var(--steel-light);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    font-size:clamp(2.6rem,8vw,4.4rem);
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    line-height:1.05;
+    color:var(--cream);
+    text-shadow:3px 3px 0 var(--leather-dark);
+  }
+  h1 .sub{
+    display:block;
+    font-size:clamp(1.3rem,4vw,2rem);
+    color:var(--cream-dim);
+    margin-top:8px;
+    letter-spacing:.06em;
+  }
+  .tagline{
+    margin-top:16px;
+    font-size:clamp(1rem,3vw,1.2rem);
+    color:var(--cream-dim);
+  }
+  .town{
+    margin-top:6px;
+    font-weight:bold;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    font-size:.85rem;
+    color:var(--steel-light);
+  }
+  .call-btn{
+    display:inline-block;
+    margin-top:28px;
+    background:var(--red);
+    color:#fff;
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    letter-spacing:.05em;
+    font-size:1.2rem;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:16px 36px;
+    border:3px solid var(--cream);
+    box-shadow:0 5px 0 var(--leather-dark);
+  }
+  .call-btn:hover{filter:brightness(1.12);}
+  .call-note{margin-top:14px;font-size:.95rem;color:var(--cream-dim);}
+
+  /* ---------- Sections ---------- */
+  section{padding:50px 0;}
+  h2{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    font-size:clamp(1.7rem,5vw,2.3rem);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--cream);
+    border-left:10px solid var(--red);
+    padding-left:16px;
+    margin-bottom:10px;
+  }
+  .h2-sub{color:var(--steel-light);margin-bottom:30px;padding-left:26px;font-size:1.02rem;}
+
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;
+  }
+  .service-block{
+    background:var(--leather);
+    border:2px solid var(--steel);
+    padding:26px 22px;
+  }
+  .service-block h3{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    font-size:1.25rem;
+    color:var(--cream);
+    margin-bottom:8px;
+  }
+  .service-block p{color:var(--cream-dim);font-size:.98rem;}
+  .service-block .big-icon{font-size:1.8rem;display:block;margin-bottom:10px;}
+
+  .appt-band{
+    background:var(--steel);
+    border-top:5px solid var(--leather-dark);
+    border-bottom:5px solid var(--leather-dark);
+    padding:36px 20px;
+    text-align:center;
+  }
+  .appt-band .days{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    font-size:clamp(1.4rem,4.5vw,2rem);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:#fff;
+  }
+  .appt-band p{margin-top:10px;color:var(--cream);font-size:1.05rem;}
+  .appt-band a{color:#fff;font-weight:bold;}
+
+  .about-box{
+    background:var(--leather-dark);
+    border:2px solid var(--steel);
+    padding:30px 32px;
+  }
+  .about-box p + p{margin-top:14px;}
+  .about-box strong{color:#fff;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:16px;
+  }
+  .contact-block{
+    background:var(--leather);
+    border:2px solid var(--steel);
+    padding:24px 22px;
+    text-align:center;
+  }
+  .contact-block h3{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:1.05rem;
+    color:var(--cream-dim);
+    margin-bottom:10px;
+  }
+  .contact-block a{color:#fff;font-weight:bold;text-decoration:none;font-size:1.08rem;}
+  .contact-block a:hover{text-decoration:underline;}
+
+  footer{
+    background:var(--leather-dark);
+    border-top:8px solid var(--steel);
+    text-align:center;
+    padding:28px 20px;
+    font-size:.92rem;
+    color:var(--steel-light);
+  }
+  footer .f-name{
+    font-family:Impact,"Arial Black",Arial,sans-serif;
+    color:var(--cream);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:1.05rem;
+    margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="pole" aria-hidden="true"></div>
+  <p class="kicker">Weyburn, Saskatchewan</p>
+  <h1>Barbarians <span class="sub">Rocky's Barber Shop</span></h1>
+  <p class="tagline">One barber. One chair. Booked by appointment.</p>
+  <p class="town">Sole owner / operator: Rocky Sidloski</p>
+  <a class="call-btn" href="tel:+13068613320">Call or Text (306) 861-3320</a>
+  <p class="call-note">102 Sims Ave #4, Weyburn, SK</p>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Services</h2>
+    <p class="h2-sub">Straightforward barbering from a barber who's been at it since 1982.</p>
+    <div class="services-grid">
+      <div class="service-block">
+        <span class="big-icon">&#9986;</span>
+        <h3>Men's Haircuts</h3>
+        <p>Classic cuts and modern styles, done by the owner himself.</p>
+      </div>
+      <div class="service-block">
+        <span class="big-icon">&#128135;</span>
+        <h3>Women's Haircuts</h3>
+        <p>Women's cuts are on the board too — just book ahead.</p>
+      </div>
+      <div class="service-block">
+        <span class="big-icon">&#128197;</span>
+        <h3>By Appointment</h3>
+        <p>Barbering by appointment, so your time in the chair is your time. Call or text anytime to book.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="appt-band">
+  <p class="days">Appointments — Tuesday &middot; Thursday &middot; Friday</p>
+  <p>Call or text anytime: <a href="tel:+13068613320">(306) 861-3320</a></p>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Meet Rocky</h2>
+    <p class="h2-sub">The man behind the chair, in his own published story.</p>
+    <div class="about-box">
+      <p><strong>Rocky Sidloski</strong> has been cutting hair since <strong>1982</strong>. He trained at the <strong>Moose Jaw Hair Design Academy</strong> and owned <strong>Studio 7</strong> in Weyburn from 1992 to 2004.</p>
+      <p>He returned in <strong>2013</strong> to open Barbarians as a sole owner/operator shop — no staff, no hand-offs. When you book at Rocky's, Rocky is who cuts your hair.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <h2>Get in Touch</h2>
+    <p class="h2-sub">Call or text to book your appointment.</p>
+    <div class="contact-grid">
+      <div class="contact-block">
+        <h3>Phone / Text</h3>
+        <p><a href="tel:+13068613320">(306) 861-3320</a></p>
+      </div>
+      <div class="contact-block">
+        <h3>Address</h3>
+        <p>102 Sims Ave #4<br>Weyburn, SK S4H 2H5</p>
+      </div>
+      <div class="contact-block">
+        <h3>Facebook</h3>
+        <p><a href="https://www.facebook.com/239094499600208/" target="_blank" rel="noopener">Rocky's on Facebook</a></p>
+      </div>
+      <div class="contact-block">
+        <h3>Instagram</h3>
+        <p><a href="https://www.instagram.com/barberqueenweyburn/" target="_blank" rel="noopener">@barberqueenweyburn</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="f-name">Barbarians — Rocky's Barber Shop</p>
+  <p>102 Sims Ave #4, Weyburn, SK S4H 2H5 &middot; (306) 861-3320</p>
+</footer>
+
+</body>
+</html>
