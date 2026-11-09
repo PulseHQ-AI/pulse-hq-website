@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<title>D3 Specification v0.7 - reading copy</title>
+</head>
+<body>
+<pre>
+DOCUMENT FOR ALEX - reading copy
+Document: PROCESS-TREE-D3-SPECIFICATION-v0.7-PROPOSAL.md
+Original file: 1,387 lines - 79,325 bytes - SHA-256 28718d26fb0efe4029468c33abd083e6cba4c427e6b4ca080cb0ee52ccae1c1b
+Canonical byte-exact copies: secret gist + private repo PulseHQ-AI/duenna.
+An END OF DOCUMENT marker with the same hash closes this page.
+
+# DUENNA — PROCESS TREE, D3 SPECIFICATION (PROPOSAL v0.7)
+
+**Status: PROPOSAL — governance trunk step 3 (specification). REVISED
+under Alex&#x27;s sixth adversarial review (findings D3-R30…R32,
+pb-mw7sz57c-v-1z6i, 2026-11-08): R27&#x27;s intended correction recorded as
+present, R28&#x27;s procedure recorded as exposing the R31 conflict, R29
+recorded as leaving R32 open; v0.6 found NOT READY for Ben; NOT
+APPROVED.**
+v0.1 through v0.6 are preserved intact as reviewed baselines; the
+response register answering this round is
+PROCESS-TREE-D3-REVIEW-RESPONSE-v0.6.md, and §23 of this version
+carries the change record. Next step is Alex&#x27;s further adversarial
+review; only after the review settles does this artefact go to Ben for
+the owner-approval step. It authorises nothing: no implementation, no
+modification of EXECUTION-CONTRACT-v0.1, no Stage 2 execution.
+
+**Source of record:** PROCESS-TREE-v0.4-PROPOSAL.md (APPROVED DESIGN,
+Ben, 2026-11-08), SHA-256
+b4fb404c9f9b4577603b8afced9c8e63c20399b929ff2777e42321151f8f04e5.
+Every requirement cites its tree section and carries the status that
+section carries. Where the tree is silent and a testable requirement
+would need a new semantic decision, the item is marked UNRESOLVED and
+the blocking decision is named — no gap is filled by assumption.
+
+**Requirement format.** Each requirement states: the testable obligation
+(source · status); Inputs → Behaviour → Outputs; Failure paths;
+Acceptance evidence. Where a field is fully determined by the
+requirement statement itself it is not repeated; nothing is left
+implicit where behaviour could diverge. Requirements whose semantics
+are unresolved carry &quot;Acceptance class: NOT-YET&quot; at their source line
+and claim no fixture (D3-R13).
+Global acceptance convention (from the Stage 1 pattern): a requirement
+is accepted by fixture tests over synthetic execution records with
+expected evaluator outputs, the fixtures and expected outputs
+hash-pinned; a prohibition is accepted by a fixture that attempts the
+prohibited operation and expects rejection. **Fixture success
+establishes mechanical conformance with the specified rule only. It
+does not establish that the rule is semantically correct; semantic
+correctness is settled by adversarial review and owner approval, never
+by fixtures (D3-R14).**
+
+**Statuses used:** INHERITED (Contract/Gate-Spec ground) · CONVERGED
+(Alex–Remmy, in the approved tree) · RECORDED INTERPRETATION (register,
+§13 of the tree) · OWNER-RULED (Ben, 2026-11-08) · PROPOSED (named
+proposer; not settled) · UNRESOLVED (open; blocks reliance).
+
+---
+
+## Family A — Rules, instances, binding (Tree §1)
+
+### REQ-A-1 — The event instantiates; it never invents
+Source: Tree §1.2 · CONVERGED
+Requirement: An instance&#x27;s terms (trigger, bearer, conditions,
+satisfaction evidence, verification method) are exactly those authored
+in the pinned contract. No component may create an instance with terms
+drawn from anywhere else, or modify an instance&#x27;s terms at runtime.
+Inputs: pinned contract; execution record. Behaviour: on a specified
+triggering event, the harness creates the instance at its CREATION
+entry with the authored terms — the triggering event is the cause of
+creation; the CREATION entry is the creation point (REQ-C-1, D3-R30).
+Outputs: the instance, linked to its rule, to its triggering event,
+and to its CREATION entry. The triggering event keeps its own kind
+(a retrieval remains an ACTION); instantiation is recorded by the
+harness as a separate CREATION entry citing the triggering entry
+(REQ-K-3, D3-R25) — the bearer never authors its own instance&#x27;s
+creation record.
+Failure: a triggering event with no authored rule produces no instance
+and is reported as an unmapped event, never silently obligationised.
+An unmapped event is a classified entry with no applicable rule —
+distinct from an UNCLASSIFIED entry, whose kind itself is undetermined
+(REQ-K-3, D3-R19); the run report accounts for both (REQ-K-4).
+Acceptance: fixture — a record containing an event resembling a known
+trigger but not specified for it yields no instance and one unmapped-
+event report line.
+
+### REQ-A-2 — Binding is mechanical and run-fixed
+Source: Tree §1.3 · INHERITED (Contract §2) / CONVERGED
+Requirement: At run start the harness resolves role + task type against
+the pinned contract version and binds the resulting rule set as the
+run&#x27;s contract instance, fixed for the run&#x27;s duration. Unconditional
+rules produce instances at binding. No mid-run rebinding.
+Inputs: pinned contract version; run&#x27;s role and task type. Behaviour:
+deterministic resolution; identical inputs yield the identical contract
+instance. Outputs: the contract instance (rule list with versions).
+Failure: an unresolvable role/task type fails the binding loudly; no
+partial contract instance is run against. The same total-failure rule
+governs a binding that encounters a demonstrated-impossible rule
+(REQ-K-1): the binding fails, entirely and loudly — exclusion of the
+single rule is prohibited.
+Acceptance: fixture — two bindings with identical inputs produce
+byte-identical contract instances; a mid-run contract change fixture
+shows the in-flight instance set unchanged.
+
+### REQ-A-3 — Bearer is the role occupant; judging is not bearing
+Source: Tree §1.4 · CONVERGED
+Requirement: Every instance records its bearer: the occupant of the
+role the rule attaches to, for that run. An evaluator&#x27;s judgement about
+an instance never transfers its bearing.
+Inputs: contract instance; run role occupancy. Outputs: bearer field on
+every instance. Failure: an instance without an identifiable bearer is
+a machinery defect, reported as such, never defaulted to the evaluator.
+Acceptance: fixture — an examiner-judged instance still names the
+researcher-role occupant as bearer.
+
+### REQ-A-4 — Rule ledger: FIRED / NOT FIRED / INDETERMINATE
+Source: Tree §1.5 · CONVERGED
+Requirement: The run report lists every conditional rule in the pinned
+contract with its trigger and exactly one outcome: FIRED (triggering
+event established; instance linked); NOT FIRED (the relevant event
+enumeration established complete and containing no triggering event;
+rendered in plain language as NOT APPLICABLE); INDETERMINATE (the
+record cannot establish whether the event occurred). Absence of a
+recorded trigger is never, by itself, a NOT FIRED.
+Inputs: pinned contract; closed execution record; per-rule enumeration
+evidence. Outputs: one ledger line per conditional rule.
+Failure: an enumeration whose completeness cannot be established
+forces INDETERMINATE.
+Acceptance: fixtures — (i) trigger present → FIRED with link; (ii)
+complete enumeration, no trigger → NOT FIRED; (iii) truncated record →
+INDETERMINATE, never NOT FIRED.
+
+### REQ-A-5 — Permission is not obligation
+Source: Tree §1.1 · INHERITED (Contract §2)
+Requirement: No evaluation may treat permission to act as evidence an
+obligation is met; completeness is judged only against bound instances.
+Inputs: the run&#x27;s permission set; the bound contract instance.
+Outputs: completeness judged from instances only.
+Failure: an evaluation citing permission as satisfaction evidence is
+void and re-derived.
+Acceptance: fixture — a fully permitted run with an unmet instance
+evaluates as incomplete.
+
+### REQ-A-6 — Enumeration completeness: declared, evidenced, evaluated
+Source: Tree §1.5 (completeness standard) · PROPOSED (Remmy, in this
+specification; revised under D3-R6)
+Requirement: NOT FIRED is reachable only when three distinct things
+hold. (a) DECLARED: the rule&#x27;s specification declares its
+enumeration-completeness method (the Stage 1 multiset-reconciliation
+pattern is one declared method). (b) EVIDENCED: applying the method to
+this record leaves its own evidence in the record — the enumerated set,
+its counts and pairings — so the application can be re-performed.
+(c) EVALUATED: the evaluator accepts completeness only when the
+application evidence satisfies the declared method&#x27;s own completeness
+criterion; a method whose criterion cannot be checked against the
+application evidence cannot ground NOT FIRED. A declared method name,
+by itself, establishes nothing.
+Inputs: rule&#x27;s declared method; closed record. Behaviour: enumerate,
+preserve the application evidence, evaluate the criterion. Outputs:
+the enumeration artefact, cited by the ledger line (REQ-A-4).
+Failure: any of (a)–(c) missing → the rule ledgers INDETERMINATE,
+never NOT FIRED.
+Rationale: §1.5 states the standard (&quot;enumeration established
+complete&quot;) but names a method only by example; D3-R6 establishes that
+declaration, demonstrated application, and evaluated acceptance are
+separate claims and all three are required.
+Acceptance: fixtures — (i) no declared method → INDETERMINATE;
+(ii) method declared, no application evidence → INDETERMINATE;
+(iii) evidence present, criterion uncheckable → INDETERMINATE;
+(iv) all three hold, no trigger → NOT FIRED.
+
+---
+
+## Family B — Obligation anatomy and the three predicates (Tree §2)
+
+### REQ-B-1 — Every rule declares TRIGGER, PROGRESS, SATISFACTION
+Source: Tree §2.1 · CONVERGED (extending Contract §4 anatomy, INHERITED)
+Requirement: A rule is well-formed only if it declares: a TRIGGER
+(binding event for unconditional rules; the named record event for
+conditional ones); a SATISFACTION condition; a PROGRESS predicate
+or the explicit declaration PROGRESS: NONE; and a pre-existing-evidence
+declaration — exactly one of PRE-EXISTING EVIDENCE: NONE, or
+PRE-EXISTING EVIDENCE: ELIGIBLE with the permitted artefact types and
+eligibility conditions specified (PROPOSED semantic addition, Alex,
+D3-R21 — the approved tree makes eligibility declaration-dependent but
+does not require the declaration to exist). Omission of any element is
+a specification defect in the rule, never a silent default: in
+particular, a missing pre-existing-evidence declaration makes the rule
+malformed and unbindable — it never licenses the evaluator to guess,
+to apply an automatic lookback window, or to treat evidence as
+eligible by default.
+Inputs: authored rule. Behaviour: well-formedness is checked when the
+rule is authored into a contract version (and again at binding, REQ-K-1
+if adopted). Outputs: well-formed rule, or a defect report naming the
+missing element.
+Failure: a malformed rule cannot be bound.
+Acceptance: fixtures — rules missing each element in turn are rejected
+with the missing element named; a rule silent on pre-existing evidence
+is refused at binding as malformed even where a plainly relevant
+preserved artefact exists.
+
+### REQ-B-2 — Predicate evidence: two channels, kept distinct
+Source: Tree §2.1, §4.1 · CONVERGED / INHERITED, reconciled with Tree
+§3.2 as RECORDED INTERPRETATION (proposed by Alex in review, D3-R1;
+adopted in v0.2 and completed under D3-R16 in v0.3 — the tree states
+both channels but not this reconciliation in these words)
+Requirement: Predicates are established through exactly two channels.
+(i) Execution-record events: the only channel that causes transitions
+in the evaluator&#x27;s fold. (ii) Expressly eligible pre-existing artefacts
+(REQ-C-2): weighed as evidence for a predicate at evaluation, without
+becoming record events and without causing a transition by themselves;
+where an artefact&#x27;s evidence establishes a predicate, the resulting
+determination is recorded at evaluation with the artefact and its
+eligibility declaration cited as the basis. An agent&#x27;s claim, narrative
+or self-report establishes nothing through either channel.
+State derivation (completion of the same interpretation, under
+D3-R16; corrected under D3-R24): lifecycle states are resolved once,
+by the evaluator, over the closed record (the Contract §6 pipeline).
+Predicate determinations from BOTH channels enter a single
+determination set, and state derivation applies REQ-D-3&#x27;s permitted
+transitions over that set, in path order, regardless of which channel
+established each predicate (the full derivation procedure — monotonic
+determinations, chronological fold, terminal locking with its stated
+chronology exception — is REQ-D-3&#x27;s, D3-R28 / D3-R31). The path
+discipline binds channel (ii)
+exactly as it binds channel (i) — v0.3&#x27;s completion wrongly implied an
+artefact could carry an instance straight to SATISFIED. Precisely:
+progress established (either channel) derives IN_PROGRESS;
+satisfaction established with progress also established (either
+channel, mixed freely) derives SATISFIED through IN_PROGRESS;
+satisfaction derives directly from NOT_STARTED only where REQ-D-3
+permits — PROGRESS: NONE declared, or a single basis (one event, or
+one artefact) establishing both predicates at once; and where
+satisfaction is established but PROGRESS is a real predicate
+established by neither channel, SATISFIED is NOT derived — the
+evaluation records the satisfaction determination as established (its
+basis cited), progress as not established, and the derived state as
+NOT_STARTED, so the design tension is visible in the report and is
+never resolved by evaluator discretion. Every artefact-derived
+determination cites the artefact, the eligibility declaration, and
+the evaluation as its basis, distinguishing it from event-derived
+determinations. Channel (ii) can never establish TRIGGER: existence
+is instantiated only by binding or by a record event (Tree §1.2); an
+artefact offered as a trigger creates no instance.
+Inputs: record events; the rule&#x27;s eligibility declarations; preserved
+artefacts. Outputs: predicate determinations, each citing its channel
+and basis.
+Failure: an artefact weighed without an eligibility declaration, or an
+agent claim treated as evidence, is an evaluation defect — the
+determination is void and the defect is reported.
+Acceptance: fixtures — (i) a record containing only an agent&#x27;s
+assertion of progress yields no IN_PROGRESS transition; (ii) a
+declared artefact establishing satisfaction for a rule declaring
+PROGRESS: NONE, in a record containing no satisfaction event, yields
+the state SATISFIED at evaluation, its derivation citing the artefact,
+the declaration and the evaluation — and the record itself gains no
+synthetic event; (iii) an artefact offered as a conditional rule&#x27;s
+trigger creates no instance; (iv) an artefact establishing
+satisfaction where PROGRESS is a real predicate established by
+neither channel yields derived state NOT_STARTED, with the
+satisfaction determination recorded as established-but-unpathed and
+the instance closing discharged-as-unmet-from-NOT_STARTED (D3-R24);
+(v) an event establishing progress plus an artefact establishing
+satisfaction yields SATISFIED, derived through IN_PROGRESS.
+
+### REQ-B-3 — One event, several roles: independent establishment
+Source: Tree §2.1 · CONVERGED
+Requirement: A single event may fill more than one predicate role for
+an instance only where its evidence independently establishes each
+role. The canonical counterexample binds: a failed retrieval that
+triggers a disclosure instance is neither its progress nor its
+satisfaction. For the CREATING trigger specifically (D3-R27): its
+trigger role extends to instantiation and trigger accounting only
+(REQ-C-1); the counterexample above is the general rule it falls
+under, and no reading of this requirement gives the creating entry
+progress or satisfaction significance.
+Acceptance: fixture — the RES-3 pattern: after the triggering failure,
+the instance is NOT_STARTED, not IN_PROGRESS, not SATISFIED.
+
+### REQ-B-4 — PROGRESS: NONE removes exactly one transition
+Source: Tree §2.2 · CONVERGED
+Requirement: With PROGRESS: NONE declared, the instance can never enter
+IN_PROGRESS; it remains NOT_STARTED until satisfaction is evidenced,
+then transitions directly to SATISFIED. Existence, evidence standards
+and the satisfaction condition are otherwise unaffected. Coach
+interventions, which key on record events directly, are unaffected.
+Acceptance: fixtures — progress-shaped evidence against a PROGRESS:
+NONE instance leaves it NOT_STARTED; satisfaction evidence moves it
+directly to SATISFIED.
+
+### REQ-B-5 — No ACTIVE state
+Source: Tree §2.3 · CONVERGED
+Requirement: The token ACTIVE appears in no lifecycle vocabulary,
+report, or evaluator output as a state. Existence is expressed by the
+instance&#x27;s presence; states are exactly the four of REQ-D-1.
+Inputs: any artefact emitting lifecycle vocabulary. Outputs: the
+four-state vocabulary only.
+Failure: an emitted ACTIVE state token is a conformance failure of the
+emitting component.
+Acceptance: fixture — evaluator output over a mixed record contains no
+ACTIVE state token.
+
+### REQ-B-6 — Judgement-based satisfaction names its judge
+Source: Tree §4.3 · INHERITED (Contract §4)
+Requirement: Where a satisfaction condition is not mechanically
+decidable, the authored rule names the judge whose evaluation decides
+it. A satisfaction condition with neither a mechanical test nor a named
+judge is a specification defect (see REQ-B-1).
+Inputs: the authored rule. Outputs: a decidable satisfaction path
+(mechanical test or named judge) or a defect report.
+Failure: an undecidable condition reaching binding is a machinery
+defect; the rule is unbindable until repaired by contract revision.
+Acceptance: fixture — a judgement-based rule without a named judge is
+rejected at authoring/binding checks.
+
+---
+
+## Family C — Temporal discipline (Tree §3)
+
+### REQ-C-1 — The evidence window opens at creation
+Source: Tree §3.1 · CONVERGED
+Requirement: An instance&#x27;s evidence window opens at its creation
+point. No earlier event may satisfy it, progress it, or
+otherwise affect it, subject only to REQ-C-2&#x27;s declared exception.
+Creation point (definition, D3-R30 — used identically in REQ-A-1,
+REQ-D-1, REQ-K-3 and here): the instance&#x27;s CREATION entry is its
+formal creation point. For a conditional rule, the triggering entry
+is the causal event that authorises creation; it is not the creation
+point. For an unconditional rule, the cause is the binding itself;
+the creation point is the CREATION entry written at binding. The
+evidence window opens at the creation point, and the instance&#x27;s
+initial state (NOT_STARTED, REQ-D-1) attaches there.
+The creating trigger (clarification required by the two-entry model of
+REQ-K-3, under D3-R27): for a conditional rule the triggering entry
+immediately precedes the CREATION entry and so sits outside the
+window. It is admitted for exactly two purposes: instantiation
+authority (it causes the instance to exist), and trigger accounting
+(it is counted among the instance&#x27;s triggering events, REQ-E-2 /
+REQ-E-3, including quantified triggers). It establishes NO progress
+or satisfaction determination for the instance it creates, whatever
+its content — causing creation confers no evidential significance
+beyond the trigger itself. Later triggering events fall inside the
+window and are under no such restriction (REQ-B-3 applies to them in
+full).
+Inputs: instance creation event; record. Behaviour: the evaluator&#x27;s
+fold for an instance begins at its creation event.
+Acceptance: fixtures — (i) satisfaction-shaped evidence timestamped
+before creation does not satisfy the instance; (ii) a conditional
+instance with a quantified trigger: the creating trigger is counted
+in the trigger accounting (count 1) while the instance begins in
+NOT_STARTED and no progress or satisfaction determination rests on
+the creating entry.
+
+### REQ-C-2 — Declared pre-existing artefacts: evidence, not events
+Source: Tree §3.2 (incl. the v0.2 clarification) · CONVERGED
+Requirement: Evidence predating creation is eligible only where the
+rule expressly declares a pre-existing artefact eligible. Considering
+the artefact does not apply the earlier event that produced it: that
+event does not transition the instance, is not re-ordered into its
+window, and is not counted among its triggering events. The artefact is
+evidence channel (ii) of REQ-B-2; its weighing is an evaluation act,
+never a fold event. Eligibility exists only through the rule&#x27;s
+mandatory declaration (REQ-B-1, D3-R21), and only artefacts matching
+the declared types and conditions may be weighed. Where the
+declaration is NONE, or an artefact falls outside it, the evaluator
+proceeds on the record alone: an unmet finding in that situation
+records the author&#x27;s decision made visible — it is not an evaluator
+error, and it is never repaired by discretion at evaluation time.
+Inputs: the rule&#x27;s eligibility declaration; the preserved artefact.
+Outputs: a predicate determination citing the artefact and the
+declaration (REQ-B-2), or a rejection.
+Failure: an undeclared artefact weighed as evidence voids the
+determination (REQ-B-2); a declared artefact whose preservation cannot
+be established is unusable — the determination it would have supported
+resolves INDETERMINATE, never in the artefact&#x27;s favour.
+Acceptance: fixtures — (i) undeclared pre-existing artefact: rejected
+as evidence; (ii) declared artefact: weighed as evidence, while the
+producing event appears nowhere in the instance&#x27;s transition history
+or trigger count.
+
+### REQ-C-3 — Ordering preserved; the evaluation is bound to the record it consumed
+Source: Tree §3.3 · CONVERGED; identity clause PROPOSED (Remmy, under
+D3-R10)
+Requirement: The evaluator folds record events in record order and
+preserves, in the evaluation record, the ordering used to reach each
+verdict. Four identities are distinguished and never conflated
+(D3-R17): (i) ENTRY IDENTITY — every execution-stream entry carries a
+stable, unique identity, assigned once by the harness at record time
+and never reassigned; (ii) RETRIEVAL-EVENT IDENTITY — the settled
+preservation duty of Tree §9.1 / REQ-I-1, a special case of (i) for
+retrieval events specifically; (iii) RECORD IDENTITY — a content hash
+over the canonical record; (iv) CONSUMED-REFERENCE IDENTITY — the
+ordered list of entry identities an evaluation actually folded. The
+universal requirement (i) is PROPOSED here (Remmy): Tree §9.1 settles
+(ii) only, and this specification does not cite it as settling more.
+The preservation duty attaching to (i): identities are preserved with
+their entries under REQ-I-1&#x27;s duties as extended by this proposal; a
+record whose entries lack identities cannot support verification —
+evaluations over it are reported unverifiable under this requirement&#x27;s
+failure path. An evaluation cites (iii) and (iv); a reordered or
+renumbered presentation is a different record unless its identity
+chain matches the consumed one; list position alone is not identity.
+Verification re-derives the evaluation from the cited identities, not
+from a look-alike record.
+(v) EVALUATION-RECORD IDENTITY (PROPOSED completion, under D3-R23):
+the evaluation record is itself an artefact with a stable, unique
+identity, assigned once by the evaluator when the evaluation record is
+created and preserved with it under REQ-I-1&#x27;s duties as extended by
+REQ-C-3 (i). It is not the execution-record hash (iii): the two
+identify different artefacts and are never substituted for one
+another. Entries inside the evaluation record — derived entries
+(REQ-D-7), discharge records (REQ-G-1) — each carry their OWN stable
+identity, evaluator-issued, and cite (v) as their containing record,
+together with the instance and stream-entry identities they concern.
+Register linking under REQ-K-3 runs over these identities.
+(vi) EVALUATION-RECORD CONTENT IDENTITY (PROPOSED, under D3-R26):
+identity (v) names the logical record; it does not pin its contents.
+The content identity is a canonical digest over the evaluation
+record&#x27;s exact ordered contents — every entry&#x27;s identity and content,
+in order — computed when the evaluation is issued, after derived
+entries (REQ-D-7) and discharge records (REQ-G-1) are entered. Every
+verdict or report relying on an evaluation record cites (v) and (vi)
+together. Post-issuance appends to the record (dispute annotations,
+supersession links, REQ-H-3) produce a NEW content identity and must
+cite the content identity they extend; the content identity as relied
+upon remains attached to the verdict it supported. Verification
+re-derives the digest from the preserved record and compares — a
+record whose contents or ordering changed under the same (v) fails
+verification. This digest is not the execution-record hash (iii): the
+artefacts differ, the inputs differ, and neither substitutes for the
+other.
+Canonicalization procedure D3-CANON-1 (PROPOSED, under D3-R29;
+corrected under D3-R32): the content identity claims EXACT content —
+the evaluation record&#x27;s entries exactly as authored and preserved,
+code point for code point. The digest input is the canonical
+serialization of the COMPLETE evaluation record as of the issuance
+point — every entry, in record order, never a selected subset.
+Serialization follows the JSON Canonicalization Scheme (RFC 8785):
+UTF-8 output; object members sorted; no insignificant whitespace;
+numbers in the scheme&#x27;s canonical form. There is NO normalisation
+preprocessing: string values and object keys are serialized exactly
+as they stand, so two strings differing only in Unicode composition
+(precomposed vs combining sequence) are different strings and produce
+different digests; two keys differing only in composition are
+different keys and are never merged; an object presenting duplicate
+exact keys is not a valid record structure, and canonicalization
+fails loudly rather than merging. Each entry serializes over its full
+field set EXCLUDING any content-identity field — the digest never
+includes itself or any value derived from it. The digest is SHA-256
+over the canonical bytes. A content identity is cited as: the record
+identity (v); the coverage point (the final entry&#x27;s identity and the
+entry count); the predecessor content identity, if any; and the pair
+(procedure identifier &quot;D3-CANON-1&quot;, digest). Append lineage: an
+extension&#x27;s content identity covers the complete extended record —
+prefix-complete supersets only — and cites its predecessor; any
+earlier snapshot remains independently verifiable by re-digesting
+exactly the entries up to its coverage point from the preserved
+record. (Correction recorded: as first written in v0.6, this
+procedure included an NFC preprocessing step, which made the identity
+a normalised-logical-content identity while the text claimed exact
+content. The step is removed here, before any digest was ever issued
+under the procedure; the identifier is retained on that basis, and
+the mismatch is owned in the response register.)
+Inputs: the closed record with event identities. Outputs: verdicts
+citing record identity + the folded ordering.
+Failure: an evaluation that cannot cite its record&#x27;s identity is
+unverifiable and is reported as such, never silently re-pointed at a
+similar record.
+Acceptance: fixtures — (i) an evaluation over a reordered copy is
+detectable and not accepted as the same evaluation; (ii) a renumbered
+copy with identical text but a broken identity chain fails
+verification against the original evaluation; (iii) two serializations
+of the same evaluation record differing only in member order and
+whitespace produce the same content identity under D3-CANON-1, while
+a changed field, a changed entry ordering, or a string differing only
+in Unicode composition produces a different one;
+(iv) after a post-issuance append, the original snapshot&#x27;s content
+identity still verifies from its cited entry set, the extended record
+carries a new content identity citing its predecessor, and the
+original verdict&#x27;s citation is unaffected.
+
+---
+
+## Family D — Lifecycle states and transitions (Tree §4)
+
+### REQ-D-1 — Four states; creation in NOT_STARTED
+Source: Tree §4.1 (INHERITED, Contract §3), §4.2 (CONVERGED)
+Requirement: Instance states are exactly NOT_STARTED, IN_PROGRESS,
+SATISFIED, BLOCKED. Every instance is created in NOT_STARTED — at
+binding for unconditional rules, and at its CREATION entry for
+conditional ones: the triggering event is the cause of creation, not
+the creation point (REQ-C-1, D3-R30).
+Acceptance: fixture — a newly triggered instance&#x27;s first recorded state
+is NOT_STARTED, including for unconditional rules.
+
+### REQ-D-2 — Transitions are computed, never declared
+Source: Tree §4.1 · INHERITED (Contract §3)
+Requirement: All transitions are computed by the harness from the
+execution record. No agent-declared or narrative-inferred state is
+accepted anywhere in the pipeline.
+Reconciliation with REQ-B-2 (D3-R24): &quot;computed from the execution
+record&quot; states where derivation happens and what it may rest on
+besides narrative — record evidence. Predicate determinations admitted
+through channel (ii) (REQ-B-2) enter derivation as determinations
+cited to their artefact basis; they are part of the evaluation over
+the record, not additions to it, and REQ-D-3&#x27;s path discipline governs
+them identically. This sentence records the B-2 interpretation&#x27;s
+consequence; it does not widen what counts as evidence.
+Inputs: the execution record; agent messages (as record content, never
+as state commands). Outputs: computed transitions only.
+Failure: a component that accepts a declared state has committed a
+machinery defect; the affected evaluation is void and re-derived.
+Acceptance: fixture — an agent message declaring &quot;obligation complete&quot;
+produces no transition without matching record evidence.
+
+### REQ-D-3 — The transition rules
+Source: Tree §4.3 · CONVERGED (on INHERITED mechanics)
+Requirement: NOT_STARTED → IN_PROGRESS on the first record event
+satisfying the PROGRESS predicate. NOT_STARTED → SATISFIED where a
+single event is both the first progress evidence (or PROGRESS is
+declared NONE) and the satisfying evidence; states are derived per
+event, never forced to dwell. IN_PROGRESS → SATISFIED on record
+evidence matching the satisfaction condition (mechanical, or by the
+rule&#x27;s named judge, REQ-B-6). No other forward transitions exist.
+These paths govern predicate determinations from either evidence
+channel (REQ-B-2, D3-R24): derivation proceeds in path order over the
+combined determination set, so a SATISFIED derivation may rest partly
+or wholly on channel-(ii) evidence — provided every step of the path
+is established by some channel — and the NOT_STARTED → SATISFIED step
+remains available only on this requirement&#x27;s stated conditions
+(PROGRESS: NONE, or a single basis establishing both predicates).
+Channel (ii) adds determinations, never transitions and never
+synthetic record events.
+Derivation procedure (D3-R28): (1) Determinations are computed over
+the whole closed record and the admitted artefacts, and are monotonic:
+once a predicate is established for an instance it stays established
+for that evaluation; later evidence never un-establishes it (negative
+outcomes are findings under REQ-E-4, not predicate negations).
+(2) State derivation is a chronological fold: entries are taken in
+record order, the running determination set grows as entries are
+folded, and after each entry the state advances along the path as far
+as the running set lawfully permits (states are derived per step,
+never forced to dwell). Within the non-terminal path, encounter order
+is inert: satisfaction evidenced before progress derives identically
+to progress before satisfaction, because the earlier determination
+remains in the running set when the path reaches it.
+(3) Terminal locking — the stated exception (D3-R31): the first
+terminal condition established in fold order fixes the state.
+SATISFIED locks (REQ-D-5 — a later blocker report is recorded as an
+event to be explained and changes nothing); BLOCKED locks within the
+attempt (REQ-D-4, REQ-D-6 — later determinations are recorded but do
+not reopen the state). Order-independence therefore holds for
+determinations, and for path derivation among non-terminal states;
+it does NOT hold across a terminal race, and the outcome there is
+chronological by rule, not by any rule&#x27;s silent precedence.
+(4) Channel-(ii) determinations enter the fold as available from its
+start: their basis, the preserved artefact, predates the run, so they
+are treated as established before the first folded entry. (An
+artefact-established satisfaction under PROGRESS: NONE therefore
+locks SATISFIED before any blocker entry is folded.)
+(5) Post-lock determinations: a determination established after the
+lock is recorded in the evaluation record with its basis and its
+post-lock position noted (e.g. &quot;satisfaction established after the
+BLOCKED lock — non-effective&quot;): never silently dropped, never
+effective against the locked state.
+Acceptance: fixtures — one per transition, plus one fixture attempting
+IN_PROGRESS → NOT_STARTED (rejected: no such transition); plus the
+ordering set (D3-R28), expected states stated: satisfaction event
+before progress event → SATISFIED; progress event before satisfaction
+event → SATISFIED; artefact-established satisfaction with
+event-established progress → SATISFIED; artefact-established
+satisfaction with progress established nowhere → NOT_STARTED with the
+determination recorded as established-but-unpathed (REQ-B-2); plus
+the terminal-race pair (D3-R31), expected states and findings stated:
+Order A — progress evidence, evaluated blocker report, satisfaction
+evidence → state BLOCKED (locked at the blocker); the satisfaction
+determination is recorded as established post-lock, non-effective;
+closure discharged-as-BLOCKED. Order B — progress evidence,
+satisfaction evidence, blocker report → state SATISFIED (locked at
+satisfaction); the blocker report is recorded as an event to be
+explained (REQ-D-5) and changes nothing; closure
+discharged-as-SATISFIED.
+
+### REQ-D-4 — BLOCKED entry: harness-set, from two states only
+Source: Tree §4.3 · INHERITED mechanics (Contract §3); entry states as
+corrected in tree v0.2 (review finding 1)
+Requirement: BLOCKED is entered only from NOT_STARTED or IN_PROGRESS,
+only by the harness, and only on an evaluated blocker report. Three
+things are kept separate (D3-R7): the REPORTED blocker (the agent&#x27;s
+account of what stopped the work); any PROPOSED category (the agent&#x27;s
+suggested §7 attribution, recorded as a claim); and the EVALUATED
+attribution (the harness&#x27;s determination against the record — the only
+value that enters the closure record as the instance&#x27;s attribution).
+The bearer never determines responsibility for its own unmet obligation
+by writing a category into its report. Where proposed and evaluated
+categories differ, both are preserved and the evaluated one governs.
+Acceptance: fixtures — (i) agent self-declared BLOCKED: no transition;
+(ii) harness-evaluated report from IN_PROGRESS: BLOCKED with blocker
+and evaluated category recorded; (iii) attempted BLOCKED from
+SATISFIED: rejected (see REQ-D-5); (iv) a report proposing AGENT where
+the harness evaluates INFRASTRUCTURE: closure records INFRASTRUCTURE,
+with the proposal preserved as a claim.
+
+### REQ-D-5 — SATISFIED is terminal
+Source: Tree §4.3 (v0.2 correction) · CONVERGED
+Requirement: SATISFIED admits no outbound transition. A blocker report
+naming an already-satisfied instance is recorded as a record event to
+be explained; it changes no state.
+Inputs: a blocker report (REQ-D-4); the instance&#x27;s established state.
+Outputs: the report preserved in the record, flagged
+explanation-required; no transition.
+Failure: any component that transitions a satisfied instance has
+committed a machinery defect; the transition is void and the defect
+reported.
+Acceptance: fixture — blocker report against a satisfied instance:
+state unchanged; the report appears in the record with an explanation
+required flag.
+
+### REQ-D-6 — BLOCKED is terminal within the attempt
+Source: Tree §4.3 · INHERITED (Contract §3)
+Requirement: A resolved blocker does not reopen the attempt. Recovery
+is a new attempt by the contract&#x27;s defined recovery path; the original
+execution history is never silently rewritten.
+Acceptance: fixture — blocker cleared mid-attempt: instance remains
+BLOCKED in that attempt; any retry appears as a new attempt with its
+own record.
+
+### REQ-D-7 — No silent unmet
+Source: Tree §4.3 · INHERITED (Contract §3)
+Requirement: An instance unmet and unblocked at submission is itself a
+contract event, surfaced in the run&#x27;s evaluation; it cannot pass
+unrecorded.
+Generation and ordering (D3-R20): the contract event is a DERIVED
+entry, generated by the evaluator at closure evaluation, after the
+execution stream is closed and the fold over it has completed. It
+exists only in the evaluation record (a register, REQ-K-3) — never in
+the execution stream — and is never an input to any fold: it records a
+determination and establishes no predicate, and it never satisfies the
+obligation it names. The derived entry carries its own stable
+identity, evaluator-issued (REQ-C-3 (v)); its provenance cites the
+evaluation-record identity, the instance&#x27;s identity, and the
+submission entry&#x27;s identity; its position is after every folded entry
+in the evaluation record&#x27;s preserved ordering (REQ-C-3). The structural guard
+is the pipeline itself: the stream is closed and verified before
+evaluation begins (Contract §6), so a derived entry cannot be inserted
+retrospectively into the record being evaluated; a component that
+writes derived entries into the stream commits a machinery defect.
+Acceptance: fixtures — (i) submission with an unmet, unblocked
+instance produces the contract event and an INCOMPLETE closure path
+(REQ-G-2); (ii) the derived entry appears in no fold&#x27;s consumed
+references (REQ-C-3 (iv)) and the instance&#x27;s derivation is identical
+with and without it.
+
+---
+
+## Family E — Evaluation: three axes and per-event accounting (Tree §5)
+
+### REQ-E-1 — Three axes, never collapsed
+Source: Tree §5.1 · CONVERGED
+Requirement: Every evaluation of an instance reports three independent
+axes: lifecycle state (REQ-D-1 values); evaluation status (RESOLVED /
+INDETERMINATE — could the evaluator establish that state?); attribution
+(REQ-H-1 values, where applicable under REQ-H-2). No axis&#x27;s value may
+be derived from another&#x27;s by defaulting or implication.
+Acceptance: fixture — a BLOCKED instance with unestablishable
+responsibility reports state BLOCKED, evaluation status RESOLVED (the
+state was established), attribution INDETERMINATE — three values from
+three separate determinations.
+
+### REQ-E-2 — One instance per rule per run
+Source: Tree §5.2 · CONVERGED
+Requirement: Repeated triggering events accumulate within the single
+instance a rule produces per run; they never spawn sibling instances.
+Acceptance: fixture — five triggering events in one run yield one
+instance carrying five accounted events (see REQ-E-3).
+
+### REQ-E-3 — Per-event accounting for quantified conditions
+Source: Tree §5.2 · CONVERGED
+Requirement: Where a satisfaction condition is quantified over
+triggering events, the evaluator enumerates every triggering event —
+including the creating trigger (REQ-C-1, D3-R27) — matches each
+required response to its event, and names unmatched
+events. Outcomes: all matched → SATISFIED; some unmatched → the finding
+NOT SATISFIED with the accounting shown (REQ-E-4); evidence
+unevaluable → evaluation status INDETERMINATE. Partial satisfaction
+appears only in the accounting, never as a state.
+Acceptance: fixtures — 5 triggers/5 matched → SATISFIED; 5/3 → NOT
+SATISFIED finding with 2 named outstanding; corrupted match evidence →
+INDETERMINATE with no satisfaction claim either way.
+
+### REQ-E-4 — NOT SATISFIED is a finding, not a state
+Source: Tree §5.3 · CONVERGED
+Requirement: A negative evaluation records the finding NOT SATISFIED
+attached to the evaluation: the satisfaction condition was not met at
+closure. The finding applies whatever the instance&#x27;s terminal state —
+NOT_STARTED, IN_PROGRESS, or BLOCKED. Where the instance is BLOCKED,
+the finding coexists with the blocker disposition (REQ-D-4): the
+blocker explains why work stopped; the finding records that the
+condition stands unmet; neither replaces the other, and the lifecycle
+state remains BLOCKED. No artefact may list NOT SATISFIED among
+lifecycle states. (Corrected under D3-R5: v0.1&#x27;s parenthetical silently
+excluded BLOCKED, contradicting REQ-G-1&#x27;s discharged-as-BLOCKED.)
+Acceptance: fixtures — (i) an unmet instance that had begun closes as
+unmet-from-IN_PROGRESS with finding NOT SATISFIED; its state field
+never contains the finding; (ii) a BLOCKED instance whose quantified
+condition has unmatched events carries both the blocker disposition
+and the NOT SATISFIED finding with its accounting (REQ-E-3).
+
+### REQ-E-5 — Indeterminate closure preserves the fold
+Source: Tree §5.4 · CONVERGED
+Requirement: States are derived by folding the record in order; where
+the record becomes unusable, evaluation stops and the closure preserves:
+the last established lifecycle state; the event reference establishing
+it; the point where evaluation stopped; evaluation status
+INDETERMINATE; attribution where applicable (REQ-H-2, incl. I-2 for the
+indeterminacy itself). No established state is erased because later
+evidence is unavailable.
+Acceptance: fixture — a record corrupted after an IN_PROGRESS
+transition closes with state IN_PROGRESS preserved, the establishing
+event cited, and the corruption point named.
+
+### REQ-E-6 — Verification stays three-way and uncollapsed
+Source: Tree §5.1 · INHERITED (Contract §8)
+Requirement: The GATE judges evidence receipt; the CONTRACT EVALUATOR
+judges process completion and resolves lifecycle states over the closed
+record; the EXAMINER judges support. No role verifies its own work,
+and no role&#x27;s verdict substitutes for another&#x27;s.
+Acceptance: fixture — a gate receipt verdict presented as an
+examination verdict is rejected as a category error.
+
+---
+
+## Family F — BLOCKED at two levels (Tree §6, Interpretation I-1)
+
+### REQ-F-1 — BLOCKED is instance-level; siblings are preserved
+Source: Tree §6.1 · RECORDED INTERPRETATION I-1
+Requirement: A harness-set BLOCKED ends that instance&#x27;s life within the
+attempt and ordinarily precipitates closure; it never overwrites
+sibling instances&#x27; states. The attempt&#x27;s outcome vocabulary is COMPLETE
+/ INCOMPLETE; there is no attempt-level BLOCKED status. A satisfied
+instance remains SATISFIED in a run that closes INCOMPLETE.
+Acceptance: fixture — a run with one BLOCKED and one SATISFIED instance
+closes INCOMPLETE with the satisfied instance still SATISFIED.
+Note: this requirement carries an interpretation&#x27;s status. If Ben ever
+supersedes I-1 by amendment, this requirement is revisited first.
+
+---
+
+## Family G — Closure and discharge (Tree §7)
+
+### REQ-G-1 — Discharge preserves the exact terminal result
+Source: Tree §7.1 · CONVERGED
+Requirement: Discharge is the administrative closure of an instance
+when its attempt closes; it changes nothing in the record. Discharge
+is recorded in the evaluation register, never as an execution-stream
+entry (REQ-K-3, D3-R22) — &quot;changes nothing in the record&quot; refers to
+the execution record, and the register residence is what keeps that
+true. The closure
+record preserves exactly one form: discharged-as-SATISFIED;
+discharged-as-BLOCKED; discharged-as-unmet-from-IN_PROGRESS;
+discharged-as-unmet-from-NOT_STARTED; or, for an indeterminate closure,
+the REQ-E-5 record. &quot;Discharged&quot; never reads as &quot;met.&quot;
+Acceptance: fixture — Run 2A attempt 3&#x27;s shape (infrastructure failure,
+no satisfactions): every instance discharged, none satisfied, and the
+report cannot be rendered to suggest otherwise.
+
+### REQ-G-2 — Honest incompletion closes the run INCOMPLETE
+Source: Tree §7.2 · INHERITED (Contract §6)
+Requirement: A run whose mandatory obligations are not all satisfied
+closes INCOMPLETE, naming the unmet obligations; its material is
+preserved as an attempt artefact, is not gradeable, and enters no
+comparison. Honest incompletion is non-punitive: an accurate BLOCKED
+report counts as success at the contract&#x27;s honesty requirements while
+failing the task, and the record shows both, separately.
+Acceptance: fixture — a run with an honestly blocked mandatory
+obligation closes INCOMPLETE, names it, and the artefact is marked
+not-gradeable.
+
+---
+
+## Family H — Attribution, dispute, impossibility, waiver (Tree §8)
+
+### REQ-H-1 — Attribution: exactly one of four, never converted
+Source: Tree §8.1 · INHERITED (Contract §7)
+Requirement: Every unmet obligation and every incomplete run carries
+exactly one attribution: AGENT · INFRASTRUCTURE · RECORD-PRESERVATION ·
+INDETERMINATE. Categories are never converted into one another in
+reporting; INDETERMINATE is a final answer, not a placeholder.
+Acceptance: fixture — a report re-labelling an INDETERMINATE item as
+AGENT downstream is rejected; the original category persists.
+
+### REQ-H-2 — Attribution scope
+Source: Tree §8.2 · CONVERGED statement of §7, with clause (iii) as
+RECORDED INTERPRETATION I-2
+Requirement: Attribution is required for (i) every unmet instance;
+(ii) every incomplete run; (iii) every indeterminate evaluation —
+attribution OF the indeterminacy. It is never assigned to a satisfied
+instance: the field is absent, not zero. Clause (iii) is applied as an
+interpretation and labelled as one wherever this specification is
+cited; it is not §7&#x27;s plain text.
+Acceptance: fixtures — satisfied instance: attribution field absent;
+indeterminate closure: attribution present and marked as concerning
+the indeterminacy (I-2).
+
+### REQ-H-3 — Dispute is an annotation, never a mutation
+Source: Tree §8.3 · CONVERGED
+Requirement: A dispute attaches to a verdict as an annotation with
+provenance; the disputed verdict stands in the report; states are never
+recomputed on the strength of a dispute. Only an owner ruling
+supersedes: a decision by Ben under the authority of REQ-J-1, recorded
+as a new versioned decision. A superseding ruling has exactly two
+effects: it annotates the interpretation of the existing closed record
+(the verdict is marked superseded-by, with a link to the ruling; the
+verdict and the record stand byte-unchanged), and it governs future
+evaluations. The prohibition on rewriting a closed record is absolute
+(D3-R8).
+Acceptance: fixture — a disputed verdict remains in the report
+unchanged, dispute riding beside it; an attempted in-place edit of the
+closed record is rejected; a superseding ruling adds the annotation
+link and leaves the original verdict intact beneath it.
+
+### REQ-H-4 — IMPOSSIBLE: a separate specification finding
+Source: Tree §8.4 · CONVERGED (representation approved by Alex on
+review, 2026-11-08)
+Requirement: An IMPOSSIBLE determination is recorded as a specification
+finding in a defect record (REQ-H-6), not as an instance evaluation
+outcome and not as a value on any evaluation axis. The defect record
+and every evaluation it affects reference one another (mandatory
+reciprocal links) — where affected instances or evaluations exist. A
+pre-binding finding (REQ-K-1) may have none: its links bind to the rule
+it indicts and to the satisfiability evaluation that established it
+(REQ-H-6), and an empty instance link set is legitimate, not a defect
+in the record (D3-R3). IMPOSSIBLE causes no lifecycle transition by
+itself; an affected instance&#x27;s state remains whatever the record
+establishes.
+Acceptance: fixture — an impossible rule yields a defect record, links
+in both directions, and an affected instance whose three axes are
+exactly what the record independently establishes.
+
+### REQ-H-5 — Defect-discharge (amendment A1, owner-approved)
+Source: Tree §8.4, §11 A1 · OWNER-RULED (Ben, 2026-11-08)
+Requirement: Where a rule is established IMPOSSIBLE, an affected
+instance may be discharged on the specification defect: its closure
+record cites the defect record as its accounting, and it is not
+classified unmet for Contract §7 attribution purposes. This requirement
+takes effect only through a future versioned revision of the execution
+contract under the §10 rule (REQ-J-1); until that revision exists, the
+pre-amendment behaviour (REQ-G-1 forms, REQ-H-1 attribution) governs,
+and the conflict documented in tree §8.4 stands disclosed.
+Acceptance: fixture — against a contract version containing the A1
+revision: an impossible-rule instance closes defect-discharged with no
+attribution category; against v0.1: the same case closes under the old
+forms with the disclosed conflict noted.
+
+### REQ-H-6 — Defect record format
+Source: Tree §8.4 (format assigned to this specification) · PROPOSED
+(Remmy, in this specification)
+Requirement: A defect record is an append-only EVENT LOG, not a
+mutable form. Its creation entry contains: a unique defect identity;
+the rule&#x27;s identity and pinned version; an ESTABLISHING REFERENCE of
+one of two kinds — (a) an instance evaluation reference, for a finding
+made against a bound instance mid-run; or (b) a pre-binding
+satisfiability evaluation reference, citing the REQ-K-1 evaluation
+record (rule + contract version + check outcome) for a finding made
+before any instance existed (D3-R3); a statement of the condition that
+cannot be met as specified; links to every affected instance and
+evaluation, where they exist (an empty set is legitimate for kind (b));
+and the scope in which it was established (run identity, or the
+binding stage). Disposition is never a field that gets overwritten:
+every disposition change (open → discharged-under-A1 → superseded by
+contract revision, with the revision cited) is appended as a dated
+disposition ENTRY, and the record&#x27;s current disposition is derived
+from its latest entry (D3-R9). The creation entry is immutable.
+Rationale: the tree assigns the format to D3 without settling it; this
+is the minimal structure that makes REQ-H-4&#x27;s reciprocal links and
+REQ-H-5&#x27;s accounting auditable, covers pre-binding findings, and keeps
+&quot;append-only&quot; meaningful.
+Acceptance: fixtures — (i) a creation entry missing any field fails
+validation; (ii) a kind-(b) record with an empty instance link set
+validates; (iii) a disposition change appears as a new entry, the
+creation entry byte-unchanged, and the derived disposition follows the
+latest entry; (iv) an attempted overwrite of the creation entry is
+rejected.
+
+### REQ-H-7 — Waiver does not exist
+Source: Tree §8.5 · CONVERGED (mirroring Contract §8, INHERITED)
+Requirement: There is no waiver operation in any component. The only
+legitimate change to an obligation is an authorised, versioned contract
+revision applying to future runs, never retroactively to a run in
+flight or a closed record. A report showing an obligation neither
+satisfied, blocked, nor named unmet records a machinery failure.
+Acceptance: fixtures — a &quot;waive&quot; request is rejected as an unknown
+operation; a mid-run revision leaves the in-flight run&#x27;s obligations
+unchanged.
+
+---
+
+## Family I — Harness-borne obligations and integrity checkers (Tree §9)
+
+### REQ-I-1 — The harness bears preservation obligations
+Source: Tree §9.1 · CONVERGED
+Requirement: The harness&#x27;s preservation duties (full payloads
+preserved; stable retrieval-event identities; record integrity) are
+themselves obligations, borne by the harness and evaluated by others.
+Bearer status is not evaluator status: the harness never verifies its
+own preservation work. Scope note (D3-R17): this requirement settles
+retrieval-event identity. The broader duty — a stable identity for
+every stream entry — is proposed at REQ-C-3 / REQ-K-3 and is not
+settled here.
+Acceptance: fixture — a preservation verdict issued by the harness
+about its own work is rejected; the verdict must come from a checker
+(REQ-I-2).
+
+### REQ-I-2 — Checker contract: five properties and the identity trio
+Source: Tree §9.2 · CONVERGED
+Requirement: Each integrity checker is named and separately specified
+with: a defined input artefact; a specified validation procedure; a
+reproducible result; a defined failure path when the artefact is
+missing or invalid; and its version pinned and recorded with its
+verdict. Every verdict records the reproducibility trio: declared
+version; implementation hash; the input artefacts&#x27; identities.
+Dependency accounting (PROPOSED clause, under D3-R15): a verdict also
+records the checker&#x27;s declared dependency set — configuration, runtime
+dependencies, and external reference data, each by identity — or an
+explicit declaration that no such dependencies exist. A dependency
+that exists but is not recorded voids the verdict&#x27;s reproducibility
+claim, and the verdict is labelled accordingly. Recording dependencies
+does not establish independence: a hash is not independence, and U4
+(REQ-I-4) remains unresolved.
+Acceptance: fixture — a verdict lacking any trio element fails
+validation; re-running a checker over identical inputs reproduces the
+identical verdict; a verdict whose checker is shown to depend on an
+unrecorded configuration is re-labelled reproducibility-void.
+
+### REQ-I-3 — Preservation failure never reads as success
+Source: Tree §9.3 · CONVERGED
+Requirement: A missing or corrupted record can never become evidence
+that preservation succeeded. Judgements dependent on unestablishable
+evidence resolve to evaluation status INDETERMINATE with
+RECORD-PRESERVATION attribution where applicable; the harness&#x27;s failure
+is never converted into the agent&#x27;s.
+Acceptance: fixture — a deleted payload yields INDETERMINATE /
+RECORD-PRESERVATION outcomes, never a pass and never an AGENT
+attribution for the dependent judgement.
+
+### REQ-I-4 — Checker independence
+Source: Tree §11 U4 · UNRESOLVED (with a PROPOSED minimum property) ·
+Acceptance class: NOT-YET
+Requirement: UNRESOLVED. Before any checker is relied on, independence
+must be defined: which dependencies a checker may share with what it
+checks; which must be independent; how common-mode failure is excluded;
+what evidence shows the checker can detect the failure it guards
+against. Minimum property, PROPOSED (Remmy; Alex concurring it is
+necessary, not sufficient): a checker must be able to fail when the
+checked component fails in the way the checker exists to catch.
+Blocking decision: the independence definition itself — a semantic
+decision for the design process, not an implementation detail.
+Acceptance: cannot yet be written; that is the point of the UNRESOLVED
+marking.
+
+---
+
+## Family J — Authority and change (Tree §10)
+
+### REQ-J-1 — Approval authority: Ben alone; proposals open
+Source: Tree §10.3 · OWNER-RULED (Ben, 2026-11-08)
+Requirement: Approval of a contract change belongs to Ben alone, and
+his authority is fully effective: a change takes effect when Ben agrees
+to a proposal — including a proposal authored by Alex or by Remmy. Any
+party may author and version a proposal (authorship is open). Alex and
+Remmy may propose; neither may approve — not their own proposals, and
+not each other&#x27;s. No standing delegated approval exists, and authority
+in one process never leaks into another. Ben&#x27;s words of record: &quot;me
+only unless we agree to a proposal made by you or alex.&quot;
+(Corrected under D3-R4: v0.1&#x27;s wording — &quot;no component or person may
+approve its own or another&#x27;s proposal&quot; — prohibited Ben himself from
+approving, contradicting the ruling it recorded.)
+Acceptance: fixture — a contract revision carrying only Alex&#x27;s or
+Remmy&#x27;s approval fails validation at binding; the same revision with
+Ben&#x27;s recorded agreement binds.
+
+### REQ-J-2 — Binding is not an authority
+Source: Tree §10.2, §1.3 · CONVERGED
+Requirement: The binding mechanism (REQ-A-2) exercises no discretion:
+it applies the approved, version-pinned contract and cannot select,
+skip, or amend rules.
+Acceptance: fixture — a binding request that would omit a bound rule
+is rejected; binding output is a pure function of contract version +
+role + task type.
+
+---
+
+## Family K — Pre-binding controls and cross-cutting duties
+
+### REQ-K-1 — Pre-binding satisfiability check
+Source: Tree §11 D3 · PROPOSED (accepted as proposed by Alex on review,
+2026-11-08)
+Requirement: Before a rule is bound into a contract instance, its
+satisfaction condition is checked for meetability as specified. The
+check has exactly three outcomes, kept distinct: (i) NO DEFECT FOUND —
+the check&#x27;s declared method found no unmeetability; this is not a
+proof of satisfiability, only the absence of a demonstrated defect.
+(ii) IMPOSSIBLE-ESTABLISHED — the check demonstrates the condition
+cannot be met as specified; only a method capable of demonstrating
+unmeetability (the mechanical contradiction class) can return this
+outcome. The rule is refused at binding and a defect record is raised
+(REQ-H-6, establishing reference kind (b)) instead of an instance.
+(iii) UNDETERMINED — the check cannot decide, which is the default for
+judgement-based conditions (REQ-B-6). UNDETERMINED never converts to
+IMPOSSIBLE-ESTABLISHED, never raises a defect record, and never blocks
+binding by itself; it is recorded with the rule&#x27;s binding record so the
+uncertainty is visible rather than laundered into either certainty.
+An unknown result is not proof of impossibility.
+Locus and binding effect (PROPOSED clause, under D3-R18): the check&#x27;s
+primary locus is specification/authoring — an IMPOSSIBLE-ESTABLISHED
+rule cannot enter a pinned contract version at all; the version is
+refused, not the rule alone. If binding nevertheless encounters a
+demonstrated-impossible rule (a version pinned before the check, or a
+check disagreement), BINDING FAILS ENTIRELY for that run: no contract
+instance is produced, no partial instance is run against (REQ-A-2),
+the defect record is raised, and the run does not start.
+Exclusion-and-proceed — dropping the one rule and binding the rest —
+is PROHIBITED: it would silently rewrite the pinned contract for that
+run, the runtime policy invention Tree §1.2 forbids, and could strip a
+mandatory obligation out of a run that then reports completeness.
+This is a preventive control; it does not resolve cases whose
+impossibility becomes visible only mid-run (those follow REQ-H-4 /
+REQ-H-5).
+Status note: PROPOSED until its semantics are settled — in particular
+what &quot;checked&quot; mechanically means for non-mechanical conditions
+(REQ-B-6 judges) is itself part of what review must settle.
+Acceptance: fixtures — (i) a rule whose condition contradicts a
+fetching prohibition in the same contract version is refused at
+binding with a kind-(b) defect record raised; no instance is created;
+(ii) a judgement-based condition the check cannot decide binds
+normally with UNDETERMINED recorded; no defect record exists;
+(iii) a binding attempted against a version containing a
+demonstrated-impossible rule fails entirely: no contract instance is
+produced, the remaining rules do not bind, and the run does not start.
+
+### REQ-K-2 — Obligation clocks: none specified
+Source: Tree §11 U2 · UNRESOLVED · Acceptance class: NOT-YET (the
+conformance check below covers the absence claim only)
+Requirement: This specification defines no obligation-clock semantics
+(no satisfaction deadlines inside a run). No component may invent one.
+Whether any obligation should carry a clock is an open decision,
+parked with its rationale in the tree: no instance in the record needs
+one; none is invented.
+Acceptance: a conformance check over this specification finds no clock
+semantics to implement; any future clock arrives by contract revision
+under REQ-J-1.
+
+### REQ-K-3 — Record taxonomy: kinds, roles, and the stream boundary
+Source: presupposed by Tree §§1–5, nowhere enumerated · PROPOSED
+(Remmy, in this specification; revised under D3-R2 and D3-R11)
+Requirement: Three distinctions govern the record.
+(1) KIND vs ROLE. Every entry in the execution-event stream has
+exactly one KIND — what sort of entry it is. Predicate ROLES (trigger,
+progress, satisfaction, per REQ-B-1) are not kinds: they are
+assignments the evaluator computes per instance over entries, and one
+entry may carry several roles, or none (REQ-B-3). No entry is ever
+required to classify under a role name.
+(2) STREAM KINDS (minimal proposed set): CREATION (the harness&#x27;s
+instantiation entries — one per instance created; the CREATION entry
+is the instance&#x27;s formal creation point, REQ-C-1 / D3-R30. For a conditional
+rule, the CREATION entry is a separate entry from the triggering
+entry: it carries its own identity (REQ-C-3 (i)), occupies the stream
+position immediately following the triggering entry, and cites the
+triggering entry&#x27;s identity as its cause; where one event triggers
+several instances, their CREATION entries follow consecutively in
+pinned-contract rule order. For an unconditional rule, the CREATION
+entry is written at binding and cites the binding (the contract
+instance&#x27;s identity) as its cause. A CREATION entry establishes no
+predicate roles — trigger is a role the evaluator assigns to the
+triggering entry (REQ-B-3), never to the CREATION entry. (D3-R25.));
+ACTION (an attempt at work — a retrieval,
+a fetch, a production, a communication); SUBMISSION; BLOCKER-REPORT;
+CLOSURE (exactly one entry kind: the harness&#x27;s record-sealing entry
+that closes the stream — one per run, final position; administrative
+discharge (REQ-G-1) and evaluator-derived closure findings (REQ-D-7)
+are NOT stream entries and are never classified CLOSURE — they live in
+the evaluation register, per (3) below and D3-R22); UNCLASSIFIED
+(an entry the harness cannot determine the kind of — the honest sink:
+it preserves the exactly-one-kind property and establishes no
+predicate). UNCLASSIFIED is not UNMAPPED (D3-R19): an UNMAPPED EVENT
+is a finding about a perfectly classifiable entry — kind known — for
+which no authored rule applies (REQ-A-1); it is reported in the run
+report (REQ-K-4), not forced into the taxonomy as a kind.
+(3) THE BOUNDARY. Outside the stream, in linked registers, never
+folded as events: checker verdicts (REQ-I-2); defect records (REQ-H-6);
+dispute annotations (REQ-H-3); owner rulings (REQ-J-1, REQ-H-3);
+administrative discharge records (REQ-G-1); and
+evaluation-derived entries, including the unmet-at-submission contract
+event (REQ-D-7), which live in the evaluation record under REQ-D-7&#x27;s
+generation rules. Registers link to stream entries and instances by
+identity (REQ-C-3); they are evidence about the run, not events in it.
+Every stream entry carries its stable identity (REQ-C-3 (i),
+PROPOSED), its position in the record order (REQ-C-3) and the identity
+of the instance(s) it concerns, or is explicitly instance-free (e.g.
+CREATION at binding).
+Rationale: the tree&#x27;s machinery folds &quot;record events&quot; throughout but
+never enumerates their kinds; v0.1&#x27;s taxonomy named roles as kinds and
+contradicted REQ-B-3. This revision separates the axes the design
+keeps separate everywhere else.
+Acceptance: fixtures — (i) every entry in a synthetic record classifies
+into exactly one kind; (ii) a single ACTION entry assigned trigger,
+progress and satisfaction roles for one instance validates — roles are
+not kinds; (iii) a checker verdict presented as a stream entry is
+rejected to its register; (iv) an unclassifiable entry lands in
+UNCLASSIFIED, establishes nothing, and is flagged in the report;
+(v) a well-formed ACTION entry matching no authored rule is reported
+as an unmapped event in the run report while keeping its ACTION kind;
+(vi) a retrieval ACTION triggering a conditional instance produces
+exactly two entries — the ACTION, unchanged, and a CREATION entry
+immediately following it and citing its identity — the instance links
+to both, exactly-one-kind holds throughout, and an unconditional
+rule&#x27;s CREATION entry at binding cites the binding as its cause.
+
+### REQ-K-4 — Run report composition
+Source: compiled from Tree §1.5, §5, §7, §9 · CONVERGED (as a
+compilation of the cited duties)
+Requirement: A run&#x27;s report contains: the rule ledger (REQ-A-4); every
+instance&#x27;s evaluation record — three axes (REQ-E-1), per-event
+accounting where quantified (REQ-E-3), findings (REQ-E-4), closure form
+(REQ-G-1), each cited by its evaluation-record identity and content
+identity (REQ-C-3 (v), (vi)), the content identity cited with its
+canonicalization procedure identifier (D3-CANON-1, REQ-C-3);
+defect records and their links
+(REQ-H-4, REQ-H-6); checker
+verdicts with their reproducibility trios (REQ-I-2); and the run&#x27;s
+closure outcome with its attribution (REQ-G-2, REQ-H-1); every
+UNCLASSIFIED entry by identity (REQ-K-3); and every unmapped event —
+a classified entry with no applicable authored rule (REQ-A-1,
+D3-R19). A report
+missing a component is incomplete as a report, whatever the run&#x27;s own
+outcome. Checker verdicts are reported as REPORTED evidence: their
+presence, and their reproducibility trio, confer no trust by
+themselves, and every report carrying them carries the standing caveat
+that checker independence is UNRESOLVED (REQ-I-4, UX-1). Where an
+evaluation relies on a checker verdict for a preservation judgement,
+the reliance is stated explicitly in the evaluation record — reliance
+is visible, never silent (D3-R12).
+Acceptance: fixture — a report generator run over a synthetic closed
+record emits every component; removing any one fails report
+validation.
+
+---
+
+## UNRESOLVED register (consolidated)
+
+- **UX-1 (Tree U4) — Checker independence.** Carried at REQ-I-4. The
+  definition (shared vs independent dependencies, common-mode failure,
+  demonstrated detection) is a semantic decision outstanding. The
+  minimum property is PROPOSED only.
+- **UX-2 (Tree U2) — Obligation clocks.** Carried at REQ-K-2. No clock
+  semantics exist in this specification; the decision whether any
+  obligation needs one remains open.
+- **UX-3 — NOT FIRED enumeration methods.** REQ-A-6 (revised) proposes
+  the declared / evidenced / evaluated structure. Until that proposal
+  is settled, rules without a declared method ledger conservatively
+  (FIRED or INDETERMINATE only) — the conservative behaviour is
+  specified; the anatomy addition is not settled.
+- **UX-4 — Satisfiability-check semantics.** REQ-K-1 is PROPOSED; its
+  three-outcome structure is specified, but what the check mechanically
+  consists of for judgement-based conditions (REQ-B-6) is unsettled
+  and blocks K-1&#x27;s full testability.
+- **UX-5 — Taxonomy finality.** REQ-K-3&#x27;s kind set and stream boundary
+  are PROPOSED (revised under D3-R2/R11, again under D3-R19/R20 —
+  UNCLASSIFIED split from unmapped events; derived entries moved to
+  the evaluation register — and again under D3-R22, discharge excluded
+  from the stream and CLOSURE narrowed to the record-sealing entry).
+  If review extends them, dependent fixtures
+  change; the fold semantics (REQ-C-3, REQ-E-5) do not.
+
+## What this specification is not
+
+It is not an implementation, a schema, or a contract amendment. It does
+not modify EXECUTION-CONTRACT-v0.1. It does not execute Stage 2.
+Requirements marked OWNER-RULED record Ben&#x27;s decisions of 2026-11-08;
+requirements marked PROPOSED or UNRESOLVED bind nothing until the
+design process settles them and, where the tree reserves it, Ben rules.
+
+— v0.1 assembled by Remmy, 2026-11-08, under Alex&#x27;s instruction
+(pb-mw7raqga-j-ajwb). v0.2 revised by Remmy, 2026-11-08, under Alex&#x27;s
+first adversarial review (pb-mw7rlht4-k-iln7). v0.3 revised by Remmy,
+2026-11-08, under Alex&#x27;s second adversarial review
+(pb-mw7rv891-l-kcm9). v0.4 revised by Remmy, 2026-11-08, under Alex&#x27;s
+third adversarial review (findings D3-R21…R23). v0.5 revised by Remmy,
+2026-11-08, under Alex&#x27;s fourth adversarial review
+(pb-mw7s9h2g-o-8ypl). v0.6 revised by Remmy, 2026-11-08, under Alex&#x27;s
+fifth adversarial review (pb-mw7sktdy-r-mf8). v0.7 revised by Remmy,
+2026-11-08, under Alex&#x27;s sixth adversarial review
+(pb-mw7sz57c-v-1z6i). For Alex&#x27;s further
+adversarial review. Ben
+receives it for the owner-approval step after the review settles, per
+the governance trunk.
+
+## 18. Change record (v0.1 → v0.2)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.1-PROPOSAL.md, SHA-256
+d099d44cda3df38b412c2fcf5de20f61d89a90f5188f4224c42cc0141b961b67,
+preserved intact. Review: Alex&#x27;s findings D3-R1…R15
+(pb-mw7rlht4-k-iln7). Responses: PROCESS-TREE-D3-REVIEW-RESPONSE-v0.1.md
+— all fifteen findings accepted; none rejected; none left unresolved
+by Remmy (the items that remain open are the ones the design itself
+carries open: UX-1…UX-5).
+
+Changes, by finding: R1 — REQ-B-2 rewritten as two evidence channels,
+the reconciliation labelled RECORDED INTERPRETATION (Alex&#x27;s proposal,
+adopted); REQ-C-2 cross-references it and gains fields. R2 — REQ-K-3
+rewritten: kind vs role separated. R3 — REQ-H-4 link rule covers
+zero-instance findings; REQ-H-6 gains the two establishing-reference
+kinds. R4 — REQ-J-1 corrected (Ben&#x27;s approval authority restored to
+the text). R5 — REQ-E-4 corrected (the finding applies to BLOCKED;
+coexists with the blocker disposition). R6 — REQ-A-6 rewritten:
+declared / evidenced / evaluated. R7 — REQ-D-4 separates reported
+blocker, proposed category, evaluated attribution. R8 — REQ-H-3 ties
+supersession to REQ-J-1 and defines its two effects; the no-rewrite
+rule stated as absolute. R9 — REQ-H-6 redefined as an append-only
+event log with derived disposition. R10 — REQ-C-3 gains record
+identity binding (clause PROPOSED). R11 — REQ-K-3 defines the stream
+boundary and the UNMAPPED sink. R12 — REQ-K-4 carries the
+reported-not-relied-upon caveat and visible-reliance rule. R13 —
+format preamble corrected; Acceptance class NOT-YET marked at REQ-I-4
+and REQ-K-2; Inputs/Failure fields completed for REQ-A-5, B-2, B-5,
+B-6, C-2, D-2, D-5. R14 — the fixture convention now states its limit
+in the preamble: mechanical conformance only. R15 — REQ-I-2 gains the
+dependency-accounting clause (PROPOSED); hash ≠ independence stated.
+K-1 (Alex&#x27;s §4 point) — REQ-K-1 rewritten with three outcomes;
+UNDETERMINED never converts to IMPOSSIBLE-ESTABLISHED.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+## 19. Change record (v0.2 → v0.3)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.2-PROPOSAL.md, SHA-256
+3bec8634f051005f5917c23e2c082d2d0043dc646849c5c0db345accf0937d19,
+preserved intact. Review: Alex&#x27;s findings D3-R16…R20
+(pb-mw7rv891-l-kcm9) — v0.2 found NOT READY for Ben. Responses:
+PROCESS-TREE-D3-REVIEW-RESPONSE-v0.2.md — all five findings accepted;
+the resolutions of R16 and R18 are Remmy&#x27;s constructions, labelled
+where they extend settled text, and are themselves subject to this
+review round.
+
+Changes, by finding: R16 — REQ-B-2 completed: states are resolved once
+by the evaluator over the closed record; channel-(ii) evidence can
+derive IN_PROGRESS / SATISFIED at evaluation with basis cited, never
+TRIGGER; REQ-D-3 carries the matching clause. R17 — REQ-C-3
+distinguishes entry / retrieval-event / record / consumed-reference
+identities; the universal entry-identity requirement is labelled
+PROPOSED with its preservation duty; REQ-I-1 gains a scope note;
+REQ-K-3 requires entry identity per entry. R18 — REQ-K-1 gains the
+locus and binding-effect clause (PROPOSED): specification-stage
+refusal primary; a binding that encounters a demonstrated-impossible
+rule fails entirely; exclusion-and-proceed prohibited; REQ-A-2&#x27;s
+failure rule cross-references it; a fixture covers total failure.
+R19 — UNMAPPED split: the K-3 sink kind is renamed UNCLASSIFIED;
+unmapped events are a report finding over classified entries (REQ-A-1
+terminology aligned; REQ-K-4 accounts for both). R20 — REQ-D-7 gains
+generation, identity and ordering rules for the derived contract
+event (evaluation register only, never folded, structurally barred
+from the closed stream); REQ-K-3&#x27;s boundary list updated to match.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+## 20. Change record (v0.3 → v0.4)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.3-PROPOSAL.md, SHA-256
+4660e79468e051b73ed845f497ea8c68cfb6ea8005db6284cf071a66a256a8f3,
+preserved intact. Review: Alex&#x27;s third adversarial review (findings
+D3-R21…R23, 2026-11-08), which also recorded: R16 ACCEPTED, R17
+ACCEPTED, R18 ACCEPTED AS PROPOSED, R19 ACCEPTED, R20 ACCEPTED with
+the R23 clarification. Responses:
+PROCESS-TREE-D3-REVIEW-RESPONSE-v0.3.md — all three findings accepted.
+
+Changes, by finding: R21 — REQ-B-1 gains the mandatory
+pre-existing-evidence declaration (PRE-EXISTING EVIDENCE: NONE, or
+ELIGIBLE with types and conditions); omission is malformation, never a
+default and never a lookback window (PROPOSED semantic addition,
+Alex). REQ-C-2 cross-references the declaration and states the
+consequence honestly: an unmet finding under NONE is the author&#x27;s
+decision made visible, not an evaluator error. R22 — REQ-K-3&#x27;s CLOSURE
+kind narrowed to the single record-sealing entry; administrative
+discharge and evaluator-derived closure findings are excluded from
+the stream and reside in the evaluation register; REQ-G-1 carries the
+matching cross-reference. R23 — REQ-C-3 gains (v) EVALUATION-RECORD
+IDENTITY (PROPOSED completion): evaluator-assigned, preserved, never
+the execution-record hash; register entries carry their own identities
+citing it; REQ-D-7&#x27;s derived-entry identity restated on that model.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+## 21. Change record (v0.4 → v0.5)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.4-PROPOSAL.md, SHA-256
+e89a1ed562c2502e6e099f3a4f9c98bba797c182d6eb66d9d5600566e9f38d67,
+preserved intact. Review: Alex&#x27;s fourth adversarial review (findings
+D3-R24…R26, pb-mw7s9h2g-o-8ypl), which recorded R21–R23 as addressed
+and not reopened. Responses: PROCESS-TREE-D3-REVIEW-RESPONSE-v0.4.md —
+all three findings accepted.
+
+Changes, by finding: R24 — REQ-B-2&#x27;s state-derivation completion
+corrected: both evidence channels feed one determination set and
+REQ-D-3&#x27;s path discipline governs derivation over it; the
+established-but-unpathed satisfaction case is specified (determination
+recorded, state NOT_STARTED, closure follows the state); REQ-D-2 gains
+the labelled reconciliation; REQ-D-3 states the combined-set rule.
+R25 — instantiation modelled as two entries: the triggering entry
+(kind unchanged) plus a harness CREATION entry with its own identity,
+immediately following and citing its cause (triggering entry, or the
+binding for unconditional rules); the instance links to both; REQ-A-1
+and REQ-K-3 carry the model (PROPOSED taxonomy completion). R26 —
+REQ-C-3 gains (vi) EVALUATION-RECORD CONTENT IDENTITY (PROPOSED): a
+canonical digest over the record&#x27;s exact ordered contents at issuance;
+verdicts cite (v)+(vi); post-issuance appends extend, never rewrite,
+the cited content identity; REQ-K-4 reports cite both identities.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+## 22. Change record (v0.5 → v0.6)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.5-PROPOSAL.md, SHA-256
+c40e2b45399a4bff4d938b06da9d0cb5e9ceef0077e1c10ec909edde1f89bf98,
+preserved intact. Review: Alex&#x27;s fifth adversarial review (findings
+D3-R27…R29, pb-mw7sktdy-r-mf8), which recorded R24/R25 as addressed
+in principle, R26 as partially addressed, and R21–R23 as not reopened.
+Responses: PROCESS-TREE-D3-REVIEW-RESPONSE-v0.5.md — all three
+findings accepted.
+
+Changes, by finding: R27 — REQ-C-1 gains the creating-trigger rule:
+the triggering entry is admitted for instantiation and trigger
+accounting only, and establishes no progress or satisfaction
+determination (grounded on REQ-B-3&#x27;s canonical counterexample, which
+now cross-references it); REQ-E-3&#x27;s enumeration expressly includes
+the creating trigger; a fixture demonstrates count-1 + NOT_STARTED.
+R28 — REQ-D-3 gains the derivation procedure: determinations are
+monotonic, derivation walks the path over the final determination
+set, encounter order (record position, channel, computation sequence)
+never affects the outcome, channel-(ii) determinations are position-
+free, and the BLOCKED scope is stated; fixtures state expected states
+for satisfaction-before-progress, progress-before-satisfaction,
+mixed-channel, and the unpathed case. REQ-B-2 cross-references the
+procedure. R29 — REQ-C-3 (vi) gains canonicalization procedure
+D3-CANON-1 (PROPOSED): RFC 8785 (JCS) serialization, UTF-8, NFC,
+SHA-256, content-identity fields excluded from the digest input,
+procedure-identifier citation for algorithm agility, and entry-set
+append lineage keeping every snapshot independently verifiable;
+fixtures cover cross-implementation agreement, change sensitivity,
+and append behaviour; REQ-K-4 citations carry the procedure
+identifier. Nothing in this round is left UNRESOLVED by choice: the
+canonicalization decision is taken as a labelled proposal rather than
+deferred.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+## 23. Change record (v0.6 → v0.7)
+
+Baseline: PROCESS-TREE-D3-SPECIFICATION-v0.6-PROPOSAL.md, SHA-256
+8adc11334fff215b64b7c8d05621eeadb24105ce09993c5757b0dd0bea246a15,
+preserved intact. Review: Alex&#x27;s sixth adversarial review (findings
+D3-R30…R32, pb-mw7sz57c-v-1z6i), which recorded R27&#x27;s intended
+correction as present, R28 as exposing R31, and R29 as leaving R32
+open. Responses: PROCESS-TREE-D3-REVIEW-RESPONSE-v0.6.md — all three
+findings accepted; no unrelated semantic changes.
+
+Changes, by finding: R30 — creation point defined once (REQ-C-1):
+the CREATION entry is the formal creation point; the triggering entry
+(or, for unconditional rules, the binding) is the cause. REQ-A-1 and
+REQ-D-1 wording conformed; REQ-K-3&#x27;s CREATION definition carries the
+same statement. R31 — REQ-D-3&#x27;s derivation procedure rewritten as a
+chronological fold with terminal locking: determinations remain
+order-independent as findings and along non-terminal path steps; the
+first terminal condition in fold order (SATISFIED, REQ-D-5; BLOCKED,
+REQ-D-4/D-6) fixes the state; channel-(ii) determinations enter the
+fold from its start; post-lock determinations are recorded as
+non-effective; Order A / Order B fixtures state expected states and
+findings. REQ-B-2&#x27;s procedure summary conformed. R32 — D3-CANON-1
+corrected to an exact-content procedure: the NFC preprocessing step
+is removed; strings and keys serialize exactly as they stand, with
+composition-distinct strings and keys defined as distinct and
+duplicate exact keys failing loudly; coverage is the complete record
+as of the issuance point (never a subset), cited with its coverage
+point and predecessor; append lineage redefined on prefix-complete
+supersets. REQ-C-3&#x27;s fixtures updated for the composition case.
+
+This version&#x27;s own SHA-256 is recorded in the evidence ledger and in
+Remmy&#x27;s delivery reports. Nothing in this revision implements anything,
+modifies EXECUTION-CONTRACT-v0.1, or executes Stage 2.
+
+
+=== END OF DOCUMENT ===
+PROCESS-TREE-D3-SPECIFICATION-v0.7-PROPOSAL.md - 1,387 lines - SHA-256 28718d26fb0efe4029468c33abd083e6cba4c427e6b4ca080cb0ee52ccae1c1b
+If you can read this footer, you hold the complete document.
+
+</pre>
+</body>
+</html>
