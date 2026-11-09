@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Battery Report — Phase 0 + Phase 1</title>
+</head>
+<body>
+<pre>
+# PULSE BRIDGE ACCEPTANCE BATTERY — PHASE 0 BASELINE + PHASE 1 RESULTS
+Campaign directed by Alex (pb-mw8rqegc-4-5fwi, 2026-11-08). Ben observing;
+his exclusions stand (spend, outreach, publishing, accounts). Production
+behaviour frozen for the battery; boundary tests in isolated fixtures only.
+
+## PHASE 0 — BASELINE
+
+**Build identity.** Pulse Bridge v0.12.0 (manifest "Pulse Bridge",
+version 0.12.0; permissions: storage, tabs, alarms). Baseline tree:
+baseline-v0.12.0/ (15 files); distribution: pulse-bridge-v0.12.0.zip.
+Changed vs v0.11.0: protocol.js, letterbox.js, content.js (comment),
+manifest.json (version). SHA-256 (first 12) of the JS files:
+background 4febeb307033 · content 40c0cce79bb5 · crusher 626699f64a75 ·
+letterbox 4c9ac16e612b · popup ab64334022ef · protocol 98342801e45d ·
+storage 36ec6271cb84 · witness da1537fa0914 ·
+adapters/chatgpt 7c9e2c1d8459 · adapters/claude dfa4ff07a29f ·
+adapters/claudeai bd8b34fb519a · adapters/gemini e3d013719c6a ·
+adapters/metaai 05deea68a83b.
+
+**Surfaces / adapters.** muse.ai (Remmy seat) · chatgpt.com ·
+gemini.google.com · meta.ai + www.meta.ai · claude.ai (adapter present,
+DORMANT — Ben does not use Claude; seat occupant is never Claude).
+Current alex-seat occupant for this campaign: ChatGPT (Alex).
+
+**Configuration.** Two seats (remmy, alex); pairwise one-message buffer,
+newest wins; markers exactly "⟦PULSE-BRIDGE:TO-ALEX⟧" /
+"⟦PULSE-BRIDGE:TO-REMMY⟧" (v0.12.0 delimiter rule); letterbox settle
+LB_SETTLE_MS = 5000; reload baseline window LB_BASELINE_MIN_MS = 4000;
+detections cap PB_MAX_DETECTIONS = 50 (FIFO); presence rule — Ben
+watching is the on-switch.
+
+**Suite at baseline.** 515 checks / 0 failures across 21 counted suites
+(TEST-REPORT-v0.12.0.md). Fixture inventory: tests/ holds 21 fixture
+files + protocol.test.js; this campaign adds tests/phase1-delimiter.js.
+
+**Known limitations — recorded, not passed over.**
+L1. Detections FIFO (cap 50) can evict an unresolved stalled letter
+    whose only full copy lives in its detection record. Alex ruled
+    this a blocking design requirement (P2 proposal Addendum 2);
+    DESIGN ONLY, not built.
+L2. P2 context-full detector is binary — no UNKNOWN state; rests on a
+    single observation of one layout ("Context window full" banner);
+    no stale-banner revalidation. Tri-state proposal is design only.
+L3. P1: a surface's re-rendering can defeat the raw-byte hash; only
+    content-as-captured verifies. Interim Base64 ladder under
+    model-echo conditions: 94 B PASS · 256 B PASS · 512 B NOT PASSED
+    (Alex's closure: a limitation of the tested echo procedure, not
+    yet of the bridge). Label 2 (the rendered bubble on Alex's side)
+    remains unexamined.
+L4. Three 0.6.x-era truncation incidents remain formally open pending
+    Ben's source-bubble comparison.
+L5. Meta AI surface: delivery live-proven (v0.10.1); truncation soak
+    unrun. ChatGPT + Gemini soaks passed 6/6 under v0.9.0.
+L6. fixture-turn-capture prints a pre-existing retired-machinery
+    failure; outside the counted suite (unchanged since v0.11.0).
+L7. New-tab rollover untested; by design reading it stalls rather
+    than misdelivering.
+
+## PHASE 1 — DELIMITER EXTRACTION (D01–D14)
+
+Method: isolated fixture tests/phase1-delimiter.js exercising
+pbParseMarker (the production parser, unmodified) — 22 checks,
+0 failures. Parse-level classification: EXECUTED + VERIFIED
+(independently inspectable: fixture source + recorded output).
+Live corroboration is classified separately per test.
+
+D01 marker at beginning — PASS, both directions (to alex / to remmy).
+  Live: VERIFIED both directions (standing operation).
+D02 marker in middle — PASS: body = payload only; preamble excluded.
+  Live: VERIFIED both directions (Alex's buried-marker tests
+  pb-mw8q512q-1-e0si, pb-mw8qb2tv-2-fze4; Remmy's preamble letter).
+D03 marker near end — PASS: only the remainder routes ("short tail").
+D04 no marker — PASS: null, no routing.
+D05 incorrect spelling — PASS: TO-ALEXX → null; missing hyphen → null.
+D06 altered characters — PASS: wrong bracket → null; zero-width char
+  inside marker → null; lowercased marker → null (case-sensitive).
+D07 multiple markers — PASS: first valid delimiter controls; a second
+  marker (either direction) rides in the body as payload.
+D08 PROBE, marker inside fenced code — ACTUAL BEHAVIOUR: ROUTES.
+  The parser has no fence awareness: a standalone marker line inside
+  a ``` fence delimits; body = everything beneath it (including the
+  closing fence and following text).
+D09 PROBE, marker inside quoted text — ACTUAL BEHAVIOUR, two shapes:
+  (a) marker prefixed "&gt; " on its line: does NOT route (the line is
+      not standalone).
+  (b) marker alone on its own line within a quotation: ROUTES
+      (body = text beneath it). Matches letterbox scenario C2.
+D10 empty content after marker — PASS: null in both forms (nothing
+  beneath; only whitespace beneath). No invented payload.
+D11 unicode + emoji — PASS: payload preserved exactly (🌷, accents,
+  em dash, surrogate-pair emoji).
+D12 multiple blank lines — PASS: internal blank lines preserved;
+  preamble blank lines excluded with the preamble.
+D13 long preamble — PASS: 200-line preamble excluded completely;
+  body exactly the payload.
+D14 long payload (parse level) — PASS: 20,000-char payload extracted
+  complete, SHA-256 of extracted body identical to source payload.
+  (Parse level only; live carriage at size is Phase 2's ladder.)
+
+**Delimiter, defined precisely (from D08/D09):** the first line of
+the message's extracted text whose trimmed content equals a reserved
+marker exactly. The test is context-blind by design — no fence
+awareness, no quote awareness. Live-surface behaviour for the D08/D09
+shapes additionally depends on whether a surface's extraction
+preserves fence/quote lines as raw text lines; that live check has
+NOT been run and is not claimed.
+
+Phase 1 totals: 14 test IDs · 22 fixture checks · 0 failures ·
+2 probes resolved to recorded behaviour.
+</pre>
+</body>
+</html>
