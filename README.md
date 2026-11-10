@@ -28,3 +28,9 @@ re-run:
   `robots.txt` at the same time.
 - Push the contents of this folder to the hosting repo and enable Pages
   (Settings → Pages → Deploy from a branch, root folder).
+
+## Examination snapshots
+
+Static snapshots shelved for independent examination, each with its source, hash and retrieval time stated on its face:
+
+- [Vane — Official Onboarding (snapshot)](https://pulsehq-ai.github.io/pulse-hq-website/snap-vane-onboarding.html) — snapshot of the forum topic "Vane — Official Onboarding" (The Examination Room, Ben's self-hosted NodeBB forum), taken 2026-11-10.
